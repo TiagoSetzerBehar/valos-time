@@ -116,7 +116,7 @@ class TogglTimeEntriesImporter extends DefaultImporter
                 $timeEntry->organization_id = $this->organization->id;
                 $timeEntry->description = $record['Description'];
                 if (! in_array($record['Billable'], ['Yes', 'No'], true)) {
-                    throw new ImportException('Invalid billable value');
+                    throw new ImportException(__('Invalid billable value'));
                 }
                 $timeEntry->billable = $this->canUseBillableRates && $record['Billable'] === 'Yes';
                 $timeEntry->tags = $this->getTags($record['Tags']);
@@ -124,20 +124,20 @@ class TogglTimeEntriesImporter extends DefaultImporter
                 try {
                     $start = Carbon::createFromFormat('Y-m-d H:i:s', $record['Start date'].' '.$record['Start time'], $timezone);
                 } catch (InvalidFormatException) {
-                    throw new ImportException('Start date ("'.$record['Start date'].'") or time ("'.$record['Start time'].'") are invalid');
+                    throw new ImportException(__('Start date (":date") or time (":time") are invalid', ['date' => $record['Start date'], 'time' => $record['Start time']]));
                 }
                 if ($start === null) {
-                    throw new ImportException('Start date ("'.$record['Start date'].'") or time ("'.$record['Start time'].'") are invalid');
+                    throw new ImportException(__('Start date (":date") or time (":time") are invalid', ['date' => $record['Start date'], 'time' => $record['Start time']]));
                 }
                 $timeEntry->start = $start->utc();
 
                 try {
                     $end = Carbon::createFromFormat('Y-m-d H:i:s', $record['End date'].' '.$record['End time'], $timezone);
                 } catch (InvalidFormatException) {
-                    throw new ImportException('End date ("'.$record['End date'].'") or time ("'.$record['End time'].'") are invalid');
+                    throw new ImportException(__('End date (":date") or time (":time") are invalid', ['date' => $record['End date'], 'time' => $record['End time']]));
                 }
                 if ($end === null) {
-                    throw new ImportException('End date ("'.$record['End date'].'") or time ("'.$record['End time'].'") are invalid');
+                    throw new ImportException(__('End date (":date") or time (":time") are invalid', ['date' => $record['End date'], 'time' => $record['End time']]));
                 }
                 if ($end->lt($start)) {
                     throw new ImportException('End ("'.$record['End date'].' '.$record['End time'].'") is before start ("'.$record['Start date'].' '.$record['Start time'].'")');
@@ -162,10 +162,10 @@ class TogglTimeEntriesImporter extends DefaultImporter
         } catch (ImportException $exception) {
             throw $exception;
         } catch (CsvException $exception) {
-            throw new ImportException('Invalid CSV data');
+            throw new ImportException(__('Invalid CSV data'));
         } catch (Exception $exception) {
             report($exception);
-            throw new ImportException('Unknown error');
+            throw new ImportException(__('Unknown error'));
         }
     }
 
@@ -192,7 +192,7 @@ class TogglTimeEntriesImporter extends DefaultImporter
         ];
         foreach ($requiredFields as $requiredField) {
             if (! in_array($requiredField, $header, true)) {
-                throw new ImportException('Invalid CSV header, missing field: '.$requiredField);
+                throw new ImportException(__('Invalid CSV header, missing field: :field', ['field' => $requiredField]));
             }
         }
     }

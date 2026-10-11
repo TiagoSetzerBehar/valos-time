@@ -1,4 +1,5 @@
 import { useMutation, useQueryClient } from '@tanstack/vue-query';
+import { trans, transChoice } from 'laravel-vue-i18n';
 import {
     api,
     type CreateTimeEntryBody,
@@ -29,8 +30,8 @@ export function useTimeEntriesMutations() {
                                 organization: organizationId,
                             },
                         }),
-                    'Time entry created successfully',
-                    'Failed to create time entry'
+                    trans('Time entry created successfully'),
+                    trans('Failed to create time entry')
                 );
             }
         },
@@ -52,8 +53,8 @@ export function useTimeEntriesMutations() {
                                 timeEntry: timeEntry.id,
                             },
                         }),
-                    'Time entry updated successfully',
-                    'Failed to update time entry'
+                    trans('Time entry updated successfully'),
+                    trans('Failed to update time entry')
                 );
             }
         },
@@ -87,7 +88,7 @@ export function useTimeEntriesMutations() {
                             }
                         ),
                     undefined,
-                    'Failed to update time entries'
+                    trans('Failed to update time entries')
                 );
                 // The endpoint applies the changeset per entry and skips entries it can't
                 // apply it to (e.g. breaks with a project/tags/billable change) — a 200
@@ -96,11 +97,17 @@ export function useTimeEntriesMutations() {
                 if (skippedCount > 0) {
                     addNotification(
                         'error',
-                        `${skippedCount} of ${ids.length} time entries ${skippedCount === 1 ? 'was' : 'were'} skipped`,
-                        'No changes were applied to the skipped entries — break entries can not have a project or tags, or be billable.'
+                        transChoice(
+                            ':skipped of :total time entries was skipped|:skipped of :total time entries were skipped',
+                            skippedCount,
+                            { skipped: String(skippedCount), total: String(ids.length) }
+                        ),
+                        trans(
+                            'No changes were applied to the skipped entries — break entries can not have a project or tags, or be billable.'
+                        )
                     );
                 } else {
-                    addNotification('success', 'Time entries updated successfully');
+                    addNotification('success', trans('Time entries updated successfully'));
                 }
                 return response;
             }
@@ -123,8 +130,8 @@ export function useTimeEntriesMutations() {
                                 timeEntry: timeEntryId,
                             },
                         }),
-                    'Time entry deleted successfully',
-                    'Failed to delete time entry'
+                    trans('Time entry deleted successfully'),
+                    trans('Failed to delete time entry')
                 );
             }
         },
@@ -149,8 +156,8 @@ export function useTimeEntriesMutations() {
                                 organization: organizationId,
                             },
                         }),
-                    'Time entries deleted successfully',
-                    'Failed to delete time entries'
+                    trans('Time entries deleted successfully'),
+                    trans('Failed to delete time entries')
                 );
             }
         },

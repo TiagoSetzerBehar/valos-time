@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import { twMerge } from 'tailwind-merge';
+import { trans } from 'laravel-vue-i18n';
 import BillableIcon from '@/packages/ui/src/Icons/BillableIcon.vue';
 import { useBillableRatesLock } from '@/packages/ui/src/utils/useBillableRatesLock';
 import {
@@ -35,9 +36,9 @@ const props = withDefaults(
 
 const tooltipLabel = computed(() => {
     if (billableRatesLocked.value && !active.value) {
-        return 'Billable rates require an upgrade';
+        return trans('Billable rates require an upgrade');
     }
-    return active.value ? 'Billable' : 'Non Billable';
+    return active.value ? trans('Billable') : trans('Non Billable');
 });
 
 const iconColorClasses = computed(() => {

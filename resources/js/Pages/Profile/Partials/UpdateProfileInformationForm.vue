@@ -171,10 +171,10 @@ onBeforeUnmount(() => {
 
 <template>
     <FormSection @submitted="save">
-        <template #title>Profile Information</template>
+        <template #title>{{ $t('Profile Information') }}</template>
 
         <template #description>
-            Update your account's profile information and email address.
+            {{ $t("Update your account's profile information and email address.") }}
         </template>
 
         <template #form>
@@ -189,7 +189,7 @@ onBeforeUnmount(() => {
                     :disabled="!isUserLoaded"
                     @change="readSelectedPhoto" />
 
-                <FieldLabel for="photo">Photo</FieldLabel>
+                <FieldLabel for="photo">{{ $t('Photo') }}</FieldLabel>
 
                 <div v-show="!photoPreview" class="mt-2">
                     <img
@@ -210,7 +210,7 @@ onBeforeUnmount(() => {
                     type="button"
                     :disabled="!isUserLoaded"
                     @click.prevent="selectNewPhoto">
-                    Select A New Photo
+                    {{ $t('Select A New Photo') }}
                 </SecondaryButton>
 
                 <SecondaryButton
@@ -219,7 +219,7 @@ onBeforeUnmount(() => {
                     class="mt-2"
                     :disabled="!isUserLoaded || updateUser.isPending.value"
                     @click.prevent="removePhoto">
-                    Remove Photo
+                    {{ $t('Remove Photo') }}
                 </SecondaryButton>
 
                 <FieldError v-if="fieldErrors.photo" class="mt-2">
@@ -229,7 +229,7 @@ onBeforeUnmount(() => {
 
             <!-- Name -->
             <Field class="col-span-6 sm:col-span-4">
-                <FieldLabel for="name">Name</FieldLabel>
+                <FieldLabel for="name">{{ $t('Name') }}</FieldLabel>
                 <TextInput
                     id="name"
                     v-model="name"
@@ -243,7 +243,7 @@ onBeforeUnmount(() => {
 
             <!-- Email -->
             <Field class="col-span-6 sm:col-span-4">
-                <FieldLabel for="email">Email</FieldLabel>
+                <FieldLabel for="email">{{ $t('Email') }}</FieldLabel>
                 <TextInput
                     id="email"
                     v-model="email"
@@ -256,9 +256,9 @@ onBeforeUnmount(() => {
 
                 <div v-if="pendingEmail" class="mt-2 text-sm">
                     <p class="text-text-primary">
-                        A verification link was sent to
+                        {{ $t('A verification link was sent to') }}
                         <span class="font-medium">{{ pendingEmail }}</span
-                        >. Click the link in the email to confirm the change.
+                        >. {{ $t('Click the link in the email to confirm the change.') }}
                     </p>
                     <div class="mt-2 -ms-3 flex flex-wrap items-center gap-x-1 gap-y-1">
                         <Button
@@ -268,10 +268,10 @@ onBeforeUnmount(() => {
                             type="button"
                             :disabled="!isUserLoaded || resendVerification.isPending.value"
                             @click="clickResend">
-                            Resend verification email
+                            {{ $t('Resend verification email') }}
                         </Button>
                         <p v-else class="ms-3 font-medium text-green-400">
-                            Verification email sent.
+                            {{ $t('Verification email sent.') }}
                         </p>
                         <Button
                             variant="ghost"
@@ -279,7 +279,7 @@ onBeforeUnmount(() => {
                             type="button"
                             :disabled="!isUserLoaded || resetPendingEmail.isPending.value"
                             @click="clickCancelEmailChange">
-                            Cancel email change
+                            {{ $t('Cancel email change') }}
                         </Button>
                     </div>
                 </div>
@@ -287,24 +287,24 @@ onBeforeUnmount(() => {
 
             <!-- Timezone -->
             <Field class="col-span-6 sm:col-span-4">
-                <FieldLabel for="timezone">Timezone</FieldLabel>
+                <FieldLabel for="timezone">{{ $t('Timezone') }}</FieldLabel>
                 <TimezoneCombobox id="timezone" v-model="timezone" :disabled="!isUserLoaded" />
                 <FieldError v-if="fieldErrors.timezone">{{ fieldErrors.timezone }}</FieldError>
             </Field>
 
             <!-- Week start -->
             <Field class="col-span-6 sm:col-span-4">
-                <FieldLabel for="week_start">Start of the week</FieldLabel>
+                <FieldLabel for="week_start">{{ $t('Start of the week') }}</FieldLabel>
                 <WeekStartSelect id="week_start" v-model="weekStart" :disabled="!isUserLoaded" />
                 <FieldError v-if="fieldErrors.week_start">{{ fieldErrors.week_start }}</FieldError>
             </Field>
         </template>
 
         <template #actions>
-            <ActionMessage :on="recentlySaved" class="me-3"> Saved. </ActionMessage>
+            <ActionMessage :on="recentlySaved" class="me-3"> {{ $t('Saved.') }} </ActionMessage>
 
             <PrimaryButton :class="{ 'opacity-25': isSaveDisabled }" :disabled="isSaveDisabled">
-                Save
+                {{ $t('Save') }}
             </PrimaryButton>
         </template>
     </FormSection>

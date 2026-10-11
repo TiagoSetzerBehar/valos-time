@@ -23,10 +23,15 @@ const showBlockedBanner = computed(() => isBlocked() && !hideBlockedBanner.value
             <div class="flex items-center space-x-1.5">
                 <XCircleIcon class="w-4 text-text-primary/50"></XCircleIcon>
                 <div class="flex-1 space-x-1">
-                    <span class="font-medium"> Your organization is currently blocked. </span>
+                    <span class="font-medium">
+                        {{ $t('Your organization is currently blocked.') }}
+                    </span>
                     <span class="hidden md:inline">
-                        Please upgrade to a premium plan or remove all users except the owner to
-                        unblock your organization.
+                        {{
+                            $t(
+                                'Please upgrade to a premium plan or remove all users except the owner to unblock your organization.'
+                            )
+                        }}
                     </span>
                 </div>
             </div>
@@ -34,7 +39,7 @@ const showBlockedBanner = computed(() => isBlocked() && !hideBlockedBanner.value
                 <Link v-if="isBillingActivated() && canManageBilling()" href="/billing">
                     <div
                         class="text-text-primary font-semibold uppercase text-xs flex space-x-1 items-center hover:bg-white/10 rounded-lg px-2 py-1.5">
-                        <span>Upgrade now</span>
+                        <span>{{ $t('Upgrade now') }}</span>
                     </div>
                 </Link>
                 <button class="p-1" @click="hideBlockedBanner = true">
