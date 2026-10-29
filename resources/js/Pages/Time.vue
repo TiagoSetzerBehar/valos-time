@@ -111,7 +111,7 @@ function goToCalendarDay(date: string) {
 </script>
 
 <template>
-    <AppLayout :title="$t('Dashboard')" data-testid="time_view">
+    <AppLayout :title="$t('Time')" data-testid="time_view">
         <MainContainer class="pt-5 lg:pt-8 pb-4 lg:pb-6">
             <TimeTracker></TimeTracker>
         </MainContainer>

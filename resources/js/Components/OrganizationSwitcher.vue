@@ -35,12 +35,12 @@ const switchToTeam = (organization: Organization) => {
 <template>
     <DropdownMenu>
         <DropdownMenuTrigger
-            class="flex w-full text-left hover:bg-white/10 focus-visible:ring-2 focus-visible:ring-ring cursor-pointer transition pl-2 py-1 rounded w-full items-center justify-between"
+            class="flex w-full text-left hover:bg-tertiary focus-visible:ring-2 focus-visible:ring-ring cursor-pointer transition pl-2 py-1 rounded w-full items-center justify-between"
             as-child>
             <button data-testid="organization_switcher">
                 <div class="flex flex-1 space-x-2 items-center w-[calc(100%-30px)]">
                     <div
-                        class="rounded bg-blue-900 font-medium text-xs flex-shrink-0 text-white w-5 h-5 flex items-center justify-center">
+                        class="rounded bg-accent-700 font-medium text-xs flex-shrink-0 text-white w-5 h-5 flex items-center justify-center">
                         {{ page.props.auth.user.current_team.name.slice(0, 1).toUpperCase() }}
                     </div>
                     <span class="text-xs flex-1 truncate font-medium">

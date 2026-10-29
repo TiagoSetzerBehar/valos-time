@@ -9,6 +9,7 @@ use App\Http\Controllers\Web\OrganizationInvitationController;
 use App\Http\Controllers\Web\OtherBrowserSessionsController;
 use App\Http\Controllers\Web\UserController;
 use App\Http\Controllers\Web\UserProfileController;
+use App\Http\Controllers\Web\ValoReminderSettingsController;
 use App\Service\PermissionStore;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Route;
@@ -105,6 +106,8 @@ Route::middleware([
 
     Route::get('/organizations/create', [OrganizationController::class, 'create'])->name('organizations.create');
     Route::get('/organizations/{organizationId}', [OrganizationController::class, 'show'])->name('organizations.show');
+    Route::get('/organizations/{organizationId}/valo-reminders', [ValoReminderSettingsController::class, 'show'])->name('valo.reminders.show');
+    Route::put('/organizations/{organizationId}/valo-reminders', [ValoReminderSettingsController::class, 'update'])->name('valo.reminders.update');
     Route::get('/teams/create', function (): RedirectResponse {
         return to_route('organizations.create');
     })->name('teams.create');

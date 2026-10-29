@@ -8,15 +8,15 @@ const timeTrackerVariants = cva(
         variants: {
             variant: {
                 primary:
-                    'text-white ring-accent-200/10 focus-visible:ring-ring focus-visible:ring-2 ring-4 sm:ring-[6px]',
+                    'text-white shadow-sm focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background',
                 secondary:
                     'bg-quaternary text-text-tertiary hover:text-text-primary focus:ring-2 focus:ring-border-tertiary',
-                break: 'text-white ring-amber-200/10 focus-visible:ring-ring focus-visible:ring-2 ring-4 sm:ring-[6px]',
+                break: 'text-white shadow-sm focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background',
             },
             size: {
                 small: 'w-6 h-6',
                 base: 'w-8 h-8',
-                large: 'w-11 h-11 hover:scale-110',
+                large: 'w-11 h-11',
             },
             active: {
                 true: '',
@@ -27,22 +27,22 @@ const timeTrackerVariants = cva(
             {
                 variant: 'primary',
                 active: true,
-                class: 'bg-red-400/80 hover:bg-red-500/80 focus:bg-red-500/80',
+                class: 'bg-red-600 hover:bg-red-700',
             },
             {
                 variant: 'primary',
                 active: false,
-                class: 'bg-accent-300/70 hover:bg-accent-400/70 focus:bg-accent-700',
+                class: 'bg-accent-500 hover:bg-accent-600',
             },
             {
                 variant: 'break',
                 active: true,
-                class: 'bg-amber-500/80 hover:bg-amber-600/80 focus:bg-amber-600/80',
+                class: 'bg-amber-600 hover:bg-amber-700',
             },
             {
                 variant: 'break',
                 active: false,
-                class: 'bg-accent-300/70 hover:bg-accent-400/70 focus:bg-accent-700',
+                class: 'bg-accent-500 hover:bg-accent-600',
             },
         ],
         defaultVariants: {

@@ -1,8 +1,7 @@
 <script setup lang="ts">
 import { isMoneyVisible } from '@/utils/valo';
-import { Head, router, usePage } from '@inertiajs/vue3';
+import { Head, Link, router, usePage } from '@inertiajs/vue3';
 import Banner from '@/Components/Banner.vue';
-import OrganizationSwitcher from '@/Components/OrganizationSwitcher.vue';
 import CurrentSidebarTimer from '@/Components/CurrentSidebarTimer.vue';
 import {
     CalendarIcon,
@@ -12,7 +11,6 @@ import {
     CreditCardIcon,
     FolderIcon,
     HomeIcon,
-    MagnifyingGlassIcon,
     TagIcon,
     UserCircleIcon,
     UserGroupIcon,
@@ -20,9 +18,9 @@ import {
     DocumentTextIcon,
     TableCellsIcon,
 } from '@heroicons/vue/20/solid';
-import { PanelLeft, Target } from '@lucide/vue';
+import { Target } from '@lucide/vue';
 import NavigationSidebarItem from '@/Components/NavigationSidebarItem.vue';
-import UserSettingsIcon from '@/Components/UserSettingsIcon.vue';
+import AppTopBar from '@/Components/AppTopBar.vue';
 import MainContainer from '@/packages/ui/src/MainContainer.vue';
 import { computed, nextTick, onMounted, provide, ref } from 'vue';
 import NotificationContainer from '@/Components/NotificationContainer.vue';
@@ -43,7 +41,6 @@ import { canUseBillableRates, isBillingActivated, isInvoicingActivated } from '@
 import UpgradeModal from '@/packages/ui/src/UpgradeModal.vue';
 import { billableRatesLockKey } from '@/packages/ui/src/utils/useBillableRatesLock';
 import { moneyVisibleKey } from '@/packages/ui/src/utils/useMoneyVisible';
-import ThemeToggleButton from '@/Components/Common/ThemeToggleButton.vue';
 import { upgradeCtaKey } from '@/packages/ui/src/UpgradeModal/useUpgradeCta';
 import type { User } from '@/types/models';
 import { ArrowsRightLeftIcon } from '@heroicons/vue/16/solid';
@@ -58,11 +55,7 @@ import { getCurrentOrganizationId } from '@/utils/useUser';
 import LoadingSpinner from '@/packages/ui/src/LoadingSpinner.vue';
 import { twMerge } from 'tailwind-merge';
 import { Button } from '@/packages/ui/src/Buttons';
-import { openFeedback } from '@/utils/feedback';
 import { CommandPaletteProvider } from '@/Components/CommandPalette';
-import { useCommandPalette } from '@/utils/useCommandPalette';
-
-const { openPalette } = useCommandPalette();
 
 defineProps({
     title: String,
@@ -165,18 +158,13 @@ const page = usePage<{
             :style="showSidebarMenu ? { display: 'flex' } : undefined">
             <div class="flex flex-col h-full">
                 <div
-                    class="border-b border-default-background-separator pb-2 flex items-center gap-1">
-                    <div class="flex-1 min-w-0 overflow-hidden">
-                        <OrganizationSwitcher></OrganizationSwitcher>
-                    </div>
-                    <Button
-                        variant="ghost"
-                        size="icon"
-                        class="h-7 w-7 flex-shrink-0"
-                        data-testid="command_palette_button"
-                        @click="openPalette">
-                        <MagnifyingGlassIcon class="h-4 w-4 text-icon-default" />
-                    </Button>
+                    class="border-b border-default-background-separator pb-3 pt-0.5 flex items-center gap-1">
+                    <Link
+                        :href="route('dashboard')"
+                        class="flex-1 min-w-0 px-2 text-[15px] tracking-tight text-text-primary">
+                        <span class="font-semibold">VALO's</span>
+                        <span class="font-normal text-text-secondary"> Time</span>
+                    </Link>
                     <Button
                         variant="ghost"
                         size="icon"
@@ -194,13 +182,11 @@ const page = usePage<{
                         scrollbar-width: thin;
                         scrollbar-color: var(--color-bg-primary) transparent;
                     ">
-                    <nav class="pt-2">
+                    <div class="text-text-tertiary text-xs font-semibold pt-3 pb-1.5 px-2">
+                        {{ $t('Tracking') }}
+                    </div>
+                    <nav>
                         <ul>
-                            <NavigationSidebarItem
-                                :title="$t('Dashboard')"
-                                :icon="HomeIcon"
-                                :href="route('dashboard')"
-                                :current="route().current('dashboard')"></NavigationSidebarItem>
                             <NavigationSidebarItem
                                 :title="$t('Time')"
                                 :icon="ClockIcon"
@@ -216,6 +202,20 @@ const page = usePage<{
                                 :icon="TableCellsIcon"
                                 :current="route().current('timesheet')"
                                 :href="route('timesheet')"></NavigationSidebarItem>
+                        </ul>
+                    </nav>
+
+                    <div class="text-text-tertiary text-xs font-semibold pt-5 pb-1.5 px-2">
+                        {{ $t('Analyze') }}
+                    </div>
+
+                    <nav>
+                        <ul>
+                            <NavigationSidebarItem
+                                :title="$t('Dashboard')"
+                                :icon="HomeIcon"
+                                :href="route('dashboard')"
+                                :current="route().current('dashboard')"></NavigationSidebarItem>
                             <NavigationSidebarItem
                                 :title="$t('Reporting')"
                                 :icon="ChartBarIcon"
@@ -258,7 +258,7 @@ const page = usePage<{
                         </ul>
                     </nav>
 
-                    <div class="text-text-tertiary text-xs font-semibold pt-5 pb-1.5">
+                    <div class="text-text-tertiary text-xs font-semibold pt-5 pb-1.5 px-2">
                         {{ $t('Manage') }}
                     </div>
 
@@ -300,7 +300,7 @@ const page = usePage<{
                     </nav>
                     <div
                         v-if="canUpdateOrganization()"
-                        class="text-text-tertiary text-xs font-semibold pt-5 pb-1.5">
+                        class="text-text-tertiary text-xs font-semibold pt-5 pb-1.5 px-2">
                         {{ $t('Admin') }}
                     </div>
 
@@ -339,55 +339,13 @@ const page = usePage<{
                 <div class="justify-self-end">
                     <UpdateSidebarNotification></UpdateSidebarNotification>
                     <SidebarPlanStatus v-if="isBillingActivated() && canManageBilling()" />
-                    <ul
-                        class="border-t border-default-background-separator pt-3 gap-1 flex justify-between items-center">
-                        <UserSettingsIcon></UserSettingsIcon>
-
-                        <NavigationSidebarItem
-                            class="flex-1"
-                            :title="$t('Profile Settings')"
-                            :icon="Cog6ToothIcon"
-                            :href="route('profile.show')"></NavigationSidebarItem>
-
-                        <ThemeToggleButton></ThemeToggleButton>
-
-                        <Button
-                            v-if="page.props.has_services_extension"
-                            variant="outline"
-                            size="xs"
-                            class="rounded-full ml-2 flex h-6 w-6 items-center text-xs text-icon-default justify-center"
-                            @click="openFeedback">
-                            ?
-                        </Button>
-                    </ul>
                 </div>
             </div>
         </div>
         <div class="flex-1 lg:ml-[230px] min-w-0">
             <div
                 class="h-screen overflow-y-auto flex flex-col bg-default-background border-l border-default-background-separator">
-                <div
-                    class="lg:hidden w-full px-3 py-1 border-b border-b-default-background-separator text-text-secondary flex justify-between items-center">
-                    <Button
-                        variant="ghost"
-                        size="icon"
-                        class="h-7 w-7 shrink-0"
-                        @click="openSidebar">
-                        <PanelLeft class="h-4 w-4 text-icon-default" />
-                    </Button>
-                    <div class="flex items-center gap-1">
-                        <OrganizationSwitcher></OrganizationSwitcher>
-                        <Button
-                            variant="ghost"
-                            size="icon"
-                            class="h-7 w-7 shrink-0"
-                            data-testid="command_palette_button_mobile"
-                            @click="openPalette">
-                            <MagnifyingGlassIcon class="h-4 w-4 text-icon-default" />
-                        </Button>
-                        <ThemeToggleButton></ThemeToggleButton>
-                    </div>
-                </div>
+                <AppTopBar @open-sidebar="openSidebar"></AppTopBar>
 
                 <Head :title="title" />
 

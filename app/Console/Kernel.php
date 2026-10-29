@@ -18,6 +18,13 @@ class Kernel extends ConsoleKernel
             ->when(fn (): bool => config('scheduling.tasks.time_entry_send_still_running_mails'))
             ->everyTenMinutes();
 
+        // VALO's Time: forgotten-hours reminders (each organization opts in from its settings)
+        $schedule->command('valo:send-daily-reminders')
+            ->everyFifteenMinutes();
+
+        $schedule->command('valo:send-weekly-summary')
+            ->hourly();
+
         $schedule->command('auth:send-mails-expiring-api-tokens')
             ->when(fn (): bool => config('scheduling.tasks.auth_send_mails_expiring_api_tokens'))
             ->everyTenMinutes();
