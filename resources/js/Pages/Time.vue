@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import TimeWeekSummary from '@/Components/TimeWeekSummary.vue';
 import AppLayout from '@/Layouts/AppLayout.vue';
 import TimeTracker from '@/Components/TimeTracker.vue';
 import { router } from '@inertiajs/vue3';
@@ -115,6 +116,7 @@ function goToCalendarDay(date: string) {
         <MainContainer class="pt-5 lg:pt-8 pb-4 lg:pb-6">
             <TimeTracker></TimeTracker>
         </MainContainer>
+        <TimeWeekSummary></TimeWeekSummary>
         <TimeEntryMassActionRow
             :selected-time-entries="selectedTimeEntries"
             :enable-estimated-time="isAllowedToPerformPremiumAction()"
@@ -166,8 +168,14 @@ function goToCalendarDay(date: string) {
         </div>
         <div v-else-if="timeEntries.length === 0" class="text-center pt-12">
             <ClockIcon class="w-8 text-icon-default inline pb-2"></ClockIcon>
-            <h3 class="text-text-primary font-semibold">{{ $t('No time entries found') }}</h3>
-            <p class="pb-5">{{ $t('Create your first time entry now!') }}</p>
+            <h3 class="text-text-primary font-semibold">{{ $t('Start tracking your time!') }}</h3>
+            <p class="pb-5 max-w-md mx-auto">
+                {{
+                    $t(
+                        'Write above what you are working on and press start. Already finished? Add it with Manual.'
+                    )
+                }}
+            </p>
         </div>
         <div ref="loadMoreContainer">
             <div

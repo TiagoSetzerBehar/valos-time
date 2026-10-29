@@ -157,7 +157,7 @@ class User extends Authenticatable implements AuditableContract, FilamentUser, M
             return mb_substr($segment, 0, 1);
         })->join(' '));
 
-        return 'https://ui-avatars.com/api/?name='.urlencode($name).'&color=7F9CF5&background=EBF4FF';
+        return 'https://ui-avatars.com/api/?name='.urlencode($name).'&color=D5D8DF&background=3A3E48';
     }
 
     public function canAccessPanel(Panel $panel): bool

@@ -14,7 +14,7 @@ defineProps<{
         <div
             :class="[
                 current
-                    ? 'bg-menu-active text-text-primary'
+                    ? 'valo-nav-active'
                     : 'text-text-secondary group-hover:text-text-primary group-hover:bg-menu-active ',
                 'group flex gap-x-2 rounded-md transition leading-6 py-0.5 px-2 font-medium text-sm items-center',
             ]">
@@ -22,7 +22,7 @@ defineProps<{
                 :is="icon"
                 v-if="icon"
                 :class="[
-                    current ? 'text-icon-active' : 'text-icon-default group-hover:text-icon-active',
+                    current ? 'valo-nav-icon' : 'text-icon-default group-hover:text-icon-active',
                     'transition h-4 w-4 shrink-0',
                 ]"
                 aria-hidden="true" />

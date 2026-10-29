@@ -45,7 +45,6 @@ import { upgradeCtaKey } from '@/packages/ui/src/UpgradeModal/useUpgradeCta';
 import type { User } from '@/types/models';
 import { ArrowsRightLeftIcon } from '@heroicons/vue/16/solid';
 import { fetchToken, isTokenValid } from '@/utils/session';
-import UpdateSidebarNotification from '@/Components/UpdateSidebarNotification.vue';
 import BillingBanner from '@/Components/Billing/BillingBanner.vue';
 import SidebarPlanStatus from '@/Components/Billing/SidebarPlanStatus.vue';
 import UserTimezoneMismatchModal from '@/Components/Common/User/UserTimezoneMismatchModal.vue';
@@ -162,7 +161,7 @@ const page = usePage<{
                     <Link
                         :href="route('dashboard')"
                         class="flex-1 min-w-0 px-2 text-[15px] tracking-tight text-text-primary">
-                        <span class="font-semibold">VALO's</span>
+                        <span class="font-semibold valo-brand">VALO's</span>
                         <span class="font-normal text-text-secondary"> Time</span>
                     </Link>
                     <Button
@@ -173,7 +172,9 @@ const page = usePage<{
                         <XMarkIcon class="h-4 w-4 text-icon-default" />
                     </Button>
                 </div>
-                <div class="border-b border-default-background-separator">
+                <div
+                    v-if="!route().current('time')"
+                    class="border-b border-default-background-separator">
                     <CurrentSidebarTimer></CurrentSidebarTimer>
                 </div>
                 <div
@@ -337,7 +338,6 @@ const page = usePage<{
                     </nav>
                 </div>
                 <div class="justify-self-end">
-                    <UpdateSidebarNotification></UpdateSidebarNotification>
                     <SidebarPlanStatus v-if="isBillingActivated() && canManageBilling()" />
                 </div>
             </div>

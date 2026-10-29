@@ -121,17 +121,19 @@ const gridStyle =
         <div
             class="overflow-x-auto rounded-lg border border-card-background-separator bg-card-background"
             data-testid="weekly_report">
-            <div class="grid min-w-[860px] text-sm" :style="gridStyle">
+            <div class="grid text-sm" :style="gridStyle">
                 <div
                     class="contents [&>*]:border-b [&>*]:border-card-background-separator [&>*]:bg-tertiary [&>*]:py-2 text-text-secondary">
-                    <div class="pl-4">{{ group === 'user' ? $t('Member') : $t('Project') }}</div>
+                    <div class="pl-4 sticky left-0 z-10">
+                        {{ group === 'user' ? $t('Member') : $t('Project') }}
+                    </div>
                     <div
                         v-for="day in weekDays"
                         :key="day.format('YYYY-MM-DD')"
                         class="text-right pr-3 capitalize">
                         {{ day.format('ddd D') }}
                     </div>
-                    <div class="text-right pr-4">{{ $t('Total') }}</div>
+                    <div class="text-right pr-4 sticky right-0 z-10">{{ $t('Total') }}</div>
                 </div>
                 <div v-if="isPending" class="col-span-9 flex justify-center py-12">
                     <LoadingSpinner />
@@ -141,7 +143,9 @@ const gridStyle =
                         v-for="row in rows"
                         :key="row.key"
                         class="contents [&>*]:border-b [&>*]:border-card-background-separator [&>*]:py-2.5 text-text-primary">
-                        <div class="pl-4 truncate">{{ row.name }}</div>
+                        <div class="pl-4 truncate sticky left-0 z-10 bg-card-background">
+                            {{ row.name }}
+                        </div>
                         <div
                             v-for="(seconds, index) in row.days"
                             :key="index"
@@ -154,14 +158,17 @@ const gridStyle =
                         </div>
                     </div>
                     <div class="contents [&>*]:py-2.5 text-text-secondary font-medium">
-                        <div class="pl-4">{{ $t('Total') }}</div>
+                        <div class="pl-4 sticky left-0 z-10 bg-card-background">
+                            {{ $t('Total') }}
+                        </div>
                         <div
                             v-for="(seconds, index) in dayTotals"
                             :key="index"
                             class="text-right pr-3">
                             {{ formatDuration(seconds) }}
                         </div>
-                        <div class="text-right pr-4 text-text-primary">
+                        <div
+                            class="text-right pr-4 text-text-primary sticky right-0 z-10 bg-card-background">
                             {{ formatDuration(weekTotal) }}
                         </div>
                     </div>

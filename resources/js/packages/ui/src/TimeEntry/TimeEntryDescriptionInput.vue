@@ -36,7 +36,7 @@ const displaysPlaceholder = computed(() => {
             <div
                 :class="[
                     'opacity-0 h-4 text-sm whitespace-pre min-w-0 pl-1.5 @lg:pl-3 pr-1',
-                    { 'min-w-[130px]': displaysPlaceholder },
+                    { 'min-w-[180px]': displaysPlaceholder },
                 ]">
                 {{ liveDataValue }}
             </div>

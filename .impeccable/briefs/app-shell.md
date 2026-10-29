@@ -19,3 +19,10 @@ FIRST VIEWPORT: Left rail (230px) with grouped sections SEGUIMIENTO, ANÁLISIS, 
 FORM: Category canon (user-chosen exit), seed 28ff623d.
 
 FINISH: unreviewed and undocumented is unfinished; this build ends with the finish review, the verdict, DESIGN.md, and every shipping raster carrying its provenance
+
+## Adaptations
+
+- Top bar left holds the workspace switcher instead of the page title, as Clockify does; the page title stays at the top of the content.
+- Help and notifications are not in the top bar: the app has no help centre or notification system to back them.
+- Sidebar group labels are sentence case (Seguimiento, Análisis, Gestionar), matching the rest of the UI.
+- The "Facturable" toggle stays (user kept the billable flag, as in Clockify); only money values are hidden.

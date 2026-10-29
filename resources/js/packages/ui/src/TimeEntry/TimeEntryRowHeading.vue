@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { getLocalizedDayJs } from '@/packages/ui/src/utils/time';
+import { trans } from 'laravel-vue-i18n';
 import MainContainer from '@/packages/ui/src/MainContainer.vue';
 import {
     formatDate,
@@ -25,6 +27,17 @@ const props = withDefaults(
 );
 
 const hasBreak = computed(() => props.breakDuration > 0);
+
+const dayLabel = computed(() => {
+    const today = getLocalizedDayJs();
+    if (props.date === today.format('YYYY-MM-DD')) {
+        return trans('Today');
+    }
+    if (props.date === today.subtract(1, 'day').format('YYYY-MM-DD')) {
+        return trans('Yesterday');
+    }
+    return formatWeekday(props.date);
+});
 
 function formatDuration(seconds: number) {
     return formatHumanReadableDuration(
@@ -74,7 +87,7 @@ function selectUnselectAll(value: boolean) {
                             @update:checked="selectUnselectAll"></Checkbox>
                     </div>
                     <span class="text-text-primary">
-                        {{ formatWeekday(date) }}
+                        {{ dayLabel }}
                     </span>
                     <span class="text-text-secondary ml-2">
                         {{ formatDate(date, organization?.date_format) }}
