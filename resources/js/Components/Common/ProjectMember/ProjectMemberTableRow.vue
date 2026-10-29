@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { isMoneyVisible } from '@/utils/valo';
 import { useBillableRatesLock } from '@/packages/ui/src/utils/useBillableRatesLock';
 import type { ProjectMember } from '@/packages/api/src';
 import { computed, ref, inject, type ComputedRef } from 'vue';
@@ -51,7 +52,9 @@ const { locked: billableRatesLocked } = useBillableRatesLock();
                 {{ member?.name }}
             </span>
         </div>
-        <div class="whitespace-nowrap px-3 flex items-center text-sm text-text-secondary">
+        <div
+            v-if="isMoneyVisible()"
+            class="whitespace-nowrap px-3 flex items-center text-sm text-text-secondary">
             <UpgradeLockedBadge v-if="billableRatesLocked" />
             <span v-else>
                 {{

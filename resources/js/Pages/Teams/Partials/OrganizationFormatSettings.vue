@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { isMoneyVisible } from '@/utils/valo';
 import FormSection from '@/Components/FormSection.vue';
 import PrimaryButton from '@/packages/ui/src/Buttons/PrimaryButton.vue';
 import { computed, onMounted, ref } from 'vue';
@@ -90,7 +91,7 @@ async function submit() {
             </Field>
 
             <!-- Currency Format -->
-            <Field class="col-span-6 sm:col-span-4">
+            <Field v-if="isMoneyVisible()" class="col-span-6 sm:col-span-4">
                 <FieldLabel for="currencyFormat">{{ $t('Currency Format') }}</FieldLabel>
                 <Select v-model="form.currency_format">
                     <SelectTrigger id="currencyFormat">

@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { isMoneyVisible } from '@/utils/valo';
 import { useBillableRatesLock } from '@/packages/ui/src/utils/useBillableRatesLock';
 import type { Member, Organization } from '@/packages/api/src';
 import { api } from '@/packages/api/src';
@@ -94,7 +95,9 @@ const { locked: billableRatesLocked } = useBillableRatesLock();
                 <div class="whitespace-nowrap px-3 py-4 text-sm text-text-primary">
                     {{ capitalizeFirstLetter($t(member.role)) }}
                 </div>
-                <div class="whitespace-nowrap px-3 flex items-center text-sm text-text-primary">
+                <div
+                    v-if="isMoneyVisible()"
+                    class="whitespace-nowrap px-3 flex items-center text-sm text-text-primary">
                     <UpgradeLockedBadge v-if="billableRatesLocked" />
                     <span v-else-if="member.billable_rate">
                         {{

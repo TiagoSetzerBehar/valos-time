@@ -58,6 +58,10 @@ Route::middleware([
         return Inertia::render('ReportingDetailed');
     })->name('reporting.detailed');
 
+    Route::get('/reporting/weekly', function () {
+        return Inertia::render('ReportingWeekly');
+    })->name('reporting.weekly');
+
     Route::get('/reporting/shared', function () {
         return Inertia::render('ReportingShared');
     })->name('reporting.shared');

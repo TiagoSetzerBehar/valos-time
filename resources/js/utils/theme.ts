@@ -2,7 +2,7 @@ import { usePreferredColorScheme, useStorage } from '@vueuse/core';
 import { computed, watch } from 'vue';
 
 type themeOption = 'system' | 'light' | 'dark';
-const themeSetting = useStorage<themeOption>('theme', 'system');
+const themeSetting = useStorage<themeOption>('theme', 'dark');
 const preferredColor = usePreferredColorScheme();
 const theme = computed(() => {
     if (themeSetting.value === 'system') {

@@ -54,6 +54,7 @@ class HandleInertiaRequests extends Middleware
             'has_invoicing_extension' => $hasInvoicing,
             'has_services_extension' => $hasServices,
             'has_goals_extension' => $hasGoals,
+            'valo_show_money' => (bool) config('valo.show_money'),
             'billing' => $currentOrganization !== null ? [
                 'has_subscription' => $billing->hasSubscription($currentOrganization),
                 'has_trial' => $billing->hasTrial($currentOrganization),

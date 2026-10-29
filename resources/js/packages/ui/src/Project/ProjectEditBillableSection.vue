@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { useMoneyVisible } from '@/packages/ui/src/utils/useMoneyVisible';
 import { trans } from 'laravel-vue-i18n';
 import { Field, FieldDescription, FieldLabel } from '../field';
 import BillableRateInput from '@/packages/ui/src/Input/BillableRateInput.vue';
@@ -83,6 +84,7 @@ const billableDescription = computed(() => {
 });
 
 const emit = defineEmits(['submit']);
+const moneyVisible = useMoneyVisible();
 </script>
 
 <template>
@@ -101,7 +103,7 @@ const emit = defineEmits(['submit']);
         </Select>
         <FieldDescription>{{ billableDescription }}</FieldDescription>
     </Field>
-    <Field>
+    <Field v-if="moneyVisible">
         <FieldLabel :icon="BillableIcon" for="billableRateType">{{
             $t('Billable Rate')
         }}</FieldLabel>

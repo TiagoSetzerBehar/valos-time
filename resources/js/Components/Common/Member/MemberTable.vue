@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { isMoneyVisible } from '@/utils/valo';
 import MemberTableHeading from '@/Components/Common/Member/MemberTableHeading.vue';
 import MemberTableRow from '@/Components/Common/Member/MemberTableRow.vue';
 import { useMembersQuery } from '@/utils/useMembersQuery';
@@ -81,7 +82,7 @@ function handleSort(column: SortColumn) {
             <div
                 data-testid="member_table"
                 class="grid min-w-full"
-                style="grid-template-columns: 1fr 1fr 180px 180px 150px 130px">
+                :style="`grid-template-columns: 1fr 1fr 180px ${isMoneyVisible() ? '180px ' : ''}150px 130px`">
                 <MemberTableHeading
                     :sort-column="props.sortColumn"
                     :sort-direction="props.sortDirection"

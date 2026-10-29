@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { isMoneyVisible } from '@/utils/valo';
 import TableHeading from '@/Components/Common/TableHeading.vue';
 import SortableTableHeaderCell from '@/Components/Common/SortableTableHeaderCell.vue';
 import type { SortColumn, SortDirection } from '@/Components/Common/Member/MemberTable.vue';
@@ -30,6 +31,7 @@ defineEmits<{
             {{ $t('Role') }}
         </SortableTableHeaderCell>
         <SortableTableHeaderCell
+            v-if="isMoneyVisible()"
             column="billable_rate"
             v-bind="props"
             @sort="$emit('sort', $event)">

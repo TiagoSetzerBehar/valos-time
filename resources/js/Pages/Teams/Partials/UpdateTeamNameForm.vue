@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { isMoneyVisible } from '@/utils/valo';
 import { trans } from 'laravel-vue-i18n';
 import { Link, router } from '@inertiajs/vue3';
 import { reactive, ref } from 'vue';
@@ -127,7 +128,7 @@ const updateTeamName = async () => {
             </Field>
 
             <!-- Currency -->
-            <Field class="col-span-6 sm:col-span-4">
+            <Field v-if="isMoneyVisible()" class="col-span-6 sm:col-span-4">
                 <FieldLabel for="currency">{{ $t('Currency') }}</FieldLabel>
                 <select
                     id="currency"

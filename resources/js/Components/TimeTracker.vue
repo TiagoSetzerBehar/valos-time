@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ClockIcon } from '@heroicons/vue/20/solid';
+import { ClockIcon, PencilSquareIcon } from '@heroicons/vue/20/solid';
 import CardTitle from '@/packages/ui/src/CardTitle.vue';
 import { usePage } from '@inertiajs/vue3';
 import { type User } from '@/types/models';
@@ -223,6 +223,15 @@ const { tags } = useTagsQuery();
                         @update-time-entry="updateTimeEntry"
                         @create-time-entry="createTimeEntryFromCurrentEntry"></TimeTrackerControls>
                 </div>
+                <button
+                    type="button"
+                    class="hidden sm:flex items-center gap-1.5 h-8 rounded-md px-2.5 text-sm text-text-secondary hover:text-text-primary hover:bg-card-background transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                    data-testid="manual_time_entry_button"
+                    :title="$t('Create manual time entry')"
+                    @click="showManualTimeEntryModal = true">
+                    <PencilSquareIcon class="w-4 h-4" />
+                    <span>{{ $t('Manual') }}</span>
+                </button>
                 <TimeTrackerMoreOptionsDropdown
                     :has-active-timer="isActive"
                     :time-tracker-mode="timeTrackerMode"

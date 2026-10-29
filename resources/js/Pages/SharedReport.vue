@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { isMoneyVisible } from '@/utils/valo';
 import MainContainer from '@/packages/ui/src/MainContainer.vue';
 import PageTitle from '@/Components/Common/PageTitle.vue';
 import { ChartBarIcon } from '@heroicons/vue/20/solid';
@@ -227,12 +228,16 @@ onMounted(async () => {
                         {{ $t('and') }}
                         <strong class="px-2">{{ getGroupLabel(subGroup) }}</strong>
                     </div>
-                    <div class="grid items-center" style="grid-template-columns: 1fr 100px 150px">
+                    <div
+                        class="grid items-center"
+                        :style="`grid-template-columns: 1fr 100px ${isMoneyVisible() ? '150px' : ''}`">
                         <div
                             class="contents [&>*]:border-card-background-separator [&>*]:border-b [&>*]:bg-tertiary [&>*]:pb-1.5 [&>*]:pt-1 text-text-secondary text-sm">
                             <div class="pl-6">{{ $t('Name') }}</div>
                             <div class="text-right">{{ $t('Duration') }}</div>
-                            <div class="text-right pr-6">{{ $t('Cost') }}</div>
+                            <div v-if="isMoneyVisible()" class="text-right pr-6">
+                                {{ $t('Cost') }}
+                            </div>
                         </div>
                         <template
                             v-if="
@@ -244,7 +249,7 @@ onMounted(async () => {
                                 :key="entry.key ?? 'none'"
                                 :currency="reportCurrency"
                                 :currency-format="reportCurrencyFormat"
-                                :show-cost="true"
+                                :show-cost="isMoneyVisible()"
                                 :entry="entry"></ReportingRow>
                             <div
                                 class="contents [&>*]:transition text-text-tertiary [&>*]:h-[50px]">
@@ -260,7 +265,9 @@ onMounted(async () => {
                                         )
                                     }}
                                 </div>
-                                <div class="justify-end pr-6 flex items-center font-medium">
+                                <div
+                                    v-if="isMoneyVisible()"
+                                    class="justify-end pr-6 flex items-center font-medium">
                                     {{
                                         aggregatedTableTimeEntries.cost
                                             ? formatCents(

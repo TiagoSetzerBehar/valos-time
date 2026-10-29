@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { isMoneyVisible } from '@/utils/valo';
 import SecondaryButton from '@/packages/ui/src/Buttons/SecondaryButton.vue';
 import { PlusIcon } from '@heroicons/vue/16/solid';
 import { ref } from 'vue';
@@ -26,7 +27,7 @@ const createProjectMember = ref(false);
             <div
                 data-testid="project_member_table"
                 class="grid min-w-full"
-                style="grid-template-columns: 1fr 150px 150px 80px">
+                :style="`grid-template-columns: 1fr ${isMoneyVisible() ? '150px ' : ''}150px 80px`">
                 <ProjectMemberTableHeading></ProjectMemberTableHeading>
                 <div v-if="projectMembers.length === 0" class="col-span-5 py-24 text-center">
                     <UserGroupIcon class="w-8 text-icon-default inline pb-2"></UserGroupIcon>

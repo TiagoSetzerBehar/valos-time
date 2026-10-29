@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { isMoneyVisible } from '@/utils/valo';
 import { Head, router, usePage } from '@inertiajs/vue3';
 import Banner from '@/Components/Banner.vue';
 import OrganizationSwitcher from '@/Components/OrganizationSwitcher.vue';
@@ -41,6 +42,8 @@ import {
 import { canUseBillableRates, isBillingActivated, isInvoicingActivated } from '@/utils/billing';
 import UpgradeModal from '@/packages/ui/src/UpgradeModal.vue';
 import { billableRatesLockKey } from '@/packages/ui/src/utils/useBillableRatesLock';
+import { moneyVisibleKey } from '@/packages/ui/src/utils/useMoneyVisible';
+import ThemeToggleButton from '@/Components/Common/ThemeToggleButton.vue';
 import { upgradeCtaKey } from '@/packages/ui/src/UpgradeModal/useUpgradeCta';
 import type { User } from '@/types/models';
 import { ArrowsRightLeftIcon } from '@heroicons/vue/16/solid';
@@ -92,6 +95,10 @@ const { organization, isLoading: isOrganizationLoading } = useOrganizationQuery(
 );
 
 provide('organization', organization);
+provide(
+    moneyVisibleKey,
+    computed(() => isMoneyVisible())
+);
 
 const showBillableRatesUpgradeModal = ref(false);
 provide(billableRatesLockKey, {
@@ -224,6 +231,11 @@ const page = usePage<{
                                         show: true,
                                     },
                                     {
+                                        title: $t('Weekly'),
+                                        route: 'reporting.weekly',
+                                        show: true,
+                                    },
+                                    {
                                         title: $t('Shared'),
                                         route: 'reporting.shared',
                                         show: canViewReport(),
@@ -232,6 +244,7 @@ const page = usePage<{
                                 :current="
                                     route().current('reporting') ||
                                     route().current('reporting.detailed') ||
+                                    route().current('reporting.weekly') ||
                                     route().current('reporting.shared')
                                 "
                                 :href="route('reporting')">
@@ -336,6 +349,8 @@ const page = usePage<{
                             :icon="Cog6ToothIcon"
                             :href="route('profile.show')"></NavigationSidebarItem>
 
+                        <ThemeToggleButton></ThemeToggleButton>
+
                         <Button
                             v-if="page.props.has_services_extension"
                             variant="outline"
@@ -370,6 +385,7 @@ const page = usePage<{
                             @click="openPalette">
                             <MagnifyingGlassIcon class="h-4 w-4 text-icon-default" />
                         </Button>
+                        <ThemeToggleButton></ThemeToggleButton>
                     </div>
                 </div>
 

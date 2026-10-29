@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { isMoneyVisible } from '@/utils/valo';
 import SecondaryButton from '@/packages/ui/src/Buttons/SecondaryButton.vue';
 import DialogModal from '@/packages/ui/src/DialogModal.vue';
 import { ref, watch } from 'vue';
@@ -82,7 +83,7 @@ useFocus(projectNameInput, { initialValue: true });
                     <UserIcon class="w-4 text-text-secondary"></UserIcon>
                     <span>{{ props.name }}</span>
                 </div>
-                <Field class="col-span-3 sm:col-span-1 flex-1">
+                <Field v-if="isMoneyVisible()" class="col-span-3 sm:col-span-1 flex-1">
                     <FieldLabel for="billable_rate">{{ $t('Billable Rate') }}</FieldLabel>
                     <BillableRateInput
                         v-model="projectMemberBody.billable_rate"

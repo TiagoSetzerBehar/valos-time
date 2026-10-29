@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { isMoneyVisible } from '@/utils/valo';
 import UpgradeLockedValue from '@/packages/ui/src/UpgradeLockedValue.vue';
 import { useBillableRatesLock } from '@/packages/ui/src/utils/useBillableRatesLock';
 import { use } from 'echarts/core';
@@ -275,11 +276,11 @@ const option = computed(() => {
                           )
                         : '--'
                 " />
-            <StatCard v-if="billableRatesLocked" :title="$t('Billable Amount')">
+            <StatCard v-if="isMoneyVisible() && billableRatesLocked" :title="$t('Billable Amount')">
                 <UpgradeLockedValue />
             </StatCard>
             <StatCard
-                v-else
+                v-else-if="isMoneyVisible()"
                 :title="$t('Billable Amount')"
                 :value="
                     totalWeeklyBillableAmount

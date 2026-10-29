@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { isMoneyVisible } from '@/utils/valo';
 import SecondaryButton from '@/packages/ui/src/Buttons/SecondaryButton.vue';
 import DialogModal from '@/packages/ui/src/DialogModal.vue';
 import { ref } from 'vue';
@@ -52,7 +53,7 @@ useFocus(projectNameInput, { initialValue: true });
                         v-model="projectMember.member_id"
                         :hidden-members="props.existingMembers"></MemberCombobox>
                 </div>
-                <div class="col-span-3 sm:col-span-1 flex-1">
+                <div v-if="isMoneyVisible()" class="col-span-3 sm:col-span-1 flex-1">
                     <BillableRateInput
                         v-model="projectMember.billable_rate"
                         name="billable_rate"

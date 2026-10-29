@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { isMoneyVisible } from '@/utils/valo';
 import { trans } from 'laravel-vue-i18n';
 import SecondaryButton from '@/packages/ui/src/Buttons/SecondaryButton.vue';
 import DialogModal from '@/packages/ui/src/DialogModal.vue';
@@ -163,7 +164,7 @@ const roleDescription = computed(() => {
                         }}</FieldDescription>
                     </Field>
                 </div>
-                <div class="pt-5">
+                <div v-if="isMoneyVisible()" class="pt-5">
                     <Field>
                         <FieldLabel :icon="BillableIcon" for="billableRateType">{{
                             $t('Billable Rate')

@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { isMoneyVisible } from '@/utils/valo';
 import UpgradeLockedValue from '@/packages/ui/src/UpgradeLockedValue.vue';
 import { useBillableRatesLock } from '@/packages/ui/src/utils/useBillableRatesLock';
 import ReportingRow from '@/Components/Common/Reporting/ReportingRow.vue';
@@ -124,8 +125,9 @@ const tableData = computed(() => {
 });
 
 const showBillableRate = computed(() => {
-    return !!(
-        getCurrentRole() !== 'employee' || organization?.value?.employees_can_see_billable_rates
+    return (
+        isMoneyVisible() &&
+        !!(getCurrentRole() !== 'employee' || organization?.value?.employees_can_see_billable_rates)
     );
 });
 

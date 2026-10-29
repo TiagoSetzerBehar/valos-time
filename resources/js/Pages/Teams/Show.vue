@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { isMoneyVisible } from '@/utils/valo';
 import AppLayout from '@/Layouts/AppLayout.vue';
 import DeleteTeamForm from '@/Pages/Teams/Partials/DeleteTeamForm.vue';
 import SectionBorder from '@/Components/SectionBorder.vue';
@@ -46,8 +47,10 @@ onMounted(async () => {
                 <template v-else>
                     <UpdateTeamNameForm :team="team" :permissions="permissions" />
 
-                    <SectionBorder v-if="permissions.canUpdateTeam" />
-                    <OrganizationBillableRate v-if="permissions.canUpdateTeam" :team="team" />
+                    <SectionBorder v-if="isMoneyVisible() && permissions.canUpdateTeam" />
+                    <OrganizationBillableRate
+                        v-if="isMoneyVisible() && permissions.canUpdateTeam"
+                        :team="team" />
 
                     <SectionBorder v-if="permissions.canUpdateTeam" />
                     <OrganizationFormatSettings v-if="permissions.canUpdateTeam" :team="team" />

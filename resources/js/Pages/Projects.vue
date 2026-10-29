@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { isMoneyVisible } from '@/utils/valo';
 import AppLayout from '@/Layouts/AppLayout.vue';
 import MainContainer from '@/packages/ui/src/MainContainer.vue';
 import { FolderIcon, PlusIcon } from '@heroicons/vue/20/solid';
@@ -143,8 +144,9 @@ async function createClient(client: CreateClientBody): Promise<Client | undefine
 }
 
 const showBillableRate = computed(() => {
-    return !!(
-        getCurrentRole() !== 'employee' || organization.value?.employees_can_see_billable_rates
+    return (
+        isMoneyVisible() &&
+        !!(getCurrentRole() !== 'employee' || organization.value?.employees_can_see_billable_rates)
     );
 });
 </script>

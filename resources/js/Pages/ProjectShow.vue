@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { isMoneyVisible } from '@/utils/valo';
 import UpgradeLockedBadge from '@/packages/ui/src/UpgradeLockedBadge.vue';
 import { canUseBillableRates } from '@/utils/billing';
 import MainContainer from '@/packages/ui/src/MainContainer.vue';
@@ -124,16 +125,19 @@ const billableRatesLocked = computed(() => !canUseBillableRates());
                     </li>
                 </ol>
                 <div class="px-4 space-x-1">
-                    <UpgradeLockedBadge v-if="billableRatesLocked">{{
+                    <UpgradeLockedBadge v-if="isMoneyVisible() && billableRatesLocked">{{
                         $t('Billable Rates')
                     }}</UpgradeLockedBadge>
-                    <Badge v-else-if="project?.billable_rate">
+                    <Badge v-else-if="isMoneyVisible() && project?.billable_rate">
                         {{ billableRateFormatted }}
                         / h
                     </Badge>
                     <Badge
                         v-if="
-                            project?.is_billable && !project?.billable_rate && !billableRatesLocked
+                            isMoneyVisible() &&
+                            project?.is_billable &&
+                            !project?.billable_rate &&
+                            !billableRatesLocked
                         ">
                         {{ $t('Default Rate') }}
                     </Badge>
