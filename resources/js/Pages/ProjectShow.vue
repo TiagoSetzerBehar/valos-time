@@ -141,7 +141,9 @@ const billableRatesLocked = computed(() => !canUseBillableRates());
                         ">
                         {{ $t('Default Rate') }}
                     </Badge>
-                    <Badge v-if="!project?.is_billable"> {{ $t('Non-Billable') }} </Badge>
+                    <Badge v-if="isMoneyVisible() && !project?.is_billable">
+                        {{ $t('Non-Billable') }}
+                    </Badge>
                     <Badge>{{ project?.is_public ? $t('Public') : $t('Private') }}</Badge>
                 </div>
             </nav>

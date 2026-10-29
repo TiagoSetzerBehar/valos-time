@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { useMoneyVisible } from '@/packages/ui/src/utils/useMoneyVisible';
 import TextInput from '@/packages/ui/src/Input/TextInput.vue';
 import SecondaryButton from '@/packages/ui/src/Buttons/SecondaryButton.vue';
 import DialogModal from '@/packages/ui/src/DialogModal.vue';
@@ -168,6 +169,7 @@ const typeProxy = computed({
         }
     },
 });
+const moneyVisible = useMoneyVisible();
 </script>
 
 <template>
@@ -246,7 +248,7 @@ const typeProxy = computed({
                                 </Button>
                             </template>
                         </TagDropdown>
-                        <Select v-if="!isBreak" v-model="billableProxy">
+                        <Select v-if="moneyVisible && !isBreak" v-model="billableProxy">
                             <SelectTrigger :show-chevron="false">
                                 <SelectValue class="flex items-center gap-2">
                                     <BillableIcon class="h-4 text-icon-default" />

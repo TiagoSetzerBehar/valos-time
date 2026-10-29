@@ -266,6 +266,7 @@ const option = computed(() => {
                         : '--'
                 " />
             <StatCard
+                v-if="isMoneyVisible()"
                 :title="$t('Billable Time')"
                 :value="
                     totalWeeklyBillableTime

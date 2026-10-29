@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { useMoneyVisible } from '@/packages/ui/src/utils/useMoneyVisible';
 import TextInput from '../Input/TextInput.vue';
 import SecondaryButton from '../Buttons/SecondaryButton.vue';
 import DialogModal from '@/packages/ui/src/DialogModal.vue';
@@ -155,6 +156,7 @@ const showBreakWarning = computed(
             billable.value === true ||
             selectedTags.value.length > 0)
 );
+const moneyVisible = useMoneyVisible();
 </script>
 
 <template>
@@ -267,7 +269,7 @@ const showBreakWarning = computed(
                         </Field>
                     </div>
                 </Field>
-                <Field>
+                <Field v-if="moneyVisible">
                     <FieldLabel>{{ $t('Billable') }}</FieldLabel>
                     <Select v-model="timeEntryBillable">
                         <SelectTrigger>

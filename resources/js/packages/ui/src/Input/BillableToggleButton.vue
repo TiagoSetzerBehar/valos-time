@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { useMoneyVisible } from '@/packages/ui/src/utils/useMoneyVisible';
 import { computed } from 'vue';
 import { twMerge } from 'tailwind-merge';
 import { trans } from 'laravel-vue-i18n';
@@ -58,10 +59,11 @@ const iconSizeClasses = computed(() => {
 });
 
 const iconSizeWrapperClasses = props.size === 'small' ? 'w-6 sm:w-8 h-6 sm:h-8' : 'w-10 h-10';
+const moneyVisible = useMoneyVisible();
 </script>
 
 <template>
-    <TooltipProvider>
+    <TooltipProvider v-if="moneyVisible">
         <Tooltip disable-closing-trigger>
             <TooltipTrigger as-child>
                 <button

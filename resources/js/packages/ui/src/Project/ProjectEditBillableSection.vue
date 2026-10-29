@@ -88,7 +88,7 @@ const moneyVisible = useMoneyVisible();
 </script>
 
 <template>
-    <Field>
+    <Field v-if="moneyVisible">
         <FieldLabel for="billable" :icon="BillableIcon">{{ $t('Billable Default') }}</FieldLabel>
         <Select v-model="billableDefault">
             <SelectTrigger id="billable">

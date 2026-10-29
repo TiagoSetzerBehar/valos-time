@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { isMoneyVisible } from '@/utils/valo';
 import { computed } from 'vue';
 import { CheckCircleIcon, TagIcon, UserGroupIcon } from '@heroicons/vue/20/solid';
 import { FolderIcon, UserCircleIcon } from '@heroicons/vue/16/solid';
@@ -181,7 +182,7 @@ async function createTag(name: string) {
                     </div>
                 </template>
             </TagDropdown>
-            <Select v-model="model.billable">
+            <Select v-if="isMoneyVisible()" v-model="model.billable">
                 <SelectTrigger
                     size="sm"
                     variant="outline"

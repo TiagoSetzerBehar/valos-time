@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { isMoneyVisible } from '@/utils/valo';
 import { useBreaksEnabled } from '@/packages/ui/src/utils/useBreaksEnabled';
 import { CheckCircleIcon, LockClosedIcon, TagIcon, UserGroupIcon } from '@heroicons/vue/20/solid';
 import { FolderIcon } from '@heroicons/vue/16/solid';
@@ -147,7 +148,7 @@ async function createTag(name: string) {
                 </TagDropdown>
 
                 <Button
-                    v-if="billableRatesLocked"
+                    v-if="isMoneyVisible() && billableRatesLocked"
                     variant="outline"
                     size="sm"
                     data-testid="billable_filter_locked"
@@ -156,7 +157,10 @@ async function createTag(name: string) {
                     <span class="text-text-secondary">{{ $t('Billable') }}</span>
                     <LockClosedIcon class="!w-3 text-text-tertiary" />
                 </Button>
-                <Select v-else v-model="billable" @update:model-value="emit('submit')">
+                <Select
+                    v-else-if="isMoneyVisible()"
+                    v-model="billable"
+                    @update:model-value="emit('submit')">
                     <SelectTrigger
                         size="sm"
                         variant="outline"
