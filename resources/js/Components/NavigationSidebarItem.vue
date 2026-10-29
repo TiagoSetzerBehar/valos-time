@@ -13,7 +13,7 @@ const props = defineProps<{
     subItems?: { title: string; route: string; show: boolean }[];
 }>();
 
-const open = useSessionStorage('nav-collapse-state-' + props.title, props.current === true);
+const open = useSessionStorage('valo-nav-open-' + props.title, props.current === true);
 </script>
 
 <template>

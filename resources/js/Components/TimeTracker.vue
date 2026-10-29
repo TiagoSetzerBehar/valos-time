@@ -1,6 +1,5 @@
 <script setup lang="ts">
-import { ClockIcon, PencilSquareIcon } from '@heroicons/vue/20/solid';
-import CardTitle from '@/packages/ui/src/CardTitle.vue';
+import { PencilSquareIcon } from '@heroicons/vue/20/solid';
 import { usePage } from '@inertiajs/vue3';
 import { type User } from '@/types/models';
 import { computed, onMounted, watch } from 'vue';
@@ -182,7 +181,6 @@ const { tags } = useTagsQuery();
         :tasks
         :tags
         :clients></TimeEntryCreateModal>
-    <CardTitle :title="$t('Time Tracker')" :icon="ClockIcon"></CardTitle>
     <div class="relative pt-1.5">
         <TimeTrackerRunningInDifferentOrganizationOverlay
             v-if="isRunningInDifferentOrganization"

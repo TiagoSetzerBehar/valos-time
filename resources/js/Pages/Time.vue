@@ -118,6 +118,7 @@ function goToCalendarDay(date: string) {
         </MainContainer>
         <TimeWeekSummary></TimeWeekSummary>
         <TimeEntryMassActionRow
+            v-if="selectedTimeEntries.length > 0"
             :selected-time-entries="selectedTimeEntries"
             :enable-estimated-time="isAllowedToPerformPremiumAction()"
             :can-create-project="canCreateProjects()"

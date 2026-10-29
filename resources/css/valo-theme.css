@@ -147,3 +147,11 @@ html,
 body {
     overflow-x: clip;
 }
+
+.valo-accent-text {
+    color: rgb(var(--color-accent-600));
+}
+
+:root.dark .valo-accent-text {
+    color: rgb(var(--color-accent-300));
+}

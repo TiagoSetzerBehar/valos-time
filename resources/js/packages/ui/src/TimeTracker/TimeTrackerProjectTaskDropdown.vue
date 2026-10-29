@@ -17,6 +17,8 @@ import ProjectCreateModal from '@/packages/ui/src/Project/ProjectCreateModal.vue
 import { twMerge } from 'tailwind-merge';
 import { Button } from '@/packages/ui/src/Buttons';
 import { trans } from 'laravel-vue-i18n';
+import { useStorage } from '@vueuse/core';
+import { StarIcon } from '@heroicons/vue/16/solid';
 
 const NO_PROJECT_ID = '';
 
@@ -79,6 +81,20 @@ const props = withDefaults(
 
 const filteredResults = ref<ClientsWithProjectsWithTasks>([]);
 
+// Favorite projects (per browser), listed first like in Clockify.
+const favoriteProjectIds = useStorage<string[]>('valo-favorite-projects', []);
+
+function isFavoriteProject(projectId: string): boolean {
+    return favoriteProjectIds.value.includes(projectId);
+}
+
+function toggleFavoriteProject(projectId: string) {
+    favoriteProjectIds.value = isFavoriteProject(projectId)
+        ? favoriteProjectIds.value.filter((id) => id !== projectId)
+        : [...favoriteProjectIds.value, projectId];
+    searchInput.value?.focus();
+}
+
 // computed filterProjects that flattens the first layer of filteredResults and combines all the projects
 const filteredProjects = computed<ProjectWithTasks[]>(() => {
     return filteredResults.value.map((client) => client.projects).flat();
@@ -94,6 +110,20 @@ type FlatRow =
 // dropdown responsive even with thousands of projects/tasks.
 const flatRows = computed<FlatRow[]>(() => {
     const rows: FlatRow[] = [];
+    const favorites = filteredProjects.value.filter(
+        (projectWithTasks) =>
+            projectWithTasks.id !== NO_PROJECT_ID && isFavoriteProject(projectWithTasks.id)
+    );
+    if (favorites.length > 0) {
+        rows.push({ kind: 'client', key: 'client-favorites', name: trans('Favorites') });
+        for (const projectWithTasks of favorites) {
+            rows.push({
+                kind: 'project',
+                key: 'favorite-project-' + projectWithTasks.id,
+                project: projectWithTasks,
+            });
+        }
+    }
     for (const client of filteredResults.value) {
         // The "No Project" group renders its project inline without a client header.
         if (client.id !== 'no_project_no_client') {
@@ -568,12 +598,20 @@ const showCreateProject = ref(false);
                     :variant="props.variant"
                     :size="props.size"
                     :class="twMerge('w-full justify-start overflow-hidden', props.class)">
-                    <div
-                        class="w-2.5 h-2.5 rounded-full shrink-0"
-                        :style="{ backgroundColor: selectedProjectColor }"></div>
-                    <span class="truncate shrink-[1] text-text-primary">{{
-                        selectedProjectName
-                    }}</span>
+                    <template v-if="!project">
+                        <PlusCircleIcon class="w-4 h-4 shrink-0 valo-accent-text" />
+                        <span class="truncate shrink-[1] valo-accent-text">{{
+                            $t('Project')
+                        }}</span>
+                    </template>
+                    <template v-else>
+                        <div
+                            class="w-2.5 h-2.5 rounded-full shrink-0"
+                            :style="{ backgroundColor: selectedProjectColor }"></div>
+                        <span class="truncate shrink-[1] text-text-primary">{{
+                            selectedProjectName
+                        }}</span>
+                    </template>
                     <template v-if="currentTask">
                         <ChevronRightIcon class="!size-3 text-text-primary shrink-0 -mx-1" />
                         <span class="truncate shrink-[100]">{{ currentTask.name }}</span>
@@ -638,6 +676,27 @@ const showCreateProject = ref(false);
                                         :color="row.project.color"
                                         @mouseenter="setHighlightItemId(row.project.id)">
                                         <template #actions>
+                                            <button
+                                                v-if="row.project.id !== ''"
+                                                type="button"
+                                                tabindex="-1"
+                                                class="p-1 mr-1 rounded transition shrink-0 order-last"
+                                                :class="
+                                                    isFavoriteProject(row.project.id)
+                                                        ? 'text-amber-400'
+                                                        : 'text-text-quaternary hover:text-text-secondary'
+                                                "
+                                                :aria-label="
+                                                    isFavoriteProject(row.project.id)
+                                                        ? $t('Remove from favorites')
+                                                        : $t('Add to favorites')
+                                                "
+                                                :aria-pressed="isFavoriteProject(row.project.id)"
+                                                @click.prevent.stop="
+                                                    toggleFavoriteProject(row.project.id)
+                                                ">
+                                                <StarIcon class="w-4 h-4" />
+                                            </button>
                                             <button
                                                 v-if="row.project.tasks.length > 0"
                                                 tabindex="-1"
