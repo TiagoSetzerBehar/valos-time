@@ -26,6 +26,6 @@ function onClick() {
     <GoalCreateModal v-model:show="showCreateGoalModal"></GoalCreateModal>
     <UpgradeModal v-model:show="showUpgradeModal" feature="goals" />
     <SecondaryButton :icon="PlusIcon" @click="onClick">
-        <slot>Create Goal</slot>
+        <slot>{{ $t('Create Goal') }}</slot>
     </SecondaryButton>
 </template>

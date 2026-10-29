@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { trans } from 'laravel-vue-i18n';
 import type { Goal, Organization } from '@/packages/api/src';
 import { computed, inject, ref, type ComputedRef } from 'vue';
 import { ArchiveBoxIcon, PencilSquareIcon, TrashIcon } from '@heroicons/vue/20/solid';
@@ -39,8 +40,8 @@ const isManager = computed(() => canManageGoal(props.goal));
 const canEdit = computed(() => isManager.value && canUpdateGoals());
 const canDelete = computed(() => isManager.value && canDeleteGoals());
 const targetLabel = computed(() => {
-    if (props.goal.member_id === null) return 'Every member';
-    if (props.goal.member_id === getCurrentMembershipId()) return 'You';
+    if (props.goal.member_id === null) return trans('Every member');
+    if (props.goal.member_id === getCurrentMembershipId()) return trans('You');
     return props.goal.member_name ?? 'Member';
 });
 const typeDescription = computed(() => goalTypeLabel(props.goal));
@@ -80,9 +81,9 @@ function toggleArchived() {
                         data-testid="goal_name"
                         >{{ goal.name }}</span
                     >
-                    <Badge v-if="goal.is_archived" size="base" data-testid="goal_archived_badge"
-                        >Archived</Badge
-                    >
+                    <Badge v-if="goal.is_archived" size="base" data-testid="goal_archived_badge">{{
+                        $t('Archived')
+                    }}</Badge>
                 </div>
                 <div
                     v-if="showTargetColumn"
@@ -124,11 +125,11 @@ function toggleArchived() {
         <ContextMenuContent class="min-w-[160px]">
             <ContextMenuItem v-if="canEdit" class="space-x-3" @select="showEditModal = true">
                 <PencilSquareIcon class="w-4 h-4 text-icon-default" />
-                <span>Edit</span>
+                <span>{{ $t('Edit') }}</span>
             </ContextMenuItem>
             <ContextMenuItem v-if="canEdit" class="space-x-3" @select="toggleArchived()">
                 <ArchiveBoxIcon class="w-4 h-4 text-icon-default" />
-                <span>{{ goal.is_archived ? 'Unarchive' : 'Archive' }}</span>
+                <span>{{ goal.is_archived ? $t('Unarchive') : $t('Archive') }}</span>
             </ContextMenuItem>
             <ContextMenuSeparator v-if="canDelete" />
             <ContextMenuItem
@@ -136,7 +137,7 @@ function toggleArchived() {
                 class="space-x-3 text-destructive"
                 @select="deleteGoal()">
                 <TrashIcon class="w-4 h-4 text-icon-default" />
-                <span>Delete</span>
+                <span>{{ $t('Delete') }}</span>
             </ContextMenuItem>
         </ContextMenuContent>
     </ContextMenu>

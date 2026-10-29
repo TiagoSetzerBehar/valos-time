@@ -1,3 +1,4 @@
+import { trans } from 'laravel-vue-i18n';
 import { defineStore } from 'pinia';
 import { api } from '@/packages/api/src';
 import type { CreateGoalBody, Goal, UpdateGoalBody } from '@/packages/api/src';
@@ -52,8 +53,8 @@ export const useGoalsStore = defineStore('goals', () => {
                             organization: organization,
                         },
                     }),
-                'Goal created successfully',
-                'Failed to create goal'
+                trans('Goal created successfully'),
+                trans('Failed to create goal')
             );
             queryClient.invalidateQueries({ queryKey: ['goals'] });
             return response?.data;
@@ -71,8 +72,8 @@ export const useGoalsStore = defineStore('goals', () => {
                             goal: goalId,
                         },
                     }),
-                'Goal updated successfully',
-                'Failed to update goal'
+                trans('Goal updated successfully'),
+                trans('Failed to update goal')
             );
             queryClient.invalidateQueries({ queryKey: ['goals'] });
             return response?.data;
@@ -96,8 +97,10 @@ export const useGoalsStore = defineStore('goals', () => {
                             },
                         }
                     ),
-                isArchived ? 'Goal archived successfully' : 'Goal unarchived successfully',
-                isArchived ? 'Failed to archive goal' : 'Failed to unarchive goal'
+                isArchived
+                    ? trans('Goal archived successfully')
+                    : trans('Goal unarchived successfully'),
+                isArchived ? trans('Failed to archive goal') : trans('Failed to unarchive goal')
             );
             queryClient.invalidateQueries({ queryKey: ['goals'] });
             return response?.data;
@@ -115,8 +118,8 @@ export const useGoalsStore = defineStore('goals', () => {
                             goal: goalId,
                         },
                     }),
-                'Goal deleted successfully',
-                'Failed to delete goal'
+                trans('Goal deleted successfully'),
+                trans('Failed to delete goal')
             );
             queryClient.invalidateQueries({ queryKey: ['goals'] });
         }

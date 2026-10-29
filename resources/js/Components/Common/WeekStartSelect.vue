@@ -14,7 +14,7 @@ defineProps<{
 <template>
     <Select v-model="model" :disabled="disabled">
         <SelectTrigger :id="id" class="w-full font-normal">
-            <SelectValue placeholder="Select a week day" />
+            <SelectValue :placeholder="$t('Select a week day')" />
         </SelectTrigger>
         <SelectContent>
             <SelectItem

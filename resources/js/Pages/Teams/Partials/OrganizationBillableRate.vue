@@ -91,7 +91,9 @@ function checkForConfirmationModal() {
             <PrimaryButton v-if="billableRatesLocked" @click="requestUpgrade">{{
                 $t('Upgrade')
             }}</PrimaryButton>
-            <PrimaryButton v-else @click="checkForConfirmationModal">{{ $t('Save') }}</PrimaryButton>
+            <PrimaryButton v-else @click="checkForConfirmationModal">{{
+                $t('Save')
+            }}</PrimaryButton>
         </template>
     </FormSection>
 </template>

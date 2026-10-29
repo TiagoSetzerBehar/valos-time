@@ -1,10 +1,12 @@
 import dayjs from 'dayjs';
+import 'dayjs/locale/es';
 import 'dayjs/locale/pt-br';
 
 // Translation files live in lang/<code>.json (Laravel convention, e.g. pt_BR).
 // Map each code to the dayjs locale that provides month and weekday names.
 // Adding a language: one entry here plus its dayjs locale import above.
 const DAYJS_LOCALES: Record<string, string> = {
+    es: 'es',
     pt_BR: 'pt-br',
 };
 

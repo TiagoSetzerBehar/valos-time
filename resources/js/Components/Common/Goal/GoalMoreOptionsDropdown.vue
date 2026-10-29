@@ -43,32 +43,34 @@ const props = defineProps<{
         <DropdownMenuContent class="min-w-[150px]" align="end">
             <DropdownMenuItem
                 v-if="props.canEdit"
-                :aria-label="'Edit Goal ' + props.goal.name"
+                :aria-label="$t('Edit Goal :name', { name: props.goal.name })"
                 data-testid="goal_edit"
                 class="flex items-center space-x-3 cursor-pointer"
                 @click="emit('edit')">
                 <PencilSquareIcon class="w-5 text-icon-active" />
-                <span>Edit</span>
+                <span>{{ $t('Edit') }}</span>
             </DropdownMenuItem>
             <DropdownMenuItem
                 v-if="props.canEdit"
                 :aria-label="
-                    (props.goal.is_archived ? 'Unarchive' : 'Archive') + ' Goal ' + props.goal.name
+                    $t(props.goal.is_archived ? 'Unarchive Goal :name' : 'Archive Goal :name', {
+                        name: props.goal.name,
+                    })
                 "
                 data-testid="goal_archive"
                 class="flex items-center space-x-3 cursor-pointer"
                 @click="emit('archive')">
                 <ArchiveBoxIcon class="w-5 text-icon-active" />
-                <span>{{ props.goal.is_archived ? 'Unarchive' : 'Archive' }}</span>
+                <span>{{ props.goal.is_archived ? $t('Unarchive') : $t('Archive') }}</span>
             </DropdownMenuItem>
             <DropdownMenuItem
                 v-if="props.canDelete"
-                :aria-label="'Delete Goal ' + props.goal.name"
+                :aria-label="$t('Delete Goal :name', { name: props.goal.name })"
                 data-testid="goal_delete"
                 class="flex items-center space-x-3 cursor-pointer text-destructive focus:text-destructive"
                 @click="emit('delete')">
                 <TrashIcon class="w-5" />
-                <span>Delete</span>
+                <span>{{ $t('Delete') }}</span>
             </DropdownMenuItem>
         </DropdownMenuContent>
     </DropdownMenu>

@@ -24,15 +24,15 @@ const canCreateMore = computed(() => canCreateMoreGoals(goals.value.length));
 </script>
 
 <template>
-    <AppLayout title="Goals" data-testid="goals_view">
+    <AppLayout :title="$t('Goals')" data-testid="goals_view">
         <MainContainer
             class="py-5 border-b border-default-background-separator flex justify-between items-center">
             <div class="flex items-center space-x-6">
-                <PageTitle :icon="Target" title="Goals"></PageTitle>
+                <PageTitle :icon="Target" :title="$t('Goals')"></PageTitle>
                 <TabBar v-model="activeTab">
-                    <TabBarItem value="active">Active</TabBarItem>
+                    <TabBarItem value="active">{{ $t('Active') }}</TabBarItem>
                     <TabBarItem value="archived">
-                        Archived
+                        {{ $t('Archived') }}
                         <span v-if="archivedCount > 0" class="pl-1">({{ archivedCount }})</span>
                     </TabBarItem>
                 </TabBar>

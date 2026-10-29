@@ -19,7 +19,7 @@ const forwarded = useForwardProps(delegatedProps);
          tabbable. tabindex is a fallthrough attr, which Vue applies after Reka's
          own props and therefore wins.
 
-         Reka also hardcodes aria-label="Show popup", which would otherwise be
+         Reka also hardcodes :aria-label="$t('Show popup')", which would otherwise be
          the accessible name. Pass :aria-label on the child element (it wins
          again, because Slot merges child props over attrs) to name the trigger
          after its current value. -->

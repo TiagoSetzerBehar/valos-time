@@ -238,7 +238,7 @@ const page = usePage<{
                             </NavigationSidebarItem>
                             <NavigationSidebarItem
                                 v-if="canViewGoals()"
-                                title="Goals"
+                                :title="$t('Goals')"
                                 :icon="Target"
                                 :current="route().current('goals')"
                                 :href="route('goals')"></NavigationSidebarItem>

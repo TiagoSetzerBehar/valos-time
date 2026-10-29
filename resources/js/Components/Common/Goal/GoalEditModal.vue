@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { trans } from 'laravel-vue-i18n';
 import SecondaryButton from '@/packages/ui/src/Buttons/SecondaryButton.vue';
 import PrimaryButton from '@/packages/ui/src/Buttons/PrimaryButton.vue';
 import DialogModal from '@/packages/ui/src/DialogModal.vue';
@@ -121,7 +122,7 @@ async function save(data: GoalFormData, keepExistingFilters = false) {
             // Back from the unavailable filters warning to the form that shows the errors
             pendingForm.value = null;
             if (apiErrors.unmapped.length > 0) {
-                addNotification('error', 'Failed to update goal', apiErrors.unmapped[0]);
+                addNotification('error', trans('Failed to update goal'), apiErrors.unmapped[0]);
             }
         }
     } finally {
@@ -144,7 +145,7 @@ async function removeUnavailableFilters() {
     <DialogModal :closeable="!saving" :show="show" @close="show = false">
         <template #title>
             <div class="flex space-x-2">
-                <span v-if="pendingForm">Unavailable filter items</span>
+                <span v-if="pendingForm">{{ $t('Unavailable filter items') }}</span>
                 <span v-else> Edit Goal {{ props.goal.name }} </span>
             </div>
         </template>
@@ -152,9 +153,11 @@ async function removeUnavailableFilters() {
         <template #content>
             <div v-if="pendingForm" class="space-y-4" data-testid="goal_unavailable_filters">
                 <p>
-                    Some selected filter items are unavailable. They may have been deleted or you
-                    may no longer have access. Removing them changes which time entries count toward
-                    this goal.
+                    {{
+                        $t(
+                            'Some selected filter items are unavailable. They may have been deleted or you may no longer have access. Removing them changes which time entries count toward this goal.'
+                        )
+                    }}
                 </p>
                 <ul class="list-disc pl-5 space-y-2">
                     <li v-for="filter in unavailableFilters" :key="filter.key">
@@ -166,8 +169,11 @@ async function removeUnavailableFilters() {
                     </li>
                 </ul>
                 <p>
-                    Keeping existing filters saves your other edits and discards any filter edits
-                    made in this form.
+                    {{
+                        $t(
+                            'Keeping existing filters saves your other edits and discards any filter edits made in this form.'
+                        )
+                    }}
                 </p>
             </div>
             <GoalFormFields
@@ -180,23 +186,25 @@ async function removeUnavailableFilters() {
         <template #footer>
             <template v-if="pendingForm">
                 <SecondaryButton :disabled="saving" @click="pendingForm = null">
-                    Back
+                    {{ $t('Back') }}
                 </SecondaryButton>
                 <SecondaryButton class="ms-3" :disabled="saving" @click="removeUnavailableFilters">
-                    Remove unavailable items
+                    {{ $t('Remove unavailable items') }}
                 </SecondaryButton>
                 <PrimaryButton class="ms-3" :disabled="saving" @click="keepExistingFilters">
-                    Keep existing filters
+                    {{ $t('Keep existing filters') }}
                 </PrimaryButton>
             </template>
             <template v-else>
-                <SecondaryButton :disabled="saving" @click="show = false"> Cancel </SecondaryButton>
+                <SecondaryButton :disabled="saving" @click="show = false">
+                    {{ $t('Cancel') }}
+                </SecondaryButton>
                 <PrimaryButton
                     class="ms-3"
                     :class="{ 'opacity-25': saving }"
                     :disabled="saving || checkingFilters"
                     @click="submit">
-                    Update Goal
+                    {{ $t('Update Goal') }}
                 </PrimaryButton>
             </template>
         </template>

@@ -41,15 +41,23 @@ const gridTemplateColumns = [
                 <div v-else-if="props.goals.length === 0" class="col-span-full py-24 text-center">
                     <Target class="w-8 h-8 text-icon-default inline pb-2"></Target>
                     <h3 class="text-text-primary font-semibold">
-                        {{ props.showingArchived ? 'No archived goals found' : 'No goals found' }}
+                        {{
+                            props.showingArchived
+                                ? $t('No archived goals found')
+                                : $t('No goals found')
+                        }}
                     </h3>
                     <p v-if="canCreateGoals() && !props.showingArchived" class="pb-5">
-                        Set yourself a target and track your progress every day, week or month.
+                        {{
+                            $t(
+                                'Set yourself a target and track your progress every day, week or month.'
+                            )
+                        }}
                     </p>
                     <GoalCreateButton
                         v-if="canCreateGoals() && !props.showingArchived"
                         :can-create-more-goals="props.canCreateMoreGoals"
-                        >Create your first goal
+                        >{{ $t('Create your first goal') }}
                     </GoalCreateButton>
                 </div>
                 <template v-for="goal in props.goals" :key="goal.id">

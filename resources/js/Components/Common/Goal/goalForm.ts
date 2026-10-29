@@ -1,3 +1,4 @@
+import { trans } from 'laravel-vue-i18n';
 import type {
     CreateGoalBody,
     Goal,
@@ -242,13 +243,13 @@ export function goalFormErrorsFromApi(
 export function validateGoalFormData(data: GoalFormData): GoalFormErrors {
     const errors: GoalFormErrors = {};
     if (data.name.trim() === '') {
-        errors.name = 'Please enter a name for the goal.';
+        errors.name = trans('Please enter a name for the goal.');
     }
     if (data.target_seconds === null || data.target_seconds <= 0) {
-        errors.target_seconds = 'Please enter a target time greater than zero.';
+        errors.target_seconds = trans('Please enter a target time greater than zero.');
     }
     if (data.target === 'other' && data.other_member_id === null) {
-        errors.other_member_id = 'Please choose the member this goal is for.';
+        errors.other_member_id = trans('Please choose the member this goal is for.');
     }
     return errors;
 }

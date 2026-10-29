@@ -43,8 +43,10 @@ const cellClass = computed(() =>
         <span class="sr-only">
             {{
                 isSorted
-                    ? `sorted ${sortDirection === 'asc' ? 'ascending' : 'descending'}`
-                    : 'not sorted'
+                    ? sortDirection === 'asc'
+                        ? $t('sorted ascending')
+                        : $t('sorted descending')
+                    : $t('not sorted')
             }}
         </span>
         <ChevronDownIcon v-if="isChevronDown" aria-hidden="true" class="w-4 h-4" />

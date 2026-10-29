@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { trans } from 'laravel-vue-i18n';
 import SecondaryButton from '@/packages/ui/src/Buttons/SecondaryButton.vue';
 import PrimaryButton from '@/packages/ui/src/Buttons/PrimaryButton.vue';
 import DialogModal from '@/packages/ui/src/DialogModal.vue';
@@ -46,7 +47,7 @@ async function submit() {
             const apiErrors = goalFormErrorsFromApi(getApiValidationFieldErrors(error), goal.value);
             errors.value = apiErrors.errors;
             if (apiErrors.unmapped.length > 0) {
-                addNotification('error', 'Failed to create goal', apiErrors.unmapped[0]);
+                addNotification('error', trans('Failed to create goal'), apiErrors.unmapped[0]);
             }
         }
     } finally {
@@ -59,7 +60,7 @@ async function submit() {
     <DialogModal closeable :show="show" @close="show = false">
         <template #title>
             <div class="flex space-x-2">
-                <span> Create Goal </span>
+                <span> {{ $t('Create Goal') }} </span>
             </div>
         </template>
 
@@ -67,14 +68,14 @@ async function submit() {
             <GoalFormFields v-model="goal" :errors="errors" @submit="submit"></GoalFormFields>
         </template>
         <template #footer>
-            <SecondaryButton @click="show = false"> Cancel </SecondaryButton>
+            <SecondaryButton @click="show = false"> {{ $t('Cancel') }} </SecondaryButton>
 
             <PrimaryButton
                 class="ms-3"
                 :class="{ 'opacity-25': saving }"
                 :disabled="saving"
                 @click="submit">
-                Create Goal
+                {{ $t('Create Goal') }}
             </PrimaryButton>
         </template>
     </DialogModal>

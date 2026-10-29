@@ -1,16 +1,42 @@
+import { trans } from 'laravel-vue-i18n';
 import type { Goal, GoalComparison, GoalPeriod, GoalStatus } from '@/packages/api/src';
 import { canDeleteOrganizationGoals, canUpdateOrganizationGoals } from '@/utils/permissions';
 import { getCurrentMembershipId } from '@/utils/useUser';
 
 export const goalComparisonOptions: { value: GoalComparison; label: string }[] = [
-    { value: 'at_least', label: 'At least' },
-    { value: 'less_than', label: 'Less than' },
+    {
+        value: 'at_least',
+        get label() {
+            return trans('At least');
+        },
+    },
+    {
+        value: 'less_than',
+        get label() {
+            return trans('Less than');
+        },
+    },
 ];
 
 export const goalPeriodOptions: { value: GoalPeriod; label: string }[] = [
-    { value: 'day', label: 'per day' },
-    { value: 'week', label: 'per week' },
-    { value: 'month', label: 'per month' },
+    {
+        value: 'day',
+        get label() {
+            return trans('per day');
+        },
+    },
+    {
+        value: 'week',
+        get label() {
+            return trans('per week');
+        },
+    },
+    {
+        value: 'month',
+        get label() {
+            return trans('per month');
+        },
+    },
 ];
 
 /**
@@ -21,9 +47,24 @@ export const goalPeriodOptions: { value: GoalPeriod; label: string }[] = [
 export type GoalTarget = 'me' | 'other' | 'organization';
 
 export const goalTargetOptions: { value: GoalTarget; label: string }[] = [
-    { value: 'me', label: 'For me' },
-    { value: 'other', label: 'For someone else' },
-    { value: 'organization', label: 'Organization goal' },
+    {
+        value: 'me',
+        get label() {
+            return trans('For me');
+        },
+    },
+    {
+        value: 'other',
+        get label() {
+            return trans('For someone else');
+        },
+    },
+    {
+        value: 'organization',
+        get label() {
+            return trans('Organization goal');
+        },
+    },
 ];
 
 /**
@@ -38,7 +79,7 @@ export function canManageGoal(goal: Goal): boolean {
 }
 
 export function goalTypeLabel(goal: Goal): string {
-    return goal.type === 'personal' ? 'Personal goal' : 'Organization goal';
+    return goal.type === 'personal' ? trans('Personal goal') : trans('Organization goal');
 }
 
 export function goalComparisonLabel(comparison: GoalComparison): string {
@@ -48,13 +89,13 @@ export function goalComparisonLabel(comparison: GoalComparison): string {
 export function goalStatusLabel(status: GoalStatus): string {
     switch (status) {
         case 'in_progress':
-            return 'In progress';
+            return trans('In progress');
         case 'achieved':
-            return 'Achieved';
+            return trans('Achieved');
         case 'on_track':
-            return 'On track';
+            return trans('On track');
         case 'exceeded':
-            return 'Exceeded';
+            return trans('Exceeded');
     }
 }
 

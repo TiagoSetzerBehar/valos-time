@@ -59,10 +59,12 @@ function timezoneName(timezone: string) {
                     :id="id"
                     type="button"
                     variant="input"
-                    :aria-label="model ? `Timezone: ${model}` : 'Timezone'"
+                    :aria-label="model ? `${$t('Timezone')}: ${model}` : $t('Timezone')"
                     class="w-full justify-between font-normal">
                     <span v-if="model" class="truncate">{{ model }}</span>
-                    <span v-else class="truncate text-muted-foreground">Select a timezone</span>
+                    <span v-else class="truncate text-muted-foreground">{{
+                        $t('Select a timezone')
+                    }}</span>
                     <ChevronDown class="w-4 h-4 text-icon-default shrink-0" />
                 </Button>
             </ComboboxTrigger>
@@ -72,8 +74,8 @@ function timezoneName(timezone: string) {
                 v-model="searchValue"
                 :display-value="emptySearch"
                 auto-focus
-                aria-label="Search timezones"
-                placeholder="Search timezones..." />
+                :aria-label="$t('Search timezones')"
+                :placeholder="$t('Search timezones...')" />
             <ComboboxViewport class="p-1">
                 <ComboboxVirtualizer
                     v-slot="{ option }"
@@ -87,7 +89,7 @@ function timezoneName(timezone: string) {
                 </ComboboxVirtualizer>
             </ComboboxViewport>
             <div v-if="filteredTimezones.length === 0" class="px-3 py-2 text-sm text-text-tertiary">
-                No timezone found.
+                {{ $t('No timezone found.') }}
             </div>
         </ComboboxList>
     </Combobox>

@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { trans } from 'laravel-vue-i18n';
 import { computed } from 'vue';
 import type { Goal } from '@/packages/api/src';
 import { useProjectsQuery } from '@/utils/useProjectsQuery';
@@ -49,7 +50,7 @@ const badges = computed(() => {
             kind: 'member',
             ids: filters.member_ids,
             items: members.value,
-            none: 'Unknown member',
+            none: trans('Unknown member'),
             icon: UserGroupIcon,
             prefix: '',
         },
@@ -57,7 +58,7 @@ const badges = computed(() => {
             kind: 'project',
             ids: filters.project_ids,
             items: projects.value,
-            none: 'No project',
+            none: trans('No project'),
             icon: FolderIcon,
             prefix: '',
         },
@@ -65,7 +66,7 @@ const badges = computed(() => {
             kind: 'task',
             ids: filters.task_ids,
             items: tasks.value,
-            none: 'No task',
+            none: trans('No task'),
             icon: CheckCircleIcon,
             prefix: '',
         },
@@ -73,7 +74,7 @@ const badges = computed(() => {
             kind: 'client',
             ids: filters.client_ids,
             items: clients.value,
-            none: 'No client',
+            none: trans('No client'),
             icon: UserCircleIcon,
             prefix: '',
         },
@@ -81,7 +82,7 @@ const badges = computed(() => {
             kind: 'tag',
             ids: filters.tag_ids,
             items: tags.value,
-            none: 'No tag',
+            none: trans('No tag'),
             icon: TagIcon,
             prefix: notPrefix,
         },
@@ -97,11 +98,11 @@ const badges = computed(() => {
         result.push({
             key: 'billable',
             icon: BillableIcon,
-            label: filters.billable ? 'Billable' : 'Non billable',
+            label: filters.billable ? trans('Billable') : trans('Non billable'),
         });
     }
     if (filters.time_entry_type === 'break') {
-        result.push({ key: 'type', icon: Coffee, label: 'Breaks' });
+        result.push({ key: 'type', icon: Coffee, label: trans('Breaks') });
     }
     return result;
 });
@@ -113,9 +114,9 @@ const hiddenBadges = computed(() => badges.value.slice(1));
 
 <template>
     <div class="flex items-center min-w-0 text-sm" data-testid="goal_scope">
-        <span v-if="firstBadge === null" class="text-text-secondary whitespace-nowrap"
-            >All time entries</span
-        >
+        <span v-if="firstBadge === null" class="text-text-secondary whitespace-nowrap">{{
+            $t('All time entries')
+        }}</span>
         <TooltipProvider v-else :delay-duration="100">
             <Tooltip :disabled="hiddenBadges.length === 0">
                 <TooltipTrigger as-child>

@@ -82,7 +82,7 @@ async function createTag(name: string) {
             <MultiselectDropdown
                 v-if="memberOptions"
                 v-model="model.member_ids"
-                search-placeholder="Search for a Member..."
+                :search-placeholder="$t('Search for a Member...')"
                 :items="memberOptions"
                 :get-key-from-item="getKeyFromItem"
                 :get-name-for-item="getNameForItem">
@@ -91,55 +91,55 @@ async function createTag(name: string) {
                         data-testid="goal_filter_member_ids"
                         :count="model.member_ids.length"
                         :active="model.member_ids.length > 0"
-                        title="Members"
+                        :title="$t('Members')"
                         :icon="UserGroupIcon" />
                 </template>
             </MultiselectDropdown>
             <MultiselectDropdown
                 v-model="model.project_ids"
-                search-placeholder="Search for a Project..."
+                :search-placeholder="$t('Search for a Project...')"
                 :items="visibleProjects"
                 :get-key-from-item="getKeyFromItem"
                 :get-name-for-item="getNameForItem"
-                no-item-label="No Project">
+                :no-item-label="$t('No Project')">
                 <template #trigger>
                     <ReportingFilterBadge
                         data-testid="goal_filter_project_ids"
                         :count="model.project_ids.length"
                         :active="model.project_ids.length > 0"
-                        title="Projects"
+                        :title="$t('Projects')"
                         :icon="FolderIcon" />
                 </template>
             </MultiselectDropdown>
             <MultiselectDropdown
                 v-model="model.task_ids"
-                search-placeholder="Search for a Task..."
+                :search-placeholder="$t('Search for a Task...')"
                 :items="visibleTasks"
                 :get-key-from-item="getKeyFromItem"
                 :get-name-for-item="getNameForItem"
-                no-item-label="No Task">
+                :no-item-label="$t('No Task')">
                 <template #trigger>
                     <ReportingFilterBadge
                         data-testid="goal_filter_task_ids"
                         :count="model.task_ids.length"
                         :active="model.task_ids.length > 0"
-                        title="Tasks"
+                        :title="$t('Tasks')"
                         :icon="CheckCircleIcon" />
                 </template>
             </MultiselectDropdown>
             <MultiselectDropdown
                 v-model="model.client_ids"
-                search-placeholder="Search for a Client..."
+                :search-placeholder="$t('Search for a Client...')"
                 :items="clients"
                 :get-key-from-item="getKeyFromItem"
                 :get-name-for-item="getNameForItem"
-                no-item-label="No Client">
+                :no-item-label="$t('No Client')">
                 <template #trigger>
                     <ReportingFilterBadge
                         data-testid="goal_filter_client_ids"
                         :count="model.client_ids.length"
                         :active="model.client_ids.length > 0"
-                        title="Clients"
+                        :title="$t('Clients')"
                         :icon="UserCircleIcon" />
                 </template>
             </MultiselectDropdown>
@@ -149,7 +149,7 @@ async function createTag(name: string) {
                         data-testid="goal_filter_tag_ids"
                         :count="model.tag_ids.length"
                         :active="model.tag_ids.length > 0"
-                        title="Tags"
+                        :title="$t('Tags')"
                         :icon="TagIcon" />
                 </template>
                 <template #content-before-list>
@@ -157,7 +157,7 @@ async function createTag(name: string) {
                         <div
                             id="goal-tag-match-type-label"
                             class="mb-1.5 px-2 text-xs font-medium text-text-tertiary uppercase">
-                            Match
+                            {{ $t('Match') }}
                         </div>
                         <RadioGroupRoot
                             :model-value="model.tag_match_type"
@@ -169,7 +169,7 @@ async function createTag(name: string) {
                                 :key="option.value"
                                 :value="option.value"
                                 class="relative flex w-full items-center rounded-md py-1.5 pl-2 pr-8 text-left text-sm font-medium text-text-secondary hover:bg-card-background-active data-[state=checked]:text-text-primary">
-                                {{ option.label }}
+                                {{ $t(option.label) }}
                                 <span
                                     class="absolute right-2 flex h-3.5 w-3.5 items-center justify-center">
                                     <RadioGroupIndicator>
@@ -196,14 +196,14 @@ async function createTag(name: string) {
                                     : 'text-text-quaternary'
                             " />
                         <span class="text-text-secondary">{{
-                            model.billable === 'false' ? 'Non Billable' : 'Billable'
+                            model.billable === 'false' ? $t('Non Billable') : $t('Billable')
                         }}</span>
                     </SelectValue>
                 </SelectTrigger>
                 <SelectContent>
-                    <SelectItem :value="null">Both</SelectItem>
-                    <SelectItem value="true">Billable</SelectItem>
-                    <SelectItem value="false">Non Billable</SelectItem>
+                    <SelectItem :value="null">{{ $t('Both') }}</SelectItem>
+                    <SelectItem value="true">{{ $t('Billable') }}</SelectItem>
+                    <SelectItem value="false">{{ $t('Non Billable') }}</SelectItem>
                 </SelectContent>
             </Select>
             <Select v-if="breaksEnabled" v-model="model.time_entry_type">
@@ -222,22 +222,22 @@ async function createTag(name: string) {
                             " />
                         <span class="text-text-secondary">{{
                             model.time_entry_type === null
-                                ? 'Type'
+                                ? $t('Type')
                                 : model.time_entry_type === 'break'
-                                  ? 'Breaks'
-                                  : 'Work time'
+                                  ? $t('Breaks')
+                                  : $t('Work time')
                         }}</span>
                     </SelectValue>
                 </SelectTrigger>
                 <SelectContent>
-                    <SelectItem :value="null">Both</SelectItem>
-                    <SelectItem value="work">Work time</SelectItem>
-                    <SelectItem value="break">Breaks</SelectItem>
+                    <SelectItem :value="null">{{ $t('Both') }}</SelectItem>
+                    <SelectItem value="work">{{ $t('Work time') }}</SelectItem>
+                    <SelectItem value="break">{{ $t('Breaks') }}</SelectItem>
                 </SelectContent>
             </Select>
         </div>
         <p v-if="memberOptions && model.member_ids.length > 0" class="text-xs text-text-tertiary">
-            Selected members do not get access to the goal.
+            {{ $t('Selected members do not get access to the goal.') }}
         </p>
     </div>
 </template>

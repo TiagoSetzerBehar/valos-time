@@ -124,9 +124,9 @@ const billableRatesLocked = computed(() => !canUseBillableRates());
                     </li>
                 </ol>
                 <div class="px-4 space-x-1">
-                    <UpgradeLockedBadge v-if="billableRatesLocked"
-                        >Billable Rates</UpgradeLockedBadge
-                    >
+                    <UpgradeLockedBadge v-if="billableRatesLocked">{{
+                        $t('Billable Rates')
+                    }}</UpgradeLockedBadge>
                     <Badge v-else-if="project?.billable_rate">
                         {{ billableRateFormatted }}
                         / h

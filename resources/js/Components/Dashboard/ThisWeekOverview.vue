@@ -275,7 +275,7 @@ const option = computed(() => {
                           )
                         : '--'
                 " />
-            <StatCard v-if="billableRatesLocked" title="Billable Amount">
+            <StatCard v-if="billableRatesLocked" :title="$t('Billable Amount')">
                 <UpgradeLockedValue />
             </StatCard>
             <StatCard

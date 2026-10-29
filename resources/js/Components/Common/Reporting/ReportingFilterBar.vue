@@ -153,7 +153,7 @@ async function createTag(name: string) {
                     data-testid="billable_filter_locked"
                     @click="requestUpgrade">
                     <BillableIcon class="h-4 text-text-quaternary" />
-                    <span class="text-text-secondary">Billable</span>
+                    <span class="text-text-secondary">{{ $t('Billable') }}</span>
                     <LockClosedIcon class="!w-3 text-text-tertiary" />
                 </Button>
                 <Select v-else v-model="billable" @update:model-value="emit('submit')">

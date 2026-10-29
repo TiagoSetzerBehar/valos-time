@@ -114,26 +114,26 @@ watch(errors, (newErrors) => {
 <template>
     <FieldGroup>
         <Field>
-            <FieldLabel for="goalName">Goal name</FieldLabel>
+            <FieldLabel for="goalName">{{ $t('Goal name') }}</FieldLabel>
             <TextInput
                 id="goalName"
                 ref="nameInput"
                 v-model="model.name"
                 type="text"
-                placeholder="e.g. Deep work on Project X"
+                :placeholder="$t('e.g. Deep work on Project X')"
                 class="block w-full"
                 required
                 @keydown.enter="emit('submit')" />
             <FieldError v-if="errors.name">{{ errors.name }}</FieldError>
         </Field>
         <Field v-if="canChooseOrganizationTarget">
-            <FieldLabel for="goalFor">This goal is for</FieldLabel>
+            <FieldLabel for="goalFor">{{ $t('This goal is for') }}</FieldLabel>
             <div class="flex flex-col gap-2 sm:flex-row sm:items-start">
                 <Select v-model="model.target" :disabled="props.disableTarget">
                     <SelectTrigger
                         id="goalFor"
                         class="w-full sm:w-1/2"
-                        aria-label="This goal is for">
+                        :aria-label="$t('This goal is for')">
                         <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
@@ -147,8 +147,8 @@ watch(errors, (newErrors) => {
                 </Select>
                 <div v-if="model.target === 'other'" class="flex flex-col gap-1.5 sm:w-1/2">
                     <Select v-model="model.other_member_id" :disabled="props.disableTarget">
-                        <SelectTrigger id="goalMember" class="w-full" aria-label="Member">
-                            <SelectValue placeholder="Choose a member" />
+                        <SelectTrigger id="goalMember" class="w-full" :aria-label="$t('Member')">
+                            <SelectValue :placeholder="$t('Choose a member')" />
                         </SelectTrigger>
                         <SelectContent>
                             <SelectItem
@@ -164,13 +164,16 @@ watch(errors, (newErrors) => {
                     }}</FieldError>
                 </div>
             </div>
-            <FieldDescription>{{ targetDescriptions[model.target] }}</FieldDescription>
+            <FieldDescription>{{ $t(targetDescriptions[model.target]) }}</FieldDescription>
         </Field>
         <FieldGroup class="gap-4 sm:flex-row sm:items-start">
             <Field class="sm:w-1/3">
-                <FieldLabel for="goalComparison">Target type</FieldLabel>
+                <FieldLabel for="goalComparison">{{ $t('Target type') }}</FieldLabel>
                 <Select v-model="model.comparison">
-                    <SelectTrigger id="goalComparison" class="w-full" aria-label="Target type">
+                    <SelectTrigger
+                        id="goalComparison"
+                        class="w-full"
+                        :aria-label="$t('Target type')">
                         <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
@@ -186,21 +189,21 @@ watch(errors, (newErrors) => {
             </Field>
             <Field class="sm:w-1/3">
                 <div class="flex items-center gap-1">
-                    <FieldLabel for="goalTarget">Target time</FieldLabel>
+                    <FieldLabel for="goalTarget">{{ $t('Target time') }}</FieldLabel>
                     <TooltipProvider :delay-duration="100">
                         <Tooltip>
                             <TooltipTrigger as-child>
                                 <button
                                     type="button"
                                     class="text-icon-default hover:text-text-primary cursor-default rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                                    aria-label="How to enter the target time">
+                                    :aria-label="$t('How to enter the target time')">
                                     <QuestionMarkCircleIcon class="w-4 h-4" />
                                 </button>
                             </TooltipTrigger>
                             <TooltipContent class="max-w-64">
-                                You can type natural language for the target time like
-                                <span class="font-semibold">2h 30m</span> or
-                                <span class="font-semibold">1.5</span> hours.
+                                {{ $t('You can type natural language for the target time like') }}
+                                <span class="font-semibold">2h 30m</span> {{ $t('or') }}
+                                <span class="font-semibold">1.5</span> {{ $t('hours.') }}
                             </TooltipContent>
                         </Tooltip>
                     </TooltipProvider>
@@ -212,9 +215,9 @@ watch(errors, (newErrors) => {
                 <FieldError v-if="errors.target_seconds">{{ errors.target_seconds }}</FieldError>
             </Field>
             <Field class="sm:w-1/3">
-                <FieldLabel for="goalPeriod">Period</FieldLabel>
+                <FieldLabel for="goalPeriod">{{ $t('Period') }}</FieldLabel>
                 <Select v-model="model.period">
-                    <SelectTrigger id="goalPeriod" class="w-full" aria-label="Period">
+                    <SelectTrigger id="goalPeriod" class="w-full" :aria-label="$t('Period')">
                         <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
@@ -230,28 +233,33 @@ watch(errors, (newErrors) => {
             </Field>
         </FieldGroup>
         <Field>
-            <FieldLabel>Only count time entries with</FieldLabel>
+            <FieldLabel>{{ $t('Only count time entries with') }}</FieldLabel>
             <GoalTimeEntryFilters v-model="model" :member-options="memberFilterOptions" />
             <FieldError v-if="errors.filters">{{ errors.filters }}</FieldError>
             <FieldDescription>
-                Values within a filter use "or", filters use "and". Without filters every entry
-                counts.
+                {{
+                    $t(
+                        'Values within a filter use "or", filters use "and". Without filters every entry counts.'
+                    )
+                }}
             </FieldDescription>
         </Field>
         <Accordion v-model="openSettings" type="single" collapsible>
             <AccordionItem value="period-settings">
                 <AccordionTrigger data-testid="goal_period_settings">
-                    Additional Settings
+                    {{ $t('Additional Settings') }}
                 </AccordionTrigger>
                 <AccordionContent>
                     <FieldGroup class="sm:flex-row sm:items-start pt-2">
                         <Field class="sm:w-1/2">
-                            <FieldLabel for="goalTimezone">Timezone</FieldLabel>
+                            <FieldLabel for="goalTimezone">{{ $t('Timezone') }}</FieldLabel>
                             <TimezoneCombobox id="goalTimezone" v-model="model.timezone" />
                             <FieldError v-if="errors.timezone">{{ errors.timezone }}</FieldError>
                         </Field>
                         <Field class="sm:w-1/2">
-                            <FieldLabel for="goalWeekStart">Start of the week</FieldLabel>
+                            <FieldLabel for="goalWeekStart">{{
+                                $t('Start of the week')
+                            }}</FieldLabel>
                             <WeekStartSelect id="goalWeekStart" v-model="model.week_start" />
                             <FieldError v-if="errors.week_start">{{
                                 errors.week_start
@@ -259,8 +267,11 @@ watch(errors, (newErrors) => {
                         </Field>
                     </FieldGroup>
                     <FieldDescription class="pt-2">
-                        Timezone and start of the week decide when a period of this goal begins and
-                        ends. They default to your own settings.
+                        {{
+                            $t(
+                                'Timezone and start of the week decide when a period of this goal begins and ends. They default to your own settings.'
+                            )
+                        }}
                     </FieldDescription>
                 </AccordionContent>
             </AccordionItem>

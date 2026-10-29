@@ -10,17 +10,19 @@ defineProps<{
     <TableHeading>
         <div
             class="py-1.5 pr-3 text-left font-semibold text-text-primary pl-4 sm:pl-6 lg:pl-8 3xl:pl-12">
-            Goal
+            {{ $t('Goal') }}
         </div>
         <div v-if="showTargetColumn" class="px-3 py-1.5 text-left font-semibold text-text-primary">
-            For
+            {{ $t('For') }}
         </div>
-        <div class="px-3 py-1.5 text-left font-semibold text-text-primary">Target</div>
-        <div class="px-3 py-1.5 text-left font-semibold text-text-primary">Scope</div>
-        <div class="px-3 py-1.5 text-left font-semibold text-text-primary">Progress</div>
-        <div class="px-3 py-1.5 text-left font-semibold text-text-primary">Status</div>
+        <div class="px-3 py-1.5 text-left font-semibold text-text-primary">{{ $t('Target') }}</div>
+        <div class="px-3 py-1.5 text-left font-semibold text-text-primary">{{ $t('Scope') }}</div>
+        <div class="px-3 py-1.5 text-left font-semibold text-text-primary">
+            {{ $t('Progress') }}
+        </div>
+        <div class="px-3 py-1.5 text-left font-semibold text-text-primary">{{ $t('Status') }}</div>
         <div class="relative py-1.5 pl-3 pr-4 sm:pr-6 lg:pr-8 3xl:pr-12">
-            <span class="sr-only">Edit</span>
+            <span class="sr-only">{{ $t('Edit') }}</span>
         </div>
     </TableHeading>
 </template>
