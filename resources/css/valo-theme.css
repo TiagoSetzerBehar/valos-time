@@ -42,7 +42,7 @@
     --theme-shadow-dropdown: 0 12px 28px -8px rgb(0 0 0 / 60%), 0 2px 6px 0 rgb(0 0 0 / 35%);
 
     --theme-color-ring: rgba(var(--color-accent-400), 0.7);
-    --theme-color-chart: rgb(var(--color-accent-400));
+    --theme-color-chart: var(--color-accent-400);
 
     --theme-color-button-primary-background: rgb(var(--color-accent-500));
     --theme-color-button-primary-background-hover: rgb(var(--color-accent-400));
@@ -79,7 +79,7 @@
     --theme-shadow-dropdown: 0 12px 28px -10px rgb(15 23 42 / 18%), 0 2px 6px 0 rgb(15 23 42 / 8%);
 
     --theme-color-ring: rgba(var(--color-accent-500), 0.6);
-    --theme-color-chart: rgb(var(--color-accent-500));
+    --theme-color-chart: var(--color-accent-500);
 
     --theme-color-button-primary-background: rgb(var(--color-accent-600));
     --theme-color-button-primary-background-hover: rgb(var(--color-accent-700));
@@ -140,4 +140,10 @@
 
 :root.dark .valo-brand {
     color: rgb(var(--color-accent-300));
+}
+
+/* No accidental sideways scroll of the whole app (wide tables scroll inside their own box). */
+html,
+body {
+    overflow-x: clip;
 }

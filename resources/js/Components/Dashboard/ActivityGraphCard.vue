@@ -102,6 +102,20 @@ const dateRange = computed(() => {
     return [today.format('YYYY-MM-DD'), rangeStart.format('YYYY-MM-DD')];
 });
 
+// ECharts only ships English/Chinese labels: build them in the app language (Sunday first).
+const language = document.documentElement.lang || 'es';
+const dayNames = Array.from({ length: 7 }, (_, day) =>
+    new Intl.DateTimeFormat(language, { weekday: 'narrow', timeZone: 'UTC' }).format(
+        new Date(Date.UTC(2024, 0, 7 + day))
+    )
+);
+const monthNames = Array.from({ length: 12 }, (_, month) => {
+    const name = new Intl.DateTimeFormat(language, { month: 'short', timeZone: 'UTC' }).format(
+        new Date(Date.UTC(2024, month, 1))
+    );
+    return name.charAt(0).toUpperCase() + name.slice(1).replace('.', '');
+});
+
 const option = computed(() => {
     return {
         tooltip: {},
@@ -140,10 +154,12 @@ const option = computed(() => {
             orient: 'horizontal',
             dayLabel: {
                 firstDay: firstDayIndex.value,
+                nameMap: dayNames,
                 color: labelColor.value,
                 fontFamily: 'Inter, sans-serif',
             },
             monthLabel: {
+                nameMap: monthNames,
                 color: labelColor.value,
                 fontFamily: 'Inter, sans-serif',
             },
