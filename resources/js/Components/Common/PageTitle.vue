@@ -8,9 +8,8 @@ defineProps<{
 </script>
 
 <template>
-    <h3
-        class="text-text-primary font-semibold text-sm sm:text-base flex items-center space-x-2 sm:space-x-2.5">
-        <component :is="icon" class="w-5 text-icon-default"></component>
+    <h3 class="text-text-primary font-normal text-lg sm:text-2xl flex items-center">
+        <component :is="icon" class="hidden"></component>
         <span> {{ title }} </span>
     </h3>
 </template>

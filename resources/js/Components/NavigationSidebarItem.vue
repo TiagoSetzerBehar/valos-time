@@ -20,7 +20,7 @@ const open = useSessionStorage('valo-nav-open-' + props.title, props.current ===
     <li class="relative">
         <NavigationSidebarLink
             v-if="!subItems"
-            class="py-0.5"
+            class="py-0.5 valo-nav-top"
             :title
             :icon
             :current
@@ -28,7 +28,7 @@ const open = useSessionStorage('valo-nav-open-' + props.title, props.current ===
         <CollapsibleRoot v-else v-model:open="open"
             ><CollapsibleTrigger class="w-full group py-0.5">
                 <div
-                    class="text-text-secondary group-hover:text-text-primary group-hover:bg-menu-active group flex gap-x-2 rounded-md transition leading-6 py-0.5 px-2 font-regular text-sm items-center justify-between">
+                    class="text-text-secondary group-hover:text-text-primary group-hover:bg-menu-active group flex gap-x-2 rounded transition leading-6 py-1.5 px-2 font-medium text-sm items-center justify-between valo-nav-top">
                     <div class="flex items-center gap-x-2">
                         <component
                             :is="icon"

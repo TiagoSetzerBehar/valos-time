@@ -4,7 +4,7 @@ import AppLayout from '@/Layouts/AppLayout.vue';
 import MainContainer from '@/packages/ui/src/MainContainer.vue';
 import { FolderIcon, PlusIcon } from '@heroicons/vue/20/solid';
 import { Search } from '@lucide/vue';
-import SecondaryButton from '@/packages/ui/src/Buttons/SecondaryButton.vue';
+import PrimaryButton from '@/packages/ui/src/Buttons/PrimaryButton.vue';
 import ProjectTable from '@/Components/Common/Project/ProjectTable.vue';
 import TextInput from '@/packages/ui/src/Input/TextInput.vue';
 import { computed, ref } from 'vue';
@@ -157,12 +157,13 @@ const showBillableRate = computed(() => {
             <div class="flex items-center space-x-3 sm:space-x-6">
                 <PageTitle :icon="FolderIcon" :title="$t('Projects')"></PageTitle>
             </div>
-            <SecondaryButton
+            <PrimaryButton
+                class="uppercase tracking-wide text-xs"
                 v-if="canCreateProjects()"
                 :icon="PlusIcon"
                 @click="showCreateProjectModal = true"
                 >{{ $t('Create Project') }}
-            </SecondaryButton>
+            </PrimaryButton>
             <ProjectCreateModal
                 v-model:show="showCreateProjectModal"
                 :create-project
@@ -174,7 +175,8 @@ const showBillableRate = computed(() => {
                 @submit="createProject"></ProjectCreateModal>
         </MainContainer>
         <MainContainer>
-            <div class="flex items-center gap-2 py-1">
+            <div
+                class="flex flex-wrap items-center gap-2 p-2 mb-4 rounded border border-card-border bg-card-background shadow-card">
                 <ProjectsFilterDropdown
                     :filters="tableState.filters"
                     :clients="clients"
@@ -221,13 +223,17 @@ const showBillableRate = computed(() => {
             </div>
         </MainContainer>
 
-        <ProjectTable
-            :show-billable-rate="showBillableRate"
-            :is-filtered="hasActiveFilters"
-            :is-loading="projectsLoading"
-            :projects="filteredProjects"
-            :sort-column="tableState.sortColumn"
-            :sort-direction="tableState.sortDirection"
-            @sort="handleSort"></ProjectTable>
+        <MainContainer class="pb-8">
+            <div class="valo-card">
+                <ProjectTable
+                    :show-billable-rate="showBillableRate"
+                    :is-filtered="hasActiveFilters"
+                    :is-loading="projectsLoading"
+                    :projects="filteredProjects"
+                    :sort-column="tableState.sortColumn"
+                    :sort-direction="tableState.sortDirection"
+                    @sort="handleSort"></ProjectTable>
+            </div>
+        </MainContainer>
     </AppLayout>
 </template>

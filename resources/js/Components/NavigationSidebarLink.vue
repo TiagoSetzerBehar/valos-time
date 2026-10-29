@@ -16,7 +16,7 @@ defineProps<{
                 current
                     ? 'valo-nav-active'
                     : 'text-text-secondary group-hover:text-text-primary group-hover:bg-menu-active ',
-                'group flex gap-x-2 rounded-md transition leading-6 py-0.5 px-2 font-medium text-sm items-center',
+                'group flex gap-x-2.5 rounded transition leading-6 py-1.5 px-2 font-medium text-sm items-center',
             ]">
             <component
                 :is="icon"

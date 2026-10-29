@@ -2,7 +2,7 @@
 
 <template>
     <div
-        class="contents [&>*]:border-row-separator text-xs [&>*]:border-b [&>*]:border-t [&>*]:bg-row-heading-background">
+        class="contents [&>*]:border-row-separator text-[11px] uppercase tracking-wider [&>*]:border-b [&>*]:bg-[var(--valo-bar)] [&>*]:text-text-tertiary">
         <slot></slot>
     </div>
 </template>

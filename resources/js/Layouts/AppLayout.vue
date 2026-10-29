@@ -183,9 +183,7 @@ const page = usePage<{
                         scrollbar-width: thin;
                         scrollbar-color: var(--color-bg-primary) transparent;
                     ">
-                    <div class="text-text-tertiary text-xs font-semibold pt-3 pb-1.5 px-2">
-                        {{ $t('Tracking') }}
-                    </div>
+                    <div class="pt-3"></div>
                     <nav>
                         <ul>
                             <NavigationSidebarItem
@@ -206,7 +204,8 @@ const page = usePage<{
                         </ul>
                     </nav>
 
-                    <div class="text-text-tertiary text-xs font-semibold pt-5 pb-1.5 px-2">
+                    <div
+                        class="text-text-quaternary text-[11px] font-semibold uppercase tracking-wider pt-6 pb-1.5 px-2">
                         {{ $t('Analyze') }}
                     </div>
 
@@ -259,7 +258,8 @@ const page = usePage<{
                         </ul>
                     </nav>
 
-                    <div class="text-text-tertiary text-xs font-semibold pt-5 pb-1.5 px-2">
+                    <div
+                        class="text-text-quaternary text-[11px] font-semibold uppercase tracking-wider pt-6 pb-1.5 px-2">
                         {{ $t('Manage') }}
                     </div>
 
@@ -301,7 +301,7 @@ const page = usePage<{
                     </nav>
                     <div
                         v-if="canUpdateOrganization()"
-                        class="text-text-tertiary text-xs font-semibold pt-5 pb-1.5 px-2">
+                        class="text-text-quaternary text-[11px] font-semibold uppercase tracking-wider pt-6 pb-1.5 px-2">
                         {{ $t('Admin') }}
                     </div>
 

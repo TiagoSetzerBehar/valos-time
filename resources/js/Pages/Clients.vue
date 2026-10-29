@@ -2,7 +2,7 @@
 import MainContainer from '@/packages/ui/src/MainContainer.vue';
 import AppLayout from '@/Layouts/AppLayout.vue';
 import { PlusIcon } from '@heroicons/vue/16/solid';
-import SecondaryButton from '@/packages/ui/src/Buttons/SecondaryButton.vue';
+import PrimaryButton from '@/packages/ui/src/Buttons/PrimaryButton.vue';
 import { UserCircleIcon } from '@heroicons/vue/20/solid';
 import { computed, ref } from 'vue';
 import { useClientsQuery } from '@/utils/useClientsQuery';
@@ -46,18 +46,23 @@ const shownClients = computed(() => {
                     <TabBarItem value="archived"> {{ $t('Archived') }} </TabBarItem>
                 </TabBar>
             </div>
-            <SecondaryButton
+            <PrimaryButton
+                class="uppercase tracking-wide text-xs"
                 v-if="canCreateClients()"
                 :icon="PlusIcon"
                 @click="createClient = true"
-                >{{ $t('Create Client') }}</SecondaryButton
+                >{{ $t('Create Client') }}</PrimaryButton
             >
             <ClientCreateModal v-model:show="createClient"></ClientCreateModal>
         </MainContainer>
-        <ClientTable
-            :clients="shownClients"
-            :sort-column="tableState.sortColumn"
-            :sort-direction="tableState.sortDirection"
-            @sort="handleSort"></ClientTable>
+        <MainContainer class="pb-8">
+            <div class="valo-card">
+                <ClientTable
+                    :clients="shownClients"
+                    :sort-column="tableState.sortColumn"
+                    :sort-direction="tableState.sortDirection"
+                    @sort="handleSort"></ClientTable>
+            </div>
+        </MainContainer>
     </AppLayout>
 </template>

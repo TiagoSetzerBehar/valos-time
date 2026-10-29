@@ -2,7 +2,7 @@
 import MainContainer from '@/packages/ui/src/MainContainer.vue';
 import AppLayout from '@/Layouts/AppLayout.vue';
 import { TagIcon, PlusIcon } from '@heroicons/vue/16/solid';
-import SecondaryButton from '@/packages/ui/src/Buttons/SecondaryButton.vue';
+import PrimaryButton from '@/packages/ui/src/Buttons/PrimaryButton.vue';
 import { ref } from 'vue';
 import TagTable from '@/Components/Common/Tag/TagTable.vue';
 import TagCreateModal from '@/packages/ui/src/Tag/TagCreateModal.vue';
@@ -31,20 +31,25 @@ async function createTag(tag: string) {
             <div class="flex items-center space-x-6">
                 <PageTitle :icon="TagIcon" :title="$t('Tags')"></PageTitle>
             </div>
-            <SecondaryButton
+            <PrimaryButton
+                class="uppercase tracking-wide text-xs"
                 v-if="canCreateTags()"
                 :icon="PlusIcon"
                 @click="showCreateTagModal = true"
                 >{{ $t('Create Tag') }}
-            </SecondaryButton>
+            </PrimaryButton>
             <TagCreateModal
                 v-model:show="showCreateTagModal"
                 :create-tag="createTag"></TagCreateModal>
         </MainContainer>
-        <TagTable
-            :create-tag="createTag"
-            :sort-column="tableState.sortColumn"
-            :sort-direction="tableState.sortDirection"
-            @sort="handleSort"></TagTable>
+        <MainContainer class="pb-8">
+            <div class="valo-card">
+                <TagTable
+                    :create-tag="createTag"
+                    :sort-column="tableState.sortColumn"
+                    :sort-direction="tableState.sortDirection"
+                    @sort="handleSort"></TagTable>
+            </div>
+        </MainContainer>
     </AppLayout>
 </template>

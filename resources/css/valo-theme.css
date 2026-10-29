@@ -152,3 +152,19 @@ html,
 body {
     overflow-x: clip;
 }
+
+/* Card around list tables, like Clockify. */
+.valo-card {
+    border: 1px solid var(--theme-color-card-border);
+    border-radius: 0.25rem;
+    background-color: var(--theme-color-card-background);
+    box-shadow: var(--theme-shadow-card);
+    overflow: hidden;
+}
+
+/* Top-level navigation items in capitals, like Clockify. */
+.valo-nav-top {
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+    font-size: 0.8125rem;
+}

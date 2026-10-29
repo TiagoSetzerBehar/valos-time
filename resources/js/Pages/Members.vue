@@ -3,7 +3,7 @@ import MainContainer from '@/packages/ui/src/MainContainer.vue';
 import AppLayout from '@/Layouts/AppLayout.vue';
 import { PlusIcon } from '@heroicons/vue/16/solid';
 import { UserGroupIcon } from '@heroicons/vue/20/solid';
-import SecondaryButton from '@/packages/ui/src/Buttons/SecondaryButton.vue';
+import PrimaryButton from '@/packages/ui/src/Buttons/PrimaryButton.vue';
 import { TabBar, TabBarItem } from '@/packages/ui/src';
 import { ref } from 'vue';
 import MemberTable from '@/Components/Common/Member/MemberTable.vue';
@@ -40,22 +40,27 @@ const { tableState, handleSort } = useTableSortState<SortColumn>('member-table-s
                     <TabBarItem value="invitations">{{ $t('Invitations') }}</TabBarItem>
                 </TabBar>
             </div>
-            <SecondaryButton
+            <PrimaryButton
+                class="uppercase tracking-wide text-xs"
                 v-if="canCreateInvitations()"
                 :icon="PlusIcon"
                 @click="inviteMember = true"
-                >{{ $t('Invite member') }}</SecondaryButton
+                >{{ $t('Invite member') }}</PrimaryButton
             >
             <MemberInviteModal
                 v-model:show="inviteMember"
                 :available-roles="availableRoles"
                 @close="activeTab = 'invitations'"></MemberInviteModal>
         </MainContainer>
-        <MemberTable
-            v-if="activeTab === 'all'"
-            :sort-column="tableState.sortColumn"
-            :sort-direction="tableState.sortDirection"
-            @sort="handleSort"></MemberTable>
-        <InvitationTable v-if="activeTab === 'invitations'"></InvitationTable>
+        <MainContainer class="pb-8">
+            <div class="valo-card">
+                <MemberTable
+                    v-if="activeTab === 'all'"
+                    :sort-column="tableState.sortColumn"
+                    :sort-direction="tableState.sortDirection"
+                    @sort="handleSort"></MemberTable>
+                <InvitationTable v-if="activeTab === 'invitations'"></InvitationTable>
+            </div>
+        </MainContainer>
     </AppLayout>
 </template>
