@@ -1,0 +1,65 @@
+# VALO's Time on Render (free plan). Values marked sync: false are asked for in the Render dashboard.
+services:
+  - type: web
+    name: valos-time
+    runtime: docker
+    plan: free
+    region: frankfurt
+    dockerfilePath: ./docker/valo/Dockerfile
+    dockerContext: .
+    healthCheckPath: /login
+    envVars:
+      - key: PORT
+        value: "8000"
+      - key: APP_URL
+        sync: false
+      - key: APP_KEY
+        sync: false
+      - key: PASSPORT_PRIVATE_KEY
+        sync: false
+      - key: PASSPORT_PUBLIC_KEY
+        sync: false
+      - key: SUPER_ADMINS
+        sync: false
+      - key: DB_URL
+        sync: false
+      - key: DB_SSL_MODE
+        value: require
+      - key: AUTO_DB_MIGRATE
+        value: "true"
+      - key: APP_FORCE_HTTPS
+        value: "true"
+      - key: TRUSTED_PROXIES
+        value: "0.0.0.0/0,2000:0:0:0:0:0:0:0/3"
+      - key: APP_LOCALE
+        value: es
+      - key: APP_ENABLE_REGISTRATION
+        value: "true"
+      - key: VALO_SHOW_MONEY
+        value: "false"
+      - key: VALO_CRON_TOKEN
+        generateValue: true
+      - key: QUEUE_CONNECTION
+        value: sync
+      - key: FILESYSTEM_DISK
+        value: local
+      - key: PUBLIC_FILESYSTEM_DISK
+        value: public
+      - key: LOG_CHANNEL
+        value: stderr
+      - key: LOG_LEVEL
+        value: warning
+      - key: MAIL_MAILER
+        value: smtp
+      - key: MAIL_HOST
+        value: smtp-relay.brevo.com
+      - key: MAIL_PORT
+        value: "587"
+      - key: MAIL_USERNAME
+        sync: false
+      - key: MAIL_PASSWORD
+        sync: false
+      - key: MAIL_FROM_ADDRESS
+        sync: false
+      - key: MAIL_FROM_NAME
+        value: "VALO's Time"

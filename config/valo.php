@@ -16,4 +16,7 @@ return [
 
     'show_money' => (bool) env('VALO_SHOW_MONEY', false),
 
+    // Secret of the /valo/cron/{token} URL that sends the reminders on hosts without a scheduler.
+    'cron_token' => (string) env('VALO_CRON_TOKEN', ''),
+
 ];

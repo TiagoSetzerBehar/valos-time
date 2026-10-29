@@ -9,6 +9,7 @@ use App\Http\Controllers\Web\OrganizationInvitationController;
 use App\Http\Controllers\Web\OtherBrowserSessionsController;
 use App\Http\Controllers\Web\UserController;
 use App\Http\Controllers\Web\UserProfileController;
+use App\Http\Controllers\Web\ValoCronController;
 use App\Http\Controllers\Web\ValoReminderSettingsController;
 use App\Service\PermissionStore;
 use Illuminate\Http\RedirectResponse;
@@ -27,6 +28,10 @@ use Inertia\Inertia;
 */
 
 Route::get('/', [HomeController::class, 'index']);
+
+Route::get('/valo/cron/{token}', ValoCronController::class)
+    ->middleware('throttle:30,1')
+    ->name('valo.cron');
 
 Route::get('/shared-report', function () {
     return Inertia::render('SharedReport');
