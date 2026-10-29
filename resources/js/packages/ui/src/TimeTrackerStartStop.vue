@@ -16,7 +16,7 @@ const timeTrackerVariants = cva(
             size: {
                 small: 'w-6 h-6',
                 base: 'w-8 h-8',
-                large: 'w-11 h-11',
+                large: 'h-9 px-5 !rounded-[3px] text-xs font-semibold uppercase tracking-wide',
             },
             active: {
                 true: '',
@@ -27,7 +27,7 @@ const timeTrackerVariants = cva(
             {
                 variant: 'primary',
                 active: true,
-                class: 'bg-red-600 hover:bg-red-700',
+                class: 'bg-[#f44336] hover:bg-[#e53935]',
             },
             {
                 variant: 'primary',
@@ -86,7 +86,8 @@ function toggleState() {
         data-testid="timer_button"
         :class="cn(timeTrackerVariants({ variant, size, active }))"
         @click="toggleState">
-        <Transition name="fade" mode="out-in">
+        <span v-if="size === 'large'">{{ props.active ? $t('STOP') : $t('START') }}</span>
+        <Transition v-else name="fade" mode="out-in">
             <svg
                 v-if="props.active"
                 :class="iconClass[size ?? 'base']"

@@ -32,7 +32,7 @@ const indicatorClasses = {
         <div
             :style="{ backgroundColor: props.color }"
             :class="twMerge(indicatorClasses[size], 'inline-block rounded-full shrink-0')"></div>
-        <div class="min-w-0">
+        <div class="min-w-0" :style="props.color ? { color: props.color } : undefined">
             <slot>
                 {{ name }}
             </slot>

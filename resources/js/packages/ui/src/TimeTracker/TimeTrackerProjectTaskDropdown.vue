@@ -608,9 +608,11 @@ const showCreateProject = ref(false);
                         <div
                             class="w-2.5 h-2.5 rounded-full shrink-0"
                             :style="{ backgroundColor: selectedProjectColor }"></div>
-                        <span class="truncate shrink-[1] text-text-primary">{{
-                            selectedProjectName
-                        }}</span>
+                        <span
+                            class="truncate shrink-[1] font-medium"
+                            :style="{ color: selectedProjectColor }"
+                            >{{ selectedProjectName }}</span
+                        >
                     </template>
                     <template v-if="currentTask">
                         <ChevronRightIcon class="!size-3 text-text-primary shrink-0 -mx-1" />

@@ -175,7 +175,10 @@ function unselectAllTimeEntries(value: TimeEntriesGroupedByType[]) {
 
 <template>
     <div class="@container">
-        <div v-for="(value, key) in groupedTimeEntries" :key="key">
+        <div
+            v-for="(value, key) in groupedTimeEntries"
+            :key="key"
+            class="mx-3 sm:mx-6 lg:mx-8 3xl:mx-12 mb-5 rounded border border-card-border bg-card-background overflow-hidden shadow-card">
             <TimeEntryRowHeading
                 :date="String(key)"
                 :duration="sumDuration(value)"

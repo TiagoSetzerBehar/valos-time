@@ -71,8 +71,7 @@ function selectUnselectAll(value: boolean) {
 </script>
 
 <template>
-    <div
-        class="bg-background dark:bg-secondary border-b border-border-primary py-1 text-xs @sm:text-sm">
+    <div class="valo-bar border-b border-card-border py-2 text-xs @sm:text-sm">
         <MainContainer>
             <div class="flex group justify-between items-center">
                 <div class="flex items-center @lg:space-x-2 pl-1.5 @lg:pl-0">
@@ -94,7 +93,8 @@ function selectUnselectAll(value: boolean) {
                     </span>
                 </div>
                 <div class="flex items-center text-text-primary pr-2 @lg:pr-[92px]">
-                    <span class="font-medium">{{ workLabel }}</span>
+                    <span class="text-text-tertiary mr-1.5">{{ $t('Total') }}:</span>
+                    <span class="font-semibold text-base">{{ workLabel }}</span>
                     <span
                         v-if="hasBreak"
                         data-testid="day_break_duration"

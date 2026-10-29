@@ -34,12 +34,11 @@ const weekTotal = computed(() =>
 </script>
 
 <template>
-    <MainContainer
-        class="flex items-center justify-between py-2.5 border-t border-default-background-separator">
-        <h2 class="text-sm font-medium text-text-primary">{{ $t('This Week') }}</h2>
+    <MainContainer class="flex items-end justify-between pt-1 pb-3">
+        <h2 class="text-base text-text-primary">{{ $t('This Week') }}</h2>
         <div class="flex items-baseline gap-2 text-sm">
             <span class="text-text-tertiary">{{ $t('Week Total') }}</span>
-            <span class="font-semibold text-text-primary" data-testid="time_week_total">{{
+            <span class="text-xl font-medium text-text-primary" data-testid="time_week_total">{{
                 weekTotal
             }}</span>
         </div>
