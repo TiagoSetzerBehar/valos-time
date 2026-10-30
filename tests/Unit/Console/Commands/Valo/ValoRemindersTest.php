@@ -127,7 +127,7 @@ class ValoRemindersTest extends TestCaseWithDatabase
         $owner = $this->createUserWithRole(Role::Owner);
         $employee = Member::factory()->forOrganization($owner->organization)->role(Role::Employee)->create();
         $url = route('valo.reminders.update', $owner->organization->getKey());
-        $payload = ['daily_enabled' => true, 'daily_time' => '17:30', 'weekly_enabled' => true, 'expected_weekly_hours' => 25];
+        $payload = ['daily_enabled' => true, 'daily_time' => '17:30', 'weekly_enabled' => true, 'expected_weekly_hours' => 25, 'member_weekly_enabled' => true, 'require_project' => false, 'require_description' => false];
 
         // Act
         $forbidden = $this->actingAs($employee->user)->putJson($url, $payload);

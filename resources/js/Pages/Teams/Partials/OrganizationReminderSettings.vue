@@ -16,6 +16,9 @@ type ReminderSettings = {
     daily_time: string;
     weekly_enabled: boolean;
     expected_weekly_hours: number;
+    member_weekly_enabled: boolean;
+    require_project: boolean;
+    require_description: boolean;
 };
 
 const props = defineProps<{
@@ -30,6 +33,9 @@ const form = ref<ReminderSettings>({
     daily_time: '18:00',
     weekly_enabled: false,
     expected_weekly_hours: 20,
+    member_weekly_enabled: false,
+    require_project: false,
+    require_description: false,
 });
 
 const url = () => route('valo.reminders.show', props.team.id);
@@ -112,6 +118,37 @@ async function submit() {
                     <FieldDescription>{{
                         $t('Members below this number appear in the summary.')
                     }}</FieldDescription>
+                </Field>
+                <Field orientation="horizontal">
+                    <Checkbox
+                        id="memberWeeklyEnabled"
+                        v-model:checked="form.member_weekly_enabled"
+                        :disabled="!loaded" />
+                    <FieldLabel for="memberWeeklyEnabled">{{
+                        $t('Weekly report to each member with their own hours (Monday morning)')
+                    }}</FieldLabel>
+                </Field>
+                <div
+                    class="pt-2 text-[11px] font-semibold uppercase tracking-wider text-text-quaternary">
+                    {{ $t('Required fields') }}
+                </div>
+                <Field orientation="horizontal">
+                    <Checkbox
+                        id="requireProject"
+                        v-model:checked="form.require_project"
+                        :disabled="!loaded" />
+                    <FieldLabel for="requireProject">{{
+                        $t('Project is required to save a time entry')
+                    }}</FieldLabel>
+                </Field>
+                <Field orientation="horizontal">
+                    <Checkbox
+                        id="requireDescription"
+                        v-model:checked="form.require_description"
+                        :disabled="!loaded" />
+                    <FieldLabel for="requireDescription">{{
+                        $t('Description is required to save a time entry')
+                    }}</FieldLabel>
                 </Field>
             </div>
         </template>

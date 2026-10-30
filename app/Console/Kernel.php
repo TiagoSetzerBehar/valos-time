@@ -25,6 +25,9 @@ class Kernel extends ConsoleKernel
         $schedule->command('valo:send-weekly-summary')
             ->hourly();
 
+        $schedule->command('valo:send-member-weekly-reports')
+            ->hourly();
+
         $schedule->command('auth:send-mails-expiring-api-tokens')
             ->when(fn (): bool => config('scheduling.tasks.auth_send_mails_expiring_api_tokens'))
             ->everyTenMinutes();

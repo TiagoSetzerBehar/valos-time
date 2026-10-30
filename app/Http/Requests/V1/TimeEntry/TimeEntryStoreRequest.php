@@ -12,11 +12,13 @@ use App\Models\Project;
 use App\Models\Tag;
 use App\Models\Task;
 use App\Service\PermissionStore;
+use App\Service\ValoTimeEntryRules;
 use Closure;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\Validator;
 use Korridor\LaravelModelValidationRules\Rules\ExistsEloquent;
 
 /**
@@ -119,6 +121,29 @@ class TimeEntryStoreRequest extends BaseFormRequest
                     return $builder->whereBelongsTo($this->organization, 'organization');
                 })->uuid(),
             ],
+        ];
+    }
+
+    /**
+     * VALO's Time: required fields of the organization.
+     *
+     * @return array<int, Closure>
+     */
+    public function after(): array
+    {
+        return [
+            function (Validator $validator): void {
+                $missing = ValoTimeEntryRules::missingRequiredFields(
+                    $this->organization,
+                    $this->input('type') === TimeEntryType::Break->value,
+                    $this->input('end') !== null,
+                    $this->input('project_id'),
+                    $this->input('description')
+                );
+                foreach ($missing as $field => $message) {
+                    $validator->errors()->add($field, $message);
+                }
+            },
         ];
     }
 }

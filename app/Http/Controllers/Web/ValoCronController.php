@@ -20,6 +20,7 @@ class ValoCronController extends Controller
 
         Artisan::call('valo:send-daily-reminders');
         Artisan::call('valo:send-weekly-summary');
+        Artisan::call('valo:send-member-weekly-reports');
         Artisan::call('time-entry:send-still-running-mails');
 
         return response('ok')->header('Cache-Control', 'no-store');

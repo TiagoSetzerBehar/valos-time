@@ -28,12 +28,15 @@ class ValoReminderSettingsController extends Controller
     public function update(Request $request, string $organizationId): JsonResponse
     {
         $organization = $this->organizationManagedByCurrentUser($organizationId);
-        /** @var array{daily_enabled: bool, daily_time: string, weekly_enabled: bool, expected_weekly_hours: int} $data */
+        /** @var array{daily_enabled: bool, daily_time: string, weekly_enabled: bool, expected_weekly_hours: int, member_weekly_enabled: bool, require_project: bool, require_description: bool} $data */
         $data = $request->validate([
             'daily_enabled' => ['required', 'boolean'],
             'daily_time' => ['required', 'date_format:H:i'],
             'weekly_enabled' => ['required', 'boolean'],
             'expected_weekly_hours' => ['required', 'integer', 'min:1', 'max:80'],
+            'member_weekly_enabled' => ['required', 'boolean'],
+            'require_project' => ['required', 'boolean'],
+            'require_description' => ['required', 'boolean'],
         ]);
 
         $setting = ValoReminderSetting::forOrganization($organization);
@@ -60,7 +63,7 @@ class ValoReminderSettingsController extends Controller
     }
 
     /**
-     * @return array{daily_enabled: bool, daily_time: string, weekly_enabled: bool, expected_weekly_hours: int}
+     * @return array{daily_enabled: bool, daily_time: string, weekly_enabled: bool, expected_weekly_hours: int, member_weekly_enabled: bool, require_project: bool, require_description: bool}
      */
     private function toArray(ValoReminderSetting $setting): array
     {
@@ -69,6 +72,9 @@ class ValoReminderSettingsController extends Controller
             'daily_time' => $setting->daily_time,
             'weekly_enabled' => $setting->weekly_enabled,
             'expected_weekly_hours' => $setting->expected_weekly_hours,
+            'member_weekly_enabled' => $setting->member_weekly_enabled,
+            'require_project' => $setting->require_project,
+            'require_description' => $setting->require_description,
         ];
     }
 }

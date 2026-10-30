@@ -17,6 +17,9 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property string $daily_time
  * @property bool $weekly_enabled
  * @property int $expected_weekly_hours
+ * @property bool $member_weekly_enabled
+ * @property bool $require_project
+ * @property bool $require_description
  * @property-read Organization $organization
  */
 class ValoReminderSetting extends Model
@@ -34,6 +37,9 @@ class ValoReminderSetting extends Model
         'daily_time',
         'weekly_enabled',
         'expected_weekly_hours',
+        'member_weekly_enabled',
+        'require_project',
+        'require_description',
     ];
 
     /**
@@ -44,6 +50,9 @@ class ValoReminderSetting extends Model
         'daily_time' => '18:00',
         'weekly_enabled' => false,
         'expected_weekly_hours' => 20,
+        'member_weekly_enabled' => false,
+        'require_project' => false,
+        'require_description' => false,
     ];
 
     /**
@@ -53,6 +62,9 @@ class ValoReminderSetting extends Model
         'daily_enabled' => 'boolean',
         'weekly_enabled' => 'boolean',
         'expected_weekly_hours' => 'integer',
+        'member_weekly_enabled' => 'boolean',
+        'require_project' => 'boolean',
+        'require_description' => 'boolean',
     ];
 
     /**

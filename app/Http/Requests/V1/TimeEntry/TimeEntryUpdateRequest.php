@@ -13,6 +13,7 @@ use App\Models\Tag;
 use App\Models\Task;
 use App\Models\TimeEntry;
 use App\Service\PermissionStore;
+use App\Service\ValoTimeEntryRules;
 use Carbon\Exceptions\InvalidFormatException;
 use Closure;
 use Illuminate\Contracts\Validation\ValidationRule;
@@ -22,6 +23,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ConditionalRules;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\ProhibitedIf;
+use Illuminate\Validation\Validator;
 use Korridor\LaravelModelValidationRules\Rules\ExistsEloquent;
 
 /**
@@ -170,5 +172,32 @@ class TimeEntryUpdateRequest extends BaseFormRequest
         } catch (InvalidFormatException) {
             return null;
         }
+    }
+
+    /**
+     * VALO's Time: required fields of the organization, checked on the values after the update.
+     *
+     * @return array<int, Closure>
+     */
+    public function after(): array
+    {
+        return [
+            function (Validator $validator): void {
+                $timeEntry = $this->route('timeEntry');
+                $timeEntry = $timeEntry instanceof TimeEntry ? $timeEntry : null;
+                $type = $this->has('type') ? (string) $this->input('type') : $timeEntry?->type->value;
+                $end = $this->has('end') ? $this->input('end') : $timeEntry?->end;
+                $missing = ValoTimeEntryRules::missingRequiredFields(
+                    $this->organization,
+                    $type === TimeEntryType::Break->value,
+                    $end !== null,
+                    $this->has('project_id') ? $this->input('project_id') : $timeEntry?->project_id,
+                    $this->has('description') ? $this->input('description') : $timeEntry?->description
+                );
+                foreach ($missing as $field => $message) {
+                    $validator->errors()->add($field, $message);
+                }
+            },
+        ];
     }
 }
