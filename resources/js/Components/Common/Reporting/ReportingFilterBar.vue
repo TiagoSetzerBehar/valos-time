@@ -65,169 +65,175 @@ async function createTag(name: string) {
 </script>
 
 <template>
-    <div class="py-2.5 w-full border-b border-default-background-separator">
-        <MainContainer class="sm:flex space-y-4 sm:space-y-0 justify-between">
-            <div class="flex flex-wrap items-center space-y-2 sm:space-y-0 space-x-3">
-                <div class="text-sm font-medium">{{ $t('Filters') }}</div>
-                <MemberMultiselectDropdown v-model="selectedMembers" @submit="emit('submit')">
-                    <template #trigger>
-                        <ReportingFilterBadge
-                            :count="selectedMembers.length"
-                            :active="selectedMembers.length > 0"
-                            :title="$t('Members')"
-                            :icon="UserGroupIcon" />
-                    </template>
-                </MemberMultiselectDropdown>
-                <ProjectMultiselectDropdown v-model="selectedProjects" @submit="emit('submit')">
-                    <template #trigger>
-                        <ReportingFilterBadge
-                            :count="selectedProjects.length"
-                            :active="selectedProjects.length > 0"
-                            :title="$t('Projects')"
-                            :icon="FolderIcon" />
-                    </template>
-                </ProjectMultiselectDropdown>
-                <TaskMultiselectDropdown v-model="selectedTasks" @submit="emit('submit')">
-                    <template #trigger>
-                        <ReportingFilterBadge
-                            :count="selectedTasks.length"
-                            :active="selectedTasks.length > 0"
-                            :title="$t('Tasks')"
-                            :icon="CheckCircleIcon" />
-                    </template>
-                </TaskMultiselectDropdown>
-                <ClientMultiselectDropdown v-model="selectedClients" @submit="emit('submit')">
-                    <template #trigger>
-                        <ReportingFilterBadge
-                            :count="selectedClients.length"
-                            :active="selectedClients.length > 0"
-                            :title="$t('Clients')"
-                            :icon="FolderIcon" />
-                    </template>
-                </ClientMultiselectDropdown>
-                <TagDropdown
-                    v-model="selectedTags"
-                    :create-tag
-                    :tags="tags"
-                    @submit="emit('submit')">
-                    <template #trigger>
-                        <ReportingFilterBadge
-                            :count="selectedTags.length"
-                            :active="selectedTags.length > 0"
-                            :title="$t('Tags')"
-                            :icon="TagIcon" />
-                    </template>
-                    <template #content-before-list>
-                        <div class="mt-2 border-b border-card-background-separator pb-2">
-                            <div
-                                id="tag-match-type-label"
-                                class="mb-1.5 px-2 text-xs font-medium text-text-tertiary uppercase">
-                                {{ $t('Match') }}
+    <div class="pt-4 w-full">
+        <MainContainer>
+            <div
+                class="valo-card px-3 py-2 sm:flex space-y-4 sm:space-y-0 justify-between items-center">
+                <div class="flex flex-wrap items-center space-y-2 sm:space-y-0 space-x-3">
+                    <div
+                        class="text-[11px] font-semibold uppercase tracking-wider text-text-quaternary">
+                        {{ $t('Filters') }}
+                    </div>
+                    <MemberMultiselectDropdown v-model="selectedMembers" @submit="emit('submit')">
+                        <template #trigger>
+                            <ReportingFilterBadge
+                                :count="selectedMembers.length"
+                                :active="selectedMembers.length > 0"
+                                :title="$t('Members')"
+                                :icon="UserGroupIcon" />
+                        </template>
+                    </MemberMultiselectDropdown>
+                    <ProjectMultiselectDropdown v-model="selectedProjects" @submit="emit('submit')">
+                        <template #trigger>
+                            <ReportingFilterBadge
+                                :count="selectedProjects.length"
+                                :active="selectedProjects.length > 0"
+                                :title="$t('Projects')"
+                                :icon="FolderIcon" />
+                        </template>
+                    </ProjectMultiselectDropdown>
+                    <TaskMultiselectDropdown v-model="selectedTasks" @submit="emit('submit')">
+                        <template #trigger>
+                            <ReportingFilterBadge
+                                :count="selectedTasks.length"
+                                :active="selectedTasks.length > 0"
+                                :title="$t('Tasks')"
+                                :icon="CheckCircleIcon" />
+                        </template>
+                    </TaskMultiselectDropdown>
+                    <ClientMultiselectDropdown v-model="selectedClients" @submit="emit('submit')">
+                        <template #trigger>
+                            <ReportingFilterBadge
+                                :count="selectedClients.length"
+                                :active="selectedClients.length > 0"
+                                :title="$t('Clients')"
+                                :icon="FolderIcon" />
+                        </template>
+                    </ClientMultiselectDropdown>
+                    <TagDropdown
+                        v-model="selectedTags"
+                        :create-tag
+                        :tags="tags"
+                        @submit="emit('submit')">
+                        <template #trigger>
+                            <ReportingFilterBadge
+                                :count="selectedTags.length"
+                                :active="selectedTags.length > 0"
+                                :title="$t('Tags')"
+                                :icon="TagIcon" />
+                        </template>
+                        <template #content-before-list>
+                            <div class="mt-2 border-b border-card-background-separator pb-2">
+                                <div
+                                    id="tag-match-type-label"
+                                    class="mb-1.5 px-2 text-xs font-medium text-text-tertiary uppercase">
+                                    {{ $t('Match') }}
+                                </div>
+                                <RadioGroupRoot
+                                    :model-value="tagMatchType"
+                                    aria-labelledby="tag-match-type-label"
+                                    class="space-y-1"
+                                    @update:model-value="selectTagMatchType">
+                                    <RadioGroupItem
+                                        v-for="option in tagMatchOptions"
+                                        :key="option.value"
+                                        :value="option.value"
+                                        class="relative flex w-full items-center rounded-md py-1.5 pl-2 pr-8 text-left text-sm font-medium text-text-secondary hover:bg-card-background-active data-[state=checked]:text-text-primary">
+                                        {{ option.label }}
+                                        <span
+                                            class="absolute right-2 flex h-3.5 w-3.5 items-center justify-center">
+                                            <RadioGroupIndicator>
+                                                <Check class="h-4 w-4" />
+                                            </RadioGroupIndicator>
+                                        </span>
+                                    </RadioGroupItem>
+                                </RadioGroupRoot>
                             </div>
-                            <RadioGroupRoot
-                                :model-value="tagMatchType"
-                                aria-labelledby="tag-match-type-label"
-                                class="space-y-1"
-                                @update:model-value="selectTagMatchType">
-                                <RadioGroupItem
-                                    v-for="option in tagMatchOptions"
-                                    :key="option.value"
-                                    :value="option.value"
-                                    class="relative flex w-full items-center rounded-md py-1.5 pl-2 pr-8 text-left text-sm font-medium text-text-secondary hover:bg-card-background-active data-[state=checked]:text-text-primary">
-                                    {{ option.label }}
-                                    <span
-                                        class="absolute right-2 flex h-3.5 w-3.5 items-center justify-center">
-                                        <RadioGroupIndicator>
-                                            <Check class="h-4 w-4" />
-                                        </RadioGroupIndicator>
-                                    </span>
-                                </RadioGroupItem>
-                            </RadioGroupRoot>
-                        </div>
-                    </template>
-                </TagDropdown>
+                        </template>
+                    </TagDropdown>
 
-                <Button
-                    v-if="isMoneyVisible() && billableRatesLocked"
-                    variant="outline"
-                    size="sm"
-                    data-testid="billable_filter_locked"
-                    @click="requestUpgrade">
-                    <BillableIcon class="h-4 text-text-quaternary" />
-                    <span class="text-text-secondary">{{ $t('Billable') }}</span>
-                    <LockClosedIcon class="!w-3 text-text-tertiary" />
-                </Button>
-                <Select
-                    v-else-if="isMoneyVisible()"
-                    v-model="billable"
-                    @update:model-value="emit('submit')">
-                    <SelectTrigger
-                        size="sm"
+                    <Button
+                        v-if="isMoneyVisible() && billableRatesLocked"
                         variant="outline"
-                        :active="billable !== null"
-                        :show-chevron="false">
-                        <SelectValue class="flex items-center gap-2">
-                            <BillableIcon
-                                class="h-4"
-                                :class="
-                                    billable !== null
-                                        ? 'dark:text-accent-300/80 text-accent-400/80'
-                                        : 'text-text-quaternary'
-                                " />
-                            <span class="text-text-secondary">{{
-                                billable === 'false' ? $t('Non Billable') : $t('Billable')
-                            }}</span>
-                        </SelectValue>
-                    </SelectTrigger>
-                    <SelectContent>
-                        <SelectItem :value="null">{{ $t('Both') }}</SelectItem>
-                        <SelectItem value="true">{{ $t('Billable') }}</SelectItem>
-                        <SelectItem value="false">{{ $t('Non Billable') }}</SelectItem>
-                    </SelectContent>
-                </Select>
-                <Select
-                    v-if="breaksEnabled"
-                    v-model="entryType"
-                    @update:model-value="emit('submit')">
-                    <SelectTrigger
                         size="sm"
-                        variant="outline"
-                        :active="entryType !== null"
-                        :show-chevron="false">
-                        <SelectValue class="flex items-center gap-2">
-                            <Coffee
-                                class="h-4 w-4"
-                                :class="
-                                    entryType !== null
-                                        ? 'dark:text-accent-300/80 text-accent-400/80'
-                                        : 'text-text-quaternary'
-                                " />
-                            <span class="text-text-secondary">{{
-                                entryType === null
-                                    ? $t('Type')
-                                    : entryType === 'break'
-                                      ? $t('Breaks')
-                                      : $t('Work time')
-                            }}</span>
-                        </SelectValue>
-                    </SelectTrigger>
-                    <SelectContent>
-                        <SelectItem :value="null">{{ $t('Both') }}</SelectItem>
-                        <SelectItem value="work">{{ $t('Work time') }}</SelectItem>
-                        <SelectItem value="break">{{ $t('Breaks') }}</SelectItem>
-                    </SelectContent>
-                </Select>
-                <ReportingRoundingControls
-                    v-model:enabled="roundingEnabled"
-                    v-model:type="roundingType"
-                    v-model:minutes="roundingMinutes"
-                    @change="emit('submit')" />
-            </div>
-            <div>
-                <DateRangePicker
-                    v-model:start="startDate"
-                    v-model:end="endDate"
-                    @submit="emit('submit')" />
+                        data-testid="billable_filter_locked"
+                        @click="requestUpgrade">
+                        <BillableIcon class="h-4 text-text-quaternary" />
+                        <span class="text-text-secondary">{{ $t('Billable') }}</span>
+                        <LockClosedIcon class="!w-3 text-text-tertiary" />
+                    </Button>
+                    <Select
+                        v-else-if="isMoneyVisible()"
+                        v-model="billable"
+                        @update:model-value="emit('submit')">
+                        <SelectTrigger
+                            size="sm"
+                            variant="outline"
+                            :active="billable !== null"
+                            :show-chevron="false">
+                            <SelectValue class="flex items-center gap-2">
+                                <BillableIcon
+                                    class="h-4"
+                                    :class="
+                                        billable !== null
+                                            ? 'dark:text-accent-300/80 text-accent-400/80'
+                                            : 'text-text-quaternary'
+                                    " />
+                                <span class="text-text-secondary">{{
+                                    billable === 'false' ? $t('Non Billable') : $t('Billable')
+                                }}</span>
+                            </SelectValue>
+                        </SelectTrigger>
+                        <SelectContent>
+                            <SelectItem :value="null">{{ $t('Both') }}</SelectItem>
+                            <SelectItem value="true">{{ $t('Billable') }}</SelectItem>
+                            <SelectItem value="false">{{ $t('Non Billable') }}</SelectItem>
+                        </SelectContent>
+                    </Select>
+                    <Select
+                        v-if="breaksEnabled"
+                        v-model="entryType"
+                        @update:model-value="emit('submit')">
+                        <SelectTrigger
+                            size="sm"
+                            variant="outline"
+                            :active="entryType !== null"
+                            :show-chevron="false">
+                            <SelectValue class="flex items-center gap-2">
+                                <Coffee
+                                    class="h-4 w-4"
+                                    :class="
+                                        entryType !== null
+                                            ? 'dark:text-accent-300/80 text-accent-400/80'
+                                            : 'text-text-quaternary'
+                                    " />
+                                <span class="text-text-secondary">{{
+                                    entryType === null
+                                        ? $t('Type')
+                                        : entryType === 'break'
+                                          ? $t('Breaks')
+                                          : $t('Work time')
+                                }}</span>
+                            </SelectValue>
+                        </SelectTrigger>
+                        <SelectContent>
+                            <SelectItem :value="null">{{ $t('Both') }}</SelectItem>
+                            <SelectItem value="work">{{ $t('Work time') }}</SelectItem>
+                            <SelectItem value="break">{{ $t('Breaks') }}</SelectItem>
+                        </SelectContent>
+                    </Select>
+                    <ReportingRoundingControls
+                        v-model:enabled="roundingEnabled"
+                        v-model:type="roundingType"
+                        v-model:minutes="roundingMinutes"
+                        @change="emit('submit')" />
+                </div>
+                <div>
+                    <DateRangePicker
+                        v-model:start="startDate"
+                        v-model:end="endDate"
+                        @submit="emit('submit')" />
+                </div>
             </div>
         </MainContainer>
     </div>

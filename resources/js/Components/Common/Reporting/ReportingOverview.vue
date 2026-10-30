@@ -312,8 +312,7 @@ const { locked: billableRatesLocked } = useBillableRatesLock();
         v-model:show="showCreateReportModal"
         :properties="reportProperties"></ReportCreateModal>
     <UpgradeModal v-model:show="showPremiumModal" :feature="premiumFeature" />
-    <MainContainer
-        class="h-14 sm:h-16 border-b border-default-background-separator flex flex-wrap gap-y-3 justify-between items-center">
+    <MainContainer class="h-14 sm:h-16 flex flex-wrap gap-y-3 justify-between items-center">
         <div class="flex items-center space-x-3 sm:space-x-6">
             <PageTitle :icon="ChartBarIcon" :title="$t('Reporting')"></PageTitle>
             <ReportingTabNavbar active="reporting" class="hidden sm:flex"></ReportingTabNavbar>
@@ -398,16 +397,30 @@ const { locked: billableRatesLocked } = useBillableRatesLock();
         v-model:rounding-minutes="roundingMinutes"
         v-model:start-date="startDate"
         v-model:end-date="endDate" />
-    <MainContainer>
-        <div class="pt-10 w-full px-3 relative">
-            <ReportingChart
-                :grouped-type="aggregatedGraphTimeEntries?.grouped_type ?? null"
-                :grouped-data="aggregatedGraphTimeEntries?.grouped_data ?? null"></ReportingChart>
+    <MainContainer class="pt-4">
+        <div class="valo-card">
+            <div class="valo-bar px-4 py-2 text-sm text-text-secondary">
+                {{ $t('Total') }}:
+                <span class="font-semibold text-text-primary">{{
+                    formatReportingDuration(
+                        aggregatedGraphTimeEntries?.seconds ?? 0,
+                        organization?.interval_format,
+                        organization?.number_format
+                    )
+                }}</span>
+            </div>
+            <div class="pt-6 pb-2 w-full px-3 relative">
+                <ReportingChart
+                    :grouped-type="aggregatedGraphTimeEntries?.grouped_type ?? null"
+                    :grouped-data="
+                        aggregatedGraphTimeEntries?.grouped_data ?? null
+                    "></ReportingChart>
+            </div>
         </div>
     </MainContainer>
     <MainContainer>
         <div class="sm:grid grid-cols-4 pt-6 items-start">
-            <div class="col-span-3 bg-secondary rounded-lg border border-card-border pt-3">
+            <div class="col-span-3 valo-card pt-3">
                 <div
                     class="text-sm flex text-text-primary items-center space-x-3 font-medium px-6 border-b border-card-background-separator pb-3">
                     <span>{{ $t('Group by') }}</span>
@@ -425,7 +438,7 @@ const { locked: billableRatesLocked } = useBillableRatesLock();
                     class="grid items-center"
                     :style="`grid-template-columns: 1fr 100px ${showBillableRate ? '150px' : ''}`">
                     <div
-                        class="contents [&>*]:border-card-background-separator [&>*]:border-b [&>*]:bg-secondary [&>*]:pb-1.5 [&>*]:pt-1 text-text-tertiary text-sm">
+                        class="contents [&>*]:border-card-background-separator [&>*]:border-b [&>*]:bg-[var(--valo-bar)] [&>*]:pb-1.5 [&>*]:pt-1.5 text-text-tertiary text-[11px] uppercase tracking-wider">
                         <div class="pl-6">{{ $t('Name') }}</div>
                         <div class="text-right" :class="!showBillableRate ? 'pr-6' : ''">
                             {{ $t('Duration') }}

@@ -31,7 +31,7 @@ const isChevronDown = computed(() => {
 
 const cellClass = computed(() =>
     cn(
-        'px-3 py-1.5 text-left text-text-tertiary cursor-pointer hover:bg-secondary hover:text-text-primary transition-colors select-none flex items-center gap-1',
+        'px-3 py-2 text-left text-[11px] uppercase tracking-wider text-text-tertiary cursor-pointer hover:bg-secondary hover:text-text-primary transition-colors select-none flex items-center gap-1',
         attrs.class as ClassValue
     )
 );
