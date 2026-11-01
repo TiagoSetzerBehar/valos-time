@@ -1,6 +1,7 @@
 /* Import shared solidtime styles from UI package */
 @import '../js/packages/ui/styles.css';
 @import './valo-theme.css';
+@import './valo-glass.css';
 
 /* Main app specific styles - Inter font */
 @font-face {

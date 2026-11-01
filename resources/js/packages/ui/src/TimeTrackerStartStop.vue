@@ -16,7 +16,7 @@ const timeTrackerVariants = cva(
             size: {
                 small: 'w-6 h-6',
                 base: 'w-8 h-8',
-                large: 'h-9 px-5 !rounded-[3px] text-xs font-semibold uppercase tracking-wide',
+                large: 'valo-start h-9 px-5 !rounded-[3px] text-xs font-semibold uppercase tracking-wide',
             },
             active: {
                 true: '',
@@ -84,6 +84,7 @@ function toggleState() {
 <template>
     <button
         data-testid="timer_button"
+        :data-active="props.active ? 'true' : 'false'"
         :class="cn(timeTrackerVariants({ variant, size, active }))"
         @click="toggleState">
         <span v-if="size === 'large'">{{ props.active ? $t('STOP') : $t('START') }}</span>

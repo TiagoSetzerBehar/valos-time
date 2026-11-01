@@ -178,6 +178,7 @@ function unselectAllTimeEntries(value: TimeEntriesGroupedByType[]) {
         <div
             v-for="(value, key) in groupedTimeEntries"
             :key="key"
+            :data-valo-day="key"
             class="mx-3 sm:mx-6 lg:mx-8 3xl:mx-12 mb-5 rounded border border-card-border bg-card-background overflow-hidden shadow-card">
             <TimeEntryRowHeading
                 :date="String(key)"

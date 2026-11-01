@@ -1,0 +1,413 @@
+/*
+ * VALO's Time "liquid glass" look (iOS 26 style), active when <html> has the class valo-glass
+ * (set by AppLayout). Translucent panels over soft colour orbs, light rims, capsule shapes and
+ * a glass lens that slides to the active item (GlassLens.vue).
+ */
+
+html.valo-glass.light {
+    --theme-color-default-background: transparent;
+    --theme-color-card-background: rgba(255, 255, 255, 0.42);
+    --theme-color-row-background: transparent;
+    --theme-color-card-border: rgba(255, 255, 255, 0.75);
+    --theme-color-card-background-separator: rgba(255, 255, 255, 0.6);
+    --valo-bar: rgba(255, 255, 255, 0.38);
+    --theme-shadow-card:
+        inset 0 1px 1px rgba(255, 255, 255, 0.95), 0 1px 2px rgba(18, 56, 84, 0.05),
+        0 14px 40px rgba(18, 56, 84, 0.12);
+    --valo-glass-bg:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.34), rgba(255, 255, 255, 0) 48%),
+        rgba(255, 255, 255, 0.36);
+    --valo-glass-shadow:
+        inset 0 1px 1px rgba(255, 255, 255, 0.95), inset 0 -1px 2px rgba(255, 255, 255, 0.35),
+        0 1px 2px rgba(18, 56, 84, 0.06), 0 18px 50px rgba(18, 56, 84, 0.14);
+    --valo-glass-rim: linear-gradient(
+        140deg,
+        rgba(255, 255, 255, 1),
+        rgba(255, 255, 255, 0.3) 32%,
+        rgba(255, 255, 255, 0.08) 62%,
+        rgba(255, 255, 255, 0.8)
+    );
+    --valo-glass-control: rgba(255, 255, 255, 0.5);
+    --valo-glass-hover: rgba(255, 255, 255, 0.45);
+    --valo-active-text: #0277bd;
+    --radius: 0.75rem;
+}
+
+html.valo-glass.dark {
+    --theme-color-default-background: transparent;
+    --theme-color-card-background: rgba(20, 28, 36, 0.5);
+    --theme-color-row-background: transparent;
+    --theme-color-card-border: rgba(255, 255, 255, 0.1);
+    --theme-color-card-background-separator: rgba(255, 255, 255, 0.07);
+    --valo-bar: rgba(255, 255, 255, 0.05);
+    --theme-shadow-card: inset 0 1px 1px rgba(255, 255, 255, 0.14), 0 14px 40px rgba(0, 0, 0, 0.45);
+    --valo-glass-bg:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0) 48%),
+        rgba(20, 28, 36, 0.46);
+    --valo-glass-shadow:
+        inset 0 1px 1px rgba(255, 255, 255, 0.2), inset 0 -1px 2px rgba(255, 255, 255, 0.05),
+        0 18px 50px rgba(0, 0, 0, 0.55);
+    --valo-glass-rim: linear-gradient(
+        140deg,
+        rgba(255, 255, 255, 0.42),
+        rgba(255, 255, 255, 0.06) 32%,
+        rgba(255, 255, 255, 0.02) 62%,
+        rgba(255, 255, 255, 0.22)
+    );
+    --valo-glass-control: rgba(255, 255, 255, 0.07);
+    --valo-glass-hover: rgba(255, 255, 255, 0.06);
+    --valo-active-text: #6fd0ff;
+    --radius: 0.75rem;
+}
+
+html.valo-glass.light body {
+    background: #e8eff5;
+}
+
+html.valo-glass.dark body {
+    background: #0a0f14;
+}
+
+/* Colour orbs behind everything */
+.valo-backdrop {
+    display: none;
+}
+
+.valo-glass .valo-backdrop {
+    display: block;
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    overflow: hidden;
+    pointer-events: none;
+}
+
+.valo-orb {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(80px);
+    opacity: 0.7;
+    animation: valo-drift 28s ease-in-out infinite alternate;
+}
+
+.dark .valo-orb {
+    opacity: 0.4;
+}
+
+.valo-orb-1 {
+    width: 42vw;
+    height: 42vw;
+    left: -10vw;
+    top: 30vh;
+    background: #03a9f4;
+}
+
+.valo-orb-2 {
+    width: 34vw;
+    height: 34vw;
+    left: 42vw;
+    top: -22vh;
+    background: #ff8a65;
+    animation-duration: 34s;
+    animation-direction: alternate-reverse;
+}
+
+.valo-orb-3 {
+    width: 38vw;
+    height: 38vw;
+    left: 70vw;
+    top: 48vh;
+    background: #4db6ac;
+    animation-duration: 40s;
+}
+
+.valo-orb-4 {
+    width: 24vw;
+    height: 24vw;
+    left: 28vw;
+    top: 70vh;
+    background: #9575cd;
+    animation-duration: 36s;
+    animation-direction: alternate-reverse;
+}
+
+@keyframes valo-drift {
+    0% {
+        transform: translate(0, 0) scale(1);
+    }
+    50% {
+        transform: translate(4vw, -4vh) scale(1.08);
+    }
+    100% {
+        transform: translate(-3vw, 3vh) scale(0.96);
+    }
+}
+
+/* Shell: transparent layout, floating glass sidebar and top bar */
+.valo-glass .valo-shell,
+.valo-glass .valo-shell-sidebar,
+.valo-glass .valo-shell-main {
+    background: transparent;
+    border-color: transparent;
+}
+
+.valo-glass .valo-shell-sidebar {
+    padding: 12px 0 12px 12px;
+}
+
+.valo-glass .valo-sidebar-panel,
+.valo-glass .valo-topbar {
+    position: relative;
+    background: var(--valo-glass-bg);
+    box-shadow: var(--valo-glass-shadow);
+    -webkit-backdrop-filter: blur(30px) saturate(1.9);
+    backdrop-filter: blur(30px) saturate(1.9);
+    border-color: transparent;
+}
+
+.valo-glass .valo-sidebar-panel {
+    border-radius: 28px;
+    padding: 14px 10px 10px;
+}
+
+.valo-glass .valo-sidebar-panel > :first-child {
+    border-color: rgba(255, 255, 255, 0.35);
+}
+
+.valo-glass .valo-topbar {
+    top: 12px;
+    margin: 12px 16px 4px;
+    height: 56px;
+    border-radius: 999px;
+    padding-left: 10px;
+    padding-right: 8px;
+}
+
+.valo-glass .valo-sidebar-panel::before,
+.valo-glass .valo-topbar::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 1px;
+    pointer-events: none;
+    background: var(--valo-glass-rim);
+    -webkit-mask:
+        linear-gradient(#000 0 0) content-box,
+        linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+}
+
+.valo-glass .valo-topbar [data-testid='command_palette_button'] {
+    height: 40px;
+    border-radius: 999px;
+    background: var(--valo-glass-control);
+    border-color: var(--theme-color-card-border);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.6);
+}
+
+.valo-glass.dark .valo-topbar [data-testid='command_palette_button'] {
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+.valo-glass .valo-topbar button,
+.valo-glass .valo-topbar a {
+    border-radius: 999px;
+}
+
+/* Cards: glass, rounder */
+.valo-glass .bg-card-background {
+    -webkit-backdrop-filter: blur(24px) saturate(1.8);
+    backdrop-filter: blur(24px) saturate(1.8);
+}
+
+.valo-glass .valo-card,
+.valo-glass .rounded.border-card-border,
+.valo-glass .rounded-lg.border-card-border {
+    border-radius: 1.5rem;
+}
+
+.valo-glass .valo-bar {
+    border-bottom: 1px solid var(--theme-color-card-background-separator);
+}
+
+.valo-glass [data-valo-day] {
+    scroll-margin-top: 90px;
+}
+
+/* Start/stop button: glossy capsule */
+.valo-glass .valo-start {
+    border-radius: 999px !important;
+    height: 40px;
+    padding: 0 26px;
+    background: linear-gradient(180deg, #0a84c8, #01579b);
+    box-shadow:
+        inset 0 1.5px 1px rgba(255, 255, 255, 0.55),
+        inset 0 -2px 4px rgba(0, 0, 0, 0.18),
+        0 8px 22px rgba(2, 119, 189, 0.42);
+    transition:
+        transform 0.35s cubic-bezier(0.3, 1.6, 0.5, 1),
+        box-shadow 0.4s ease;
+}
+
+.valo-glass .valo-start[data-active='true'] {
+    background: linear-gradient(180deg, #d63a36, #a31515);
+    box-shadow:
+        inset 0 1.5px 1px rgba(255, 255, 255, 0.5),
+        inset 0 -2px 4px rgba(0, 0, 0, 0.2),
+        0 8px 22px rgba(198, 40, 40, 0.45);
+}
+
+.valo-glass .valo-start:hover {
+    transform: scale(1.03);
+}
+
+.valo-glass .valo-start:active {
+    transform: scale(0.93);
+}
+
+/* Week strip */
+.valo-week-bar {
+    background: var(--color-bg-quaternary);
+}
+
+.valo-glass .valo-week-bar {
+    background: rgba(31, 45, 55, 0.1);
+}
+
+.valo-glass.dark .valo-week-bar {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.valo-week-fill {
+    background: linear-gradient(90deg, rgb(var(--color-accent-400)), rgb(var(--color-accent-800)));
+}
+
+.valo-glass .valo-week-day {
+    border-radius: 20px;
+    transition: transform 0.3s cubic-bezier(0.3, 1.5, 0.5, 1);
+}
+
+.valo-glass .valo-week-day:active {
+    transform: scale(0.95);
+}
+
+/* The sliding lens */
+.valo-lens-track {
+    display: none;
+}
+
+.valo-glass .valo-lens-host {
+    position: relative;
+}
+
+.valo-glass .valo-lens-host > :not(.valo-lens-track) {
+    position: relative;
+    z-index: 1;
+}
+
+.valo-glass .valo-lens-track {
+    display: block;
+    position: absolute;
+    left: 0;
+    top: 0;
+    z-index: 0;
+    pointer-events: none;
+}
+
+.valo-glass .valo-lens-track.valo-lens-animate {
+    transition:
+        transform 0.62s cubic-bezier(0.3, 1.45, 0.45, 1),
+        width 0.5s cubic-bezier(0.3, 1.3, 0.5, 1),
+        height 0.5s cubic-bezier(0.3, 1.3, 0.5, 1);
+}
+
+.valo-lens {
+    width: 100%;
+    height: 100%;
+    border-radius: 20px;
+    transition: transform 0.34s cubic-bezier(0.3, 1.5, 0.5, 1);
+}
+
+.valo-lens-x.valo-lens-moving {
+    transform: scale(1.12, 0.88);
+}
+
+.valo-lens-y.valo-lens-moving {
+    transform: scale(0.95, 1.16);
+}
+
+.valo-glass.light .valo-lens {
+    background: rgba(255, 255, 255, 0.6);
+    -webkit-backdrop-filter: blur(2px) saturate(2.2) brightness(1.06);
+    backdrop-filter: blur(2px) saturate(2.2) brightness(1.06);
+    box-shadow:
+        inset 0 1.5px 1px #fff,
+        inset 0 -1.5px 2px rgba(255, 255, 255, 0.7),
+        inset 4px 0 7px rgba(255, 0, 140, 0.13),
+        inset -4px 0 7px rgba(0, 190, 255, 0.2),
+        inset 0 -4px 7px rgba(255, 196, 0, 0.12),
+        0 6px 16px rgba(18, 56, 84, 0.16);
+}
+
+.valo-glass.dark .valo-lens {
+    background: rgba(255, 255, 255, 0.13);
+    -webkit-backdrop-filter: blur(2px) saturate(2.2) brightness(1.25);
+    backdrop-filter: blur(2px) saturate(2.2) brightness(1.25);
+    box-shadow:
+        inset 0 1.5px 1px rgba(255, 255, 255, 0.55),
+        inset 0 -1px 2px rgba(255, 255, 255, 0.18),
+        inset 4px 0 7px rgba(255, 0, 160, 0.26),
+        inset -4px 0 7px rgba(0, 200, 255, 0.3),
+        inset 0 -4px 7px rgba(255, 210, 0, 0.16),
+        0 6px 18px rgba(0, 0, 0, 0.5);
+}
+
+/* With the lens the active items lose their flat grey background */
+.valo-glass .valo-nav-active,
+.valo-glass .valo-lens-host [role='tab'][data-state='active'],
+.valo-glass .valo-week-day[aria-pressed='true'] {
+    background: transparent;
+    border-color: transparent;
+}
+
+.valo-glass .valo-nav-active,
+.valo-glass .valo-lens-host [role='tab'][data-state='active'] {
+    color: var(--valo-active-text);
+    font-weight: 600;
+}
+
+.valo-glass .valo-lens-host [role='tab'] {
+    border-radius: 999px;
+    border-color: transparent;
+}
+
+.valo-glass .valo-sidebar-panel a > div,
+.valo-glass .valo-sidebar-panel button > div {
+    border-radius: 14px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .valo-orb {
+        animation: none;
+    }
+
+    .valo-glass .valo-lens-track.valo-lens-animate,
+    .valo-lens,
+    .valo-glass .valo-start {
+        transition: none;
+    }
+}
+
+.valo-glass .valo-sidebar-panel .valo-lens {
+    border-radius: 14px;
+}
+
+.valo-glass [role='tablist'] .valo-lens {
+    border-radius: 999px;
+}
+
+.valo-glass .valo-sidebar-panel .valo-lens-host {
+    scrollbar-width: none;
+}

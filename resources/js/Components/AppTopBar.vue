@@ -24,7 +24,7 @@ const page = usePage<{
 
 <template>
     <header
-        class="sticky top-0 z-30 flex h-12 shrink-0 items-center gap-1.5 border-b border-default-background-separator bg-background px-3 sm:px-4">
+        class="valo-topbar sticky top-0 z-30 flex h-12 shrink-0 items-center gap-1.5 border-b border-default-background-separator bg-background px-3 sm:px-4">
         <Button
             variant="ghost"
             size="icon"

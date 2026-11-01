@@ -20,6 +20,8 @@ import {
 } from '@heroicons/vue/20/solid';
 import { Target } from '@lucide/vue';
 import NavigationSidebarItem from '@/Components/NavigationSidebarItem.vue';
+import ValoBackdrop from '@/Components/ValoBackdrop.vue';
+import GlassLens from '@/packages/ui/src/GlassLens.vue';
 import AppTopBar from '@/Components/AppTopBar.vue';
 import MainContainer from '@/packages/ui/src/MainContainer.vue';
 import { computed, nextTick, onMounted, provide, ref } from 'vue';
@@ -107,6 +109,7 @@ provide(upgradeCtaKey, {
 
 onMounted(async () => {
     useTheme();
+    document.documentElement.classList.add('valo-glass');
     // make sure that the initial requests are only loaded once, this can be removed once we move away from inertia
     if (window.initialDataLoaded !== true) {
         window.initialDataLoaded = true;
@@ -137,7 +140,8 @@ const page = usePage<{
 </script>
 
 <template>
-    <div v-bind="$attrs" class="flex flex-wrap bg-background text-text-secondary">
+    <div v-bind="$attrs" class="valo-shell flex flex-wrap bg-background text-text-secondary">
+        <ValoBackdrop />
         <!-- Mobile sidebar overlay -->
         <Teleport to="body">
             <div v-if="showSidebarMenu" class="fixed inset-0 z-40 lg:hidden" @click="closeSidebar">
@@ -153,9 +157,9 @@ const page = usePage<{
                     ? 'max-lg:translate-x-0 max-lg:shadow-xl'
                     : 'max-lg:-translate-x-full',
             ]"
-            class="flex-shrink-0 h-screen fixed w-[280px] px-2.5 py-4 hidden lg:flex flex-col justify-between bg-background border-r border-default-background-separator max-lg:z-50 max-lg:transition-transform max-lg:duration-200 max-lg:ease-in-out lg:w-[230px] lg:border-r-0"
+            class="valo-shell-sidebar flex-shrink-0 h-screen fixed w-[280px] px-2.5 py-4 hidden lg:flex flex-col justify-between bg-background border-r border-default-background-separator max-lg:z-50 max-lg:transition-transform max-lg:duration-200 max-lg:ease-in-out lg:w-[230px] lg:border-r-0"
             :style="showSidebarMenu ? { display: 'flex' } : undefined">
-            <div class="flex flex-col h-full">
+            <div class="valo-sidebar-panel flex flex-col h-full">
                 <div
                     class="border-b border-default-background-separator pb-3 pt-0.5 flex items-center gap-1">
                     <Link
@@ -178,11 +182,12 @@ const page = usePage<{
                     <CurrentSidebarTimer></CurrentSidebarTimer>
                 </div>
                 <div
-                    class="overflow-y-scroll flex-1 w-full"
+                    class="valo-lens-host relative overflow-y-scroll flex-1 w-full"
                     style="
                         scrollbar-width: thin;
                         scrollbar-color: var(--color-bg-primary) transparent;
                     ">
+                    <GlassLens selector=".valo-nav-active" storage-key="nav" axis="y" />
                     <div class="pt-3"></div>
                     <nav>
                         <ul>
@@ -344,7 +349,7 @@ const page = usePage<{
         </div>
         <div class="flex-1 lg:ml-[230px] min-w-0">
             <div
-                class="h-screen overflow-y-auto flex flex-col bg-default-background border-l border-default-background-separator">
+                class="valo-shell-main h-screen overflow-y-auto flex flex-col bg-default-background border-l border-default-background-separator">
                 <AppTopBar @open-sidebar="openSidebar"></AppTopBar>
 
                 <Head :title="title" />
