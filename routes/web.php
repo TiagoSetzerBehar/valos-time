@@ -30,6 +30,8 @@ use Inertia\Inertia;
 Route::get('/', [HomeController::class, 'index']);
 
 Route::get('/valo/cron/{token}', ValoCronController::class)
+    // Generated tokens are base64 and may contain '/'
+    ->where('token', '.+')
     ->middleware('throttle:30,1')
     ->name('valo.cron');
 

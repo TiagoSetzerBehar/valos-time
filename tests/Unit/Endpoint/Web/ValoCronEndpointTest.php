@@ -34,4 +34,16 @@ class ValoCronEndpointTest extends TestCaseWithDatabase
         config(['valo.cron_token' => '']);
         $this->get('/valo/cron/anything')->assertNotFound();
     }
+
+    public function test_cron_url_accepts_a_base64_token_with_slashes(): void
+    {
+        // Arrange
+        config(['valo.cron_token' => 'ab/cd+ef=']);
+
+        // Act
+        $response = $this->get('/valo/cron/ab/cd+ef=');
+
+        // Assert
+        $response->assertOk();
+    }
 }
