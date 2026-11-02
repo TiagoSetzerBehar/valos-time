@@ -206,6 +206,7 @@ export const useCurrentTimeEntryStore = defineStore('currentTimeEntry', () => {
             stopLiveTimer();
         }
         queryClient.invalidateQueries({ queryKey: ['timeEntries'] });
+        queryClient.invalidateQueries({ queryKey: ['aggregatedTimeEntries'] });
         queryClient.invalidateQueries({ queryKey: ['goals'] });
     }
 
@@ -225,6 +226,7 @@ export const useCurrentTimeEntryStore = defineStore('currentTimeEntry', () => {
         startLiveTimer();
         await startTimer();
         queryClient.invalidateQueries({ queryKey: ['timeEntries'] });
+        queryClient.invalidateQueries({ queryKey: ['aggregatedTimeEntries'] });
         queryClient.invalidateQueries({ queryKey: ['goals'] });
     }
 
@@ -306,6 +308,7 @@ export const useCurrentTimeEntryStore = defineStore('currentTimeEntry', () => {
             await stopTimer();
         }
         queryClient.invalidateQueries({ queryKey: ['timeEntries'] });
+        queryClient.invalidateQueries({ queryKey: ['aggregatedTimeEntries'] });
         queryClient.invalidateQueries({ queryKey: ['goals'] });
     }
 

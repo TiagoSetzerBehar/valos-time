@@ -37,6 +37,7 @@ export function useTimeEntriesMutations() {
         },
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['timeEntries'] });
+            queryClient.invalidateQueries({ queryKey: ['aggregatedTimeEntries'] });
             queryClient.invalidateQueries({ queryKey: ['goals'] });
         },
     });
@@ -60,6 +61,7 @@ export function useTimeEntriesMutations() {
         },
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['timeEntries'] });
+            queryClient.invalidateQueries({ queryKey: ['aggregatedTimeEntries'] });
             queryClient.invalidateQueries({ queryKey: ['goals'] });
         },
     });
@@ -114,6 +116,7 @@ export function useTimeEntriesMutations() {
         },
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['timeEntries'] });
+            queryClient.invalidateQueries({ queryKey: ['aggregatedTimeEntries'] });
             queryClient.invalidateQueries({ queryKey: ['goals'] });
         },
     });
@@ -137,6 +140,7 @@ export function useTimeEntriesMutations() {
         },
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['timeEntries'] });
+            queryClient.invalidateQueries({ queryKey: ['aggregatedTimeEntries'] });
             queryClient.invalidateQueries({ queryKey: ['goals'] });
         },
     });
@@ -163,6 +167,7 @@ export function useTimeEntriesMutations() {
         },
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['timeEntries'] });
+            queryClient.invalidateQueries({ queryKey: ['aggregatedTimeEntries'] });
             queryClient.invalidateQueries({ queryKey: ['goals'] });
         },
     });

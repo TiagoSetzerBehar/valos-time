@@ -5,7 +5,8 @@
  */
 
 html.valo-glass.light {
-    --theme-color-default-background: transparent;
+    /* Surfaces that use the default background (modals, command palette, calendar) */
+    --theme-color-default-background: rgba(221, 231, 239, 0.9);
     --theme-color-card-background: rgba(255, 255, 255, 0.42);
     --theme-color-row-background: transparent;
     --theme-color-card-border: rgba(255, 255, 255, 0.75);
@@ -34,7 +35,7 @@ html.valo-glass.light {
 }
 
 html.valo-glass.dark {
-    --theme-color-default-background: transparent;
+    --theme-color-default-background: rgba(46, 58, 70, 0.78);
     --theme-color-card-background: rgba(20, 28, 36, 0.5);
     --theme-color-row-background: transparent;
     --theme-color-card-border: rgba(255, 255, 255, 0.1);
@@ -408,7 +409,7 @@ html.valo-glass.dark body {
     border-radius: 999px;
 }
 
-.valo-glass .valo-sidebar-panel .valo-lens-host {
+.valo-sidebar-scroll {
     scrollbar-width: none;
 }
 

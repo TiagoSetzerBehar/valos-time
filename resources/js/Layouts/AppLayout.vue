@@ -182,11 +182,7 @@ const page = usePage<{
                     <CurrentSidebarTimer></CurrentSidebarTimer>
                 </div>
                 <div
-                    class="valo-lens-host relative overflow-y-scroll flex-1 w-full"
-                    style="
-                        scrollbar-width: thin;
-                        scrollbar-color: var(--color-bg-primary) transparent;
-                    ">
+                    class="valo-sidebar-scroll valo-lens-host relative overflow-y-auto flex-1 w-full">
                     <GlassLens selector=".valo-nav-active" storage-key="nav" axis="y" />
                     <div class="pt-3"></div>
                     <nav>

@@ -10,7 +10,10 @@ defineProps<{
 <template>
     <Tabs :default-value="defaultValue" class="w-full">
         <TabsList class="valo-lens-host relative flex items-center space-x-0.5 sm:space-x-1">
-            <GlassLens selector="[role='tab'][data-state='active']" storage-key="tabs" />
+            <GlassLens
+                selector="[role='tab'][data-state='active']"
+                storage-key="tabs"
+                scope-by-content />
             <slot></slot>
         </TabsList>
     </Tabs>

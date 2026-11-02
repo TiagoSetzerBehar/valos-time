@@ -70,7 +70,7 @@ class ValoSendMemberWeeklyReportsCommand extends Command
                     ->with('project')
                     ->get();
                 foreach ($timeEntries as $timeEntry) {
-                    $projectName = $timeEntry->project?->name ?? __('No Project');
+                    $projectName = $timeEntry->project->name ?? __('No Project');
                     $seconds = (int) $timeEntry->start->diffInSeconds($timeEntry->end, true);
                     $secondsByProject[$projectName] = ($secondsByProject[$projectName] ?? 0) + $seconds;
                 }

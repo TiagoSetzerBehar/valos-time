@@ -6,6 +6,7 @@ namespace App\Http\Controllers\Web;
 
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Artisan;
+use Throwable;
 
 /**
  * VALO's Time: hosts without a scheduler (Render free plan) call this secret URL every few
@@ -18,10 +19,19 @@ class ValoCronController extends Controller
         $expectedToken = (string) config('valo.cron_token');
         abort_if($expectedToken === '' || ! hash_equals($expectedToken, $token), 404);
 
-        Artisan::call('valo:send-daily-reminders');
-        Artisan::call('valo:send-weekly-summary');
-        Artisan::call('valo:send-member-weekly-reports');
-        Artisan::call('time-entry:send-still-running-mails');
+        $commands = [
+            'valo:send-daily-reminders',
+            'valo:send-weekly-summary',
+            'valo:send-member-weekly-reports',
+            'time-entry:send-still-running-mails',
+        ];
+        foreach ($commands as $command) {
+            try {
+                Artisan::call($command);
+            } catch (Throwable $exception) {
+                report($exception);
+            }
+        }
 
         return response('ok')->header('Cache-Control', 'no-store');
     }

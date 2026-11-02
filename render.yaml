@@ -30,15 +30,20 @@ services:
       - key: APP_FORCE_HTTPS
         value: "true"
       - key: TRUSTED_PROXIES
-        value: "0.0.0.0/0,2000:0:0:0:0:0:0:0/3"
+        # Only Render's own (private) load balancers, so clients cannot forge X-Forwarded-For
+        value: "10.0.0.0/8,172.16.0.0/12,192.168.0.0/16,127.0.0.1"
       - key: APP_LOCALE
         value: es
+      # Only people invited to an organization can create an account
       - key: APP_ENABLE_REGISTRATION
-        value: "true"
+        value: invite-only
       - key: VALO_SHOW_MONEY
         value: "false"
       - key: VALO_CRON_TOKEN
         generateValue: true
+      # Database cache: the "already sent" marks of the reminders survive restarts and deploys
+      - key: CACHE_DRIVER
+        value: database
       - key: QUEUE_CONNECTION
         value: sync
       - key: FILESYSTEM_DISK

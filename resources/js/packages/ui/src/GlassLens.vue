@@ -8,6 +8,8 @@ const props = withDefaults(
         selector: string;
         storageKey: string;
         axis?: 'x' | 'y';
+        /** Keep a separate remembered position per set of items (tab bars that differ per page). */
+        scopeByContent?: boolean;
     }>(),
     { axis: 'x' }
 );
@@ -40,9 +42,34 @@ function measure(): Box | null {
     };
 }
 
+function storageId(): string {
+    const scope = props.scopeByContent
+        ? ':' +
+          (el.value?.parentElement?.textContent ?? '').replace(/\s+/g, ' ').trim().slice(0, 120)
+        : '';
+    return 'valo-lens-' + props.storageKey + scope;
+}
+
+let frame: number | undefined;
+let frameMotion = false;
+
+// Many DOM changes can arrive in one frame: measure once per frame.
+function scheduleUpdate(withMotion: boolean) {
+    frameMotion = frameMotion || withMotion;
+    if (frame !== undefined) {
+        return;
+    }
+    frame = requestAnimationFrame(() => {
+        frame = undefined;
+        const motion = frameMotion;
+        frameMotion = false;
+        update(motion);
+    });
+}
+
 function readStored(): Box | null {
     try {
-        return JSON.parse(sessionStorage.getItem('valo-lens-' + props.storageKey) ?? 'null');
+        return JSON.parse(sessionStorage.getItem(storageId()) ?? 'null');
     } catch {
         return null;
     }
@@ -64,7 +91,7 @@ function update(withMotion: boolean) {
     box.value = next;
     if (next) {
         try {
-            sessionStorage.setItem('valo-lens-' + props.storageKey, key);
+            sessionStorage.setItem(storageId(), key);
         } catch {
             // private mode: the lens just does not glide between pages
         }
@@ -89,22 +116,21 @@ onMounted(async () => {
     if (!container) {
         return;
     }
-    resizeObserver = new ResizeObserver(() => update(false));
+    resizeObserver = new ResizeObserver(() => scheduleUpdate(false));
     resizeObserver.observe(container);
-    mutationObserver = new MutationObserver(() => update(true));
+    mutationObserver = new MutationObserver(() => scheduleUpdate(true));
     mutationObserver.observe(container, {
         subtree: true,
         childList: true,
         attributes: true,
-        attributeFilter: ['class', 'data-state', 'aria-pressed', 'aria-current'],
+        attributeFilter: ['class', 'data-state', 'aria-pressed'],
     });
     container.addEventListener('animationend', onSettled);
-    container.addEventListener('transitionend', onSettled);
 });
 
 function onSettled(event: Event) {
     if (event.target !== el.value && !el.value?.contains(event.target as Node)) {
-        update(false);
+        scheduleUpdate(false);
     }
 }
 
@@ -113,9 +139,11 @@ onBeforeUnmount(() => {
     mutationObserver?.disconnect();
     window.clearTimeout(movingTimer);
     settleTimers.forEach((timer) => window.clearTimeout(timer));
+    if (frame !== undefined) {
+        cancelAnimationFrame(frame);
+    }
     const container = el.value?.parentElement;
     container?.removeEventListener('animationend', onSettled);
-    container?.removeEventListener('transitionend', onSettled);
 });
 </script>
 

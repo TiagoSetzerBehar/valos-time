@@ -11,11 +11,16 @@ use App\Models\Organization;
 use App\Models\Project;
 use App\Models\Tag;
 use App\Models\Task;
+use App\Models\TimeEntry;
 use App\Service\PermissionStore;
+use App\Service\ValoTimeEntryRules;
+use Closure;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\Validator;
 use Korridor\LaravelModelValidationRules\Rules\ExistsEloquent;
 
 /**
@@ -115,6 +120,45 @@ class TimeEntryUpdateMultipleRequest extends BaseFormRequest
                     return $builder->whereBelongsTo($this->organization, 'organization');
                 })->uuid(),
             ],
+        ];
+    }
+
+    /**
+     * VALO's Time: required fields of the organization, checked on every finished entry after the changes.
+     *
+     * @return array<int, Closure>
+     */
+    public function after(): array
+    {
+        return [
+            function (Validator $validator): void {
+                $changes = $this->input('changes');
+                if (! is_array($changes)
+                    || (! array_key_exists('project_id', $changes) && ! array_key_exists('description', $changes) && ! array_key_exists('type', $changes))) {
+                    return;
+                }
+                $ids = array_values(array_filter((array) $this->input('ids', []), fn (mixed $id): bool => is_string($id) && Str::isUuid($id)));
+                $timeEntries = TimeEntry::query()
+                    ->where('organization_id', '=', $this->organization->getKey())
+                    ->whereIn('id', $ids)
+                    ->get();
+                foreach ($timeEntries as $timeEntry) {
+                    $type = array_key_exists('type', $changes) ? (string) $changes['type'] : $timeEntry->type->value;
+                    $missing = ValoTimeEntryRules::missingRequiredFields(
+                        $this->organization,
+                        $type === TimeEntryType::Break->value,
+                        $timeEntry->end !== null,
+                        array_key_exists('project_id', $changes) ? $changes['project_id'] : $timeEntry->project_id,
+                        array_key_exists('description', $changes) ? $changes['description'] : $timeEntry->description
+                    );
+                    foreach ($missing as $field => $message) {
+                        $validator->errors()->add('changes.'.$field, $message);
+                    }
+                    if ($missing !== []) {
+                        return;
+                    }
+                }
+            },
         ];
     }
 }

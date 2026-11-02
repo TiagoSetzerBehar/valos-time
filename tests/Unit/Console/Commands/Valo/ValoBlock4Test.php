@@ -74,4 +74,24 @@ class ValoBlock4Test extends TestCaseWithDatabase
             && $mail->rows === [['project' => 'Web Bilbao', 'hours' => '3:15']]
             && $mail->total === '3:15');
     }
+
+    public function test_mass_update_cannot_remove_the_project_when_it_is_required(): void
+    {
+        // Arrange
+        $data = $this->createUserWithRole(Role::Owner);
+        ValoReminderSetting::forOrganization($data->organization)->fill(['require_project' => true])->save();
+        $project = Project::factory()->forOrganization($data->organization)->create();
+        $timeEntry = TimeEntry::factory()->forMember($data->member)->forProject($project)->create();
+        Passport::actingAs($data->user);
+
+        // Act
+        $response = $this->patchJson(route('api.v1.time-entries.update-multiple', [$data->organization->getKey()]), [
+            'ids' => [$timeEntry->getKey()],
+            'changes' => ['project_id' => null],
+        ]);
+
+        // Assert
+        $response->assertStatus(422)->assertJsonValidationErrors(['changes.project_id']);
+        $this->assertSame($project->getKey(), $timeEntry->fresh()->project_id);
+    }
 }
