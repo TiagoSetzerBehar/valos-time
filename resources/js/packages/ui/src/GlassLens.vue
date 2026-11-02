@@ -22,6 +22,7 @@ let last = '';
 let movingTimer: number | undefined;
 let resizeObserver: ResizeObserver | undefined;
 let mutationObserver: MutationObserver | undefined;
+const settleTimers: number[] = [];
 
 function measure(): Box | null {
     const container = el.value?.parentElement;
@@ -81,6 +82,9 @@ onMounted(async () => {
     } else {
         update(false);
     }
+    for (const delay of [60, 200, 450, 900]) {
+        settleTimers.push(window.setTimeout(() => update(true), delay));
+    }
     const container = el.value?.parentElement;
     if (!container) {
         return;
@@ -108,6 +112,7 @@ onBeforeUnmount(() => {
     resizeObserver?.disconnect();
     mutationObserver?.disconnect();
     window.clearTimeout(movingTimer);
+    settleTimers.forEach((timer) => window.clearTimeout(timer));
     const container = el.value?.parentElement;
     container?.removeEventListener('animationend', onSettled);
     container?.removeEventListener('transitionend', onSettled);

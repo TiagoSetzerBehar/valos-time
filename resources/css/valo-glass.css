@@ -411,3 +411,43 @@ html.valo-glass.dark body {
 .valo-glass .valo-sidebar-panel .valo-lens-host {
     scrollbar-width: none;
 }
+
+/* Modals (edit a time entry, create a project...): a slightly darker, denser glass sheet so they
+   stand out from the page behind them. */
+html.valo-glass.light {
+    --valo-sheet-bg: rgba(221, 231, 239, 0.9);
+    --valo-sheet-border: rgba(255, 255, 255, 0.8);
+    --valo-sheet-shadow:
+        inset 0 1px 1px rgba(255, 255, 255, 0.9), 0 30px 80px rgba(12, 40, 64, 0.3),
+        0 4px 14px rgba(12, 40, 64, 0.12);
+}
+
+html.valo-glass.dark {
+    --valo-sheet-bg: rgba(46, 58, 70, 0.78);
+    --valo-sheet-border: rgba(255, 255, 255, 0.18);
+    --valo-sheet-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.12), 0 30px 80px rgba(0, 0, 0, 0.6);
+}
+
+.valo-glass [role='dialog'].bg-default-background {
+    background: var(--valo-sheet-bg);
+    border-color: var(--valo-sheet-border);
+    border-radius: 1.75rem;
+    box-shadow: var(--valo-sheet-shadow);
+    -webkit-backdrop-filter: blur(40px) saturate(1.6);
+    backdrop-filter: blur(40px) saturate(1.6);
+}
+
+/* Dim the page behind a modal a little */
+.valo-glass .bg-default-background.opacity-30 {
+    background: #0b1520;
+}
+
+/* Menus and pickers: same denser glass, rounder */
+.valo-glass .bg-popover {
+    background: var(--valo-sheet-bg);
+    border-color: var(--valo-sheet-border);
+    border-radius: 1rem;
+    box-shadow: var(--valo-sheet-shadow);
+    -webkit-backdrop-filter: blur(40px) saturate(1.6);
+    backdrop-filter: blur(40px) saturate(1.6);
+}
