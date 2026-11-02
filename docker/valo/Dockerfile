@@ -17,14 +17,15 @@ RUN npm run build
 
 FROM base
 USER root
+ENV PORT=10000
 COPY --chown=laravel:laravel . /var/www/html
 COPY --from=assets --chown=laravel:laravel /app/public/build /var/www/html/public/build
 # Small instances: two workers, recycled regularly
 # Render blocks binaries with file capabilities ("Operation not permitted"): copying drops them.
-# The app listens on 10000, the port Render health-checks by default.
+# The app listens on $PORT (set by Render; 10000 when missing).
 RUN cp /usr/local/bin/frankenphp /tmp/frankenphp && mv -f /tmp/frankenphp /usr/local/bin/frankenphp \
     && chmod 755 /usr/local/bin/frankenphp \
-    && sed -i 's/--port=8000/--port=10000 --workers=2 --max-requests=500/' /etc/supervisor/conf.d/supervisord.frankenphp.conf \
+    && sed -i 's/--port=8000/--port=%(ENV_PORT)s --workers=2 --max-requests=500/' /etc/supervisor/conf.d/supervisord.frankenphp.conf \
     && composer dump-autoload --optimize --no-dev --no-interaction \
     && mkdir -p storage/framework/sessions storage/framework/views storage/framework/cache storage/logs bootstrap/cache \
     && chown -R laravel:laravel storage bootstrap/cache
