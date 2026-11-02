@@ -50,7 +50,7 @@ function format(seconds: number) {
                 format(goal.progress.tracked_seconds)
             }}</span>
             <span v-if="!hideTarget" class="text-text-secondary">
-                of {{ format(goal.target_seconds) }}
+                {{ $t('of') }} {{ format(goal.target_seconds) }}
             </span>
         </div>
     </div>

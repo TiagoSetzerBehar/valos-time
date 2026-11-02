@@ -120,33 +120,35 @@ function goToCalendarDay(date: string) {
             </div>
         </MainContainer>
         <TimeWeekSummary></TimeWeekSummary>
-        <TimeEntryMassActionRow
-            v-if="selectedTimeEntries.length > 0"
-            :selected-time-entries="selectedTimeEntries"
-            :enable-estimated-time="isAllowedToPerformPremiumAction()"
-            :can-create-project="canCreateProjects()"
-            :all-selected="selectedTimeEntries.length === timeEntries.length"
-            :delete-selected="deleteSelected"
-            :projects="projects"
-            :tasks="tasks"
-            :tags="tags"
-            :currency="getOrganizationCurrencyString()"
-            :clients="clients"
-            :organization-billable-rate="organization?.billable_rate ?? null"
-            class="border-t border-default-background-separator hidden sm:block"
-            :update-time-entries="
-                (args) =>
-                    updateTimeEntries(
-                        selectedTimeEntries.map((timeEntry) => timeEntry.id),
-                        args
-                    )
-            "
-            :create-project="createProject"
-            :create-client="createClient"
-            :create-tag="createTag"
-            @submit="clearSelectionAndState"
-            @select-all="selectedTimeEntries = [...timeEntries]"
-            @unselect-all="selectedTimeEntries = []"></TimeEntryMassActionRow>
+        <div class="valo-mass-slot min-h-8">
+            <TimeEntryMassActionRow
+                v-if="selectedTimeEntries.length > 0"
+                :selected-time-entries="selectedTimeEntries"
+                :enable-estimated-time="isAllowedToPerformPremiumAction()"
+                :can-create-project="canCreateProjects()"
+                :all-selected="selectedTimeEntries.length === timeEntries.length"
+                :delete-selected="deleteSelected"
+                :projects="projects"
+                :tasks="tasks"
+                :tags="tags"
+                :currency="getOrganizationCurrencyString()"
+                :clients="clients"
+                :organization-billable-rate="organization?.billable_rate ?? null"
+                class="border-t border-default-background-separator hidden sm:block"
+                :update-time-entries="
+                    (args) =>
+                        updateTimeEntries(
+                            selectedTimeEntries.map((timeEntry) => timeEntry.id),
+                            args
+                        )
+                "
+                :create-project="createProject"
+                :create-client="createClient"
+                :create-tag="createTag"
+                @submit="clearSelectionAndState"
+                @select-all="selectedTimeEntries = [...timeEntries]"
+                @unselect-all="selectedTimeEntries = []"></TimeEntryMassActionRow>
+        </div>
         <TimeEntryGroupedTable
             v-model:selected="selectedTimeEntries"
             :create-project

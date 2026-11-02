@@ -38,7 +38,8 @@ const forwarded = useForwardPropsEmits(delegatedProps, emits);
     <RangeCalendarRoot
         v-slot="{ grid, weekDays }"
         :class="cn('p-3', props.class)"
-        v-bind="forwarded">
+        v-bind="forwarded"
+        :locale="forwarded.locale ?? 'es'">
         <RangeCalendarHeader>
             <RangeCalendarPrevButton />
             <RangeCalendarHeading />

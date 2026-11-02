@@ -130,7 +130,7 @@ watch(open, (isOpen) => {
                                             v-if="cmd.badgeClass"
                                             class="ml-2 rounded px-1.5 py-0.5 text-xs font-medium"
                                             :class="cmd.badgeClass">
-                                            {{ cmd.entityType }}
+                                            {{ $t(cmd.entityType) }}
                                         </span>
                                     </CommandItem>
                                 </CommandGroup>

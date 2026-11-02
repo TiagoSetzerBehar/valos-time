@@ -150,12 +150,12 @@ async function handleDeleteTimeEntry() {
                 <MainContainer class="min-w-0">
                     <div class="@xl:flex py-2 min-w-0 items-center justify-between group">
                         <!-- Desktop layout -->
-                        <div class="hidden @lg:flex items-center min-w-0">
+                        <div class="hidden @lg:flex items-center min-w-0 flex-1">
                             <Checkbox :checked="selected" @update:checked="onSelectChange" />
                             <div v-if="indent === true" class="w-10 h-7"></div>
                             <TimeEntryDescriptionInput
                                 v-if="!isBreak"
-                                class="min-w-0 mr-4 shrink"
+                                class="min-w-0 mr-4 flex-1"
                                 :model-value="timeEntry.description"
                                 @changed="updateTimeEntryDescription"></TimeEntryDescriptionInput>
                             <BreakLabel v-if="isBreak" class="pl-1.5 @lg:pl-3 pr-2 shrink-0" />
@@ -170,7 +170,7 @@ async function handleDeleteTimeEntry() {
                                 :fix-in-calendar="fixInCalendar" />
                             <TimeTrackerProjectTaskDropdown
                                 v-if="!isBreak"
-                                class="min-w-0 shrink"
+                                class="min-w-0 shrink-0 max-w-[50%]"
                                 :create-project
                                 :create-client
                                 :can-create-project

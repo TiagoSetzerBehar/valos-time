@@ -66,7 +66,7 @@ const showMassUpdateModal = ref(false);
         :class="
             twMerge(
                 props.class,
-                'text-sm h-8 font-medium hidden sm:flex border-b border-border-primary items-center space-x-3'
+                'text-sm h-8 font-medium flex border-b border-border-primary items-center space-x-3'
             )
         ">
         <Checkbox

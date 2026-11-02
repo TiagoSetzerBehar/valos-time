@@ -477,3 +477,20 @@ html.valo-glass.dark {
     -webkit-backdrop-filter: blur(40px) saturate(1.6);
     backdrop-filter: blur(40px) saturate(1.6);
 }
+
+/* Page title band (Ajustes, Perfil): no opaque strip on the glass */
+.valo-glass [data-valo-page-header] {
+    background: transparent;
+    border-color: transparent;
+    box-shadow: none;
+}
+
+/* Checkboxes readable in dark mode */
+.valo-glass.dark button[role='checkbox'] {
+    border-color: rgba(255, 255, 255, 0.45);
+}
+
+/* Sub-menus open beside their parent menu, not on top of it */
+.valo-glass [data-radix-popper-content-wrapper] [role='menu'] [role='menu'] {
+    margin-left: 4px;
+}

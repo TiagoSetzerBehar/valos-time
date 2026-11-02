@@ -360,6 +360,7 @@ const page = usePage<{
                 <BillingBanner v-if="isBillingActivated()" />
 
                 <header
+                    data-valo-page-header
                     v-if="$slots.header"
                     class="bg-default-background border-b border-default-background-separator shadow">
                     <div class="pt-8 pb-3">

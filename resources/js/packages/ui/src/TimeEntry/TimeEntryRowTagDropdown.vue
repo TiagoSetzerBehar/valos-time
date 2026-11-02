@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import TagDropdown from '@/packages/ui/src/Tag/TagDropdown.vue';
 import { computed } from 'vue';
+import { trans } from 'laravel-vue-i18n';
 import TagBadge from '@/packages/ui/src/Tag/TagBadge.vue';
 import type { Tag } from '@/packages/api/src';
 
@@ -30,7 +31,7 @@ const timeEntryTags = computed<Tag[]>(() => {
 const displayName = computed(() => {
     if (props.compact && timeEntryTags.value.length > 0) {
         const count = timeEntryTags.value.length;
-        return count === 1 ? '1 tag' : `${count} tags`;
+        return count === 1 ? trans('1 tag') : trans(':count tags', { count: String(count) });
     }
     if (timeEntryTags.value.length >= 3) {
         const firstTag = timeEntryTags.value[0]?.name || '';
