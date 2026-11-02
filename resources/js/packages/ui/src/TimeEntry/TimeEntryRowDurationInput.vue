@@ -3,6 +3,7 @@ import {
     calculateDifference,
     formatHumanReadableDuration,
     formatReportingDuration,
+    MAX_TIME_ENTRY_SECONDS,
     parseTimeInput,
 } from '@/packages/ui/src/utils/time';
 import { computed, ref, inject, type ComputedRef } from 'vue';
@@ -34,7 +35,7 @@ function updateTimerAndStartLiveTimerUpdate() {
         organizationSettings.value.numberFormat,
         organizationSettings.value.intervalFormat === 'decimal' ? 'hours' : 'minutes'
     );
-    if (seconds && seconds > 0) {
+    if (seconds && seconds > 0 && seconds <= MAX_TIME_ENTRY_SECONDS) {
         let newEndDate = props.end;
         let newStartDate = props.start;
         if (props.end) {

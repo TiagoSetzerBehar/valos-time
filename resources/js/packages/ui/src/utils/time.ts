@@ -305,6 +305,9 @@ export function formatStartEnd(
     }
 }
 
+/** Longest duration that can be typed for a single time entry (24 hours). */
+export const MAX_TIME_ENTRY_SECONDS = 24 * 60 * 60;
+
 export function parseTimeInput(
     input: string,
     numberFormat?: string,

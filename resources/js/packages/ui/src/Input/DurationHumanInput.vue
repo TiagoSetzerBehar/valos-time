@@ -3,6 +3,7 @@ import { onMounted, ref, watch, inject } from 'vue';
 import {
     formatHumanReadableDuration,
     getDayJsInstance,
+    MAX_TIME_ENTRY_SECONDS,
     parseTimeInput,
 } from '@/packages/ui/src/utils/time';
 import dayjs from 'dayjs';
@@ -29,7 +30,7 @@ function updateDuration() {
         organization?.value?.number_format,
         organization?.value?.interval_format === 'decimal' ? 'hours' : 'minutes'
     );
-    if (seconds && seconds > 0) {
+    if (seconds && seconds > 0 && seconds <= MAX_TIME_ENTRY_SECONDS) {
         const newStartDate = getDayJsInstance()(end.value).subtract(seconds, 's');
         start.value = newStartDate.utc().format();
     }

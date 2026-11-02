@@ -3,7 +3,12 @@ import Dropdown from '@/packages/ui/src/Input/Dropdown.vue';
 import { computed, ref } from 'vue';
 import TimeRangeSelector from '@/packages/ui/src/Input/TimeRangeSelector.vue';
 import dayjs, { Dayjs } from 'dayjs';
-import { formatDuration, getDayJsInstance, parseTimeInput } from '@/packages/ui/src/utils/time';
+import {
+    formatDuration,
+    getDayJsInstance,
+    MAX_TIME_ENTRY_SECONDS,
+    parseTimeInput,
+} from '@/packages/ui/src/utils/time';
 import type { TimeEntry } from '@/packages/api/src';
 
 const currentTimeEntry = defineModel<TimeEntry>('currentTimeEntry', {
@@ -67,7 +72,7 @@ const currentTime = computed({
 function updateTimerAndStartLiveTimerUpdate() {
     const seconds = parseTimeInput(temporaryCustomTimerEntry.value);
 
-    if (seconds && seconds > 0) {
+    if (seconds && seconds > 0 && seconds <= MAX_TIME_ENTRY_SECONDS) {
         const newStartDate = dayjs().subtract(seconds, 's');
         currentTimeEntry.value.start = newStartDate.utc().format();
         if (currentTimeEntry.value.id !== '') {

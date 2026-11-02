@@ -107,8 +107,38 @@ provide(upgradeCtaKey, {
     goToBilling: () => router.visit('/billing'),
 });
 
+const sidebarScroll = ref<HTMLElement | null>(null);
+
+function saveSidebarScroll() {
+    try {
+        sessionStorage.setItem('valo-sidebar-scroll', String(sidebarScroll.value?.scrollTop ?? 0));
+    } catch {
+        // storage unavailable: the sidebar just starts at the top
+    }
+}
+
+// The layout is rebuilt on every page: put the sidebar back where it was and make sure the current page is visible
+function restoreSidebarScroll() {
+    const container = sidebarScroll.value;
+    if (!container) {
+        return;
+    }
+    try {
+        container.scrollTop = Number(sessionStorage.getItem('valo-sidebar-scroll') ?? 0);
+    } catch {
+        // storage unavailable
+    }
+    const active = container.querySelector<HTMLElement>(
+        '.valo-nav-active, .valo-nav-parent-current'
+    );
+    active?.scrollIntoView({ block: 'nearest' });
+}
+
 onMounted(async () => {
     useTheme();
+    restoreSidebarScroll();
+    // the current item gets its class a moment after mounting
+    window.setTimeout(restoreSidebarScroll, 150);
     document.documentElement.classList.add('valo-glass');
     // make sure that the initial requests are only loaded once, this can be removed once we move away from inertia
     if (window.initialDataLoaded !== true) {
@@ -182,7 +212,9 @@ const page = usePage<{
                     <CurrentSidebarTimer></CurrentSidebarTimer>
                 </div>
                 <div
-                    class="valo-sidebar-scroll valo-lens-host relative overflow-y-auto flex-1 w-full">
+                    ref="sidebarScroll"
+                    class="valo-sidebar-scroll valo-lens-host relative overflow-y-auto flex-1 w-full"
+                    @scroll="saveSidebarScroll">
                     <GlassLens
                         selector=".valo-nav-active || .valo-nav-parent-current"
                         storage-key="nav"

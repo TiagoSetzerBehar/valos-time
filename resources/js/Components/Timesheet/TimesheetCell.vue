@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { MAX_TIME_ENTRY_SECONDS } from '@/packages/ui/src/utils/time';
 import { computed } from 'vue';
 import { CheckIcon } from '@heroicons/vue/16/solid';
 import DurationSecondsInput from '@/packages/ui/src/Input/DurationSecondsInput.vue';
@@ -92,7 +93,13 @@ const inputClass = computed(() => {
                     size="sm"
                     :disabled="isSaving"
                     :input-class="inputClass"
-                    @commit="(seconds) => emit('update', seconds ?? 0)" />
+                    @commit="
+                        (seconds) => {
+                            // A day has 24 hours: longer values are ignored
+                            if ((seconds ?? 0) <= MAX_TIME_ENTRY_SECONDS)
+                                emit('update', seconds ?? 0);
+                        }
+                    " />
                 <span
                     v-if="saveStatus === 'saving' || saveStatus === 'saved'"
                     class="pointer-events-none absolute left-full top-1/2 ml-1.5 flex -translate-y-1/2 items-center"
