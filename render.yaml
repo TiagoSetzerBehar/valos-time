@@ -10,7 +10,7 @@ services:
     healthCheckPath: /login
     envVars:
       - key: PORT
-        value: "8000"
+        value: "10000"
       - key: APP_URL
         sync: false
       - key: APP_KEY

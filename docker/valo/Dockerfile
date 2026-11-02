@@ -20,7 +20,11 @@ USER root
 COPY --chown=laravel:laravel . /var/www/html
 COPY --from=assets --chown=laravel:laravel /app/public/build /var/www/html/public/build
 # Small instances: two workers, recycled regularly
-RUN sed -i 's/--port=8000/--port=8000 --workers=2 --max-requests=500/' /etc/supervisor/conf.d/supervisord.frankenphp.conf \
+# Render blocks binaries with file capabilities ("Operation not permitted"): copying drops them.
+# The app listens on 10000, the port Render health-checks by default.
+RUN cp /usr/local/bin/frankenphp /tmp/frankenphp && mv -f /tmp/frankenphp /usr/local/bin/frankenphp \
+    && chmod 755 /usr/local/bin/frankenphp \
+    && sed -i 's/--port=8000/--port=10000 --workers=2 --max-requests=500/' /etc/supervisor/conf.d/supervisord.frankenphp.conf \
     && composer dump-autoload --optimize --no-dev --no-interaction \
     && mkdir -p storage/framework/sessions storage/framework/views storage/framework/cache storage/logs bootstrap/cache \
     && chown -R laravel:laravel storage bootstrap/cache
