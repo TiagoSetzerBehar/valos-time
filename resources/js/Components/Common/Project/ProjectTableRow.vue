@@ -99,7 +99,7 @@ const { locked: billableRatesLocked } = useBillableRatesLock();
                             backgroundColor: project.color,
                             boxShadow: `var(--tw-ring-inset) 0 0 0 calc(4px + var(--tw-ring-offset-width)) ${project.color}30`,
                         }"
-                        class="w-3 h-3 ml-1 rounded-full"></div>
+                        class="w-3 h-3 ml-1 rounded-full shrink-0"></div>
                     <span class="overflow-ellipsis overflow-hidden">
                         {{ project.name }}
                     </span>

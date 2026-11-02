@@ -28,6 +28,7 @@ const open = useSessionStorage('valo-nav-open-' + props.title, props.current ===
         <CollapsibleRoot v-else v-model:open="open"
             ><CollapsibleTrigger class="w-full group py-0.5">
                 <div
+                    :class="{ 'valo-nav-parent-current': current }"
                     class="text-text-secondary group-hover:text-text-primary group-hover:bg-menu-active group flex gap-x-2 rounded transition leading-6 py-1.5 px-2 font-medium text-sm items-center justify-between valo-nav-top">
                     <div class="flex items-center gap-x-2">
                         <component

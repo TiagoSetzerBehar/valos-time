@@ -28,7 +28,11 @@ const settleTimers: number[] = [];
 
 function measure(): Box | null {
     const container = el.value?.parentElement;
-    const target = container?.querySelector<HTMLElement>(props.selector);
+    // 'a || b': the first selector that matches a visible element wins
+    const target = props.selector
+        .split('||')
+        .map((selector) => container?.querySelector<HTMLElement>(selector.trim()))
+        .find((element) => element && element.offsetParent !== null);
     if (!container || !target || target.offsetParent === null) {
         return null;
     }

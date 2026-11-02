@@ -6,7 +6,7 @@
 
 html.valo-glass.light {
     /* Surfaces that use the default background (modals, command palette, calendar) */
-    --theme-color-default-background: rgba(221, 231, 239, 0.9);
+    --theme-color-default-background: #dde7ef;
     --theme-color-card-background: rgba(255, 255, 255, 0.42);
     --theme-color-row-background: transparent;
     --theme-color-card-border: rgba(255, 255, 255, 0.75);
@@ -35,7 +35,7 @@ html.valo-glass.light {
 }
 
 html.valo-glass.dark {
-    --theme-color-default-background: rgba(46, 58, 70, 0.78);
+    --theme-color-default-background: #2b3640;
     --theme-color-card-background: rgba(20, 28, 36, 0.5);
     --theme-color-row-background: transparent;
     --theme-color-card-border: rgba(255, 255, 255, 0.1);
@@ -410,13 +410,14 @@ html.valo-glass.dark body {
 }
 
 .valo-sidebar-scroll {
-    scrollbar-width: none;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(120, 135, 147, 0.35) transparent;
 }
 
 /* Modals (edit a time entry, create a project...): a slightly darker, denser glass sheet so they
    stand out from the page behind them. */
 html.valo-glass.light {
-    --valo-sheet-bg: rgba(221, 231, 239, 0.9);
+    --valo-sheet-bg: rgba(221, 231, 239, 0.94);
     --valo-sheet-border: rgba(255, 255, 255, 0.8);
     --valo-sheet-shadow:
         inset 0 1px 1px rgba(255, 255, 255, 0.9), 0 30px 80px rgba(12, 40, 64, 0.3),
@@ -424,7 +425,7 @@ html.valo-glass.light {
 }
 
 html.valo-glass.dark {
-    --valo-sheet-bg: rgba(46, 58, 70, 0.78);
+    --valo-sheet-bg: rgba(43, 54, 64, 0.92);
     --valo-sheet-border: rgba(255, 255, 255, 0.18);
     --valo-sheet-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.12), 0 30px 80px rgba(0, 0, 0, 0.6);
 }
@@ -448,6 +449,30 @@ html.valo-glass.dark {
     background: var(--valo-sheet-bg);
     border-color: var(--valo-sheet-border);
     border-radius: 1rem;
+    box-shadow: var(--valo-sheet-shadow);
+    -webkit-backdrop-filter: blur(40px) saturate(1.6);
+    backdrop-filter: blur(40px) saturate(1.6);
+}
+
+/* The top bar stays visible while scrolling */
+.valo-glass .valo-topbar {
+    position: sticky;
+}
+
+/* A scrollbar appearing must not shift the layout sideways */
+.valo-glass .valo-shell-main {
+    scrollbar-gutter: stable;
+}
+
+/* Parent menu item of the current page (collapsed Informes, project detail) */
+.valo-glass .valo-nav-parent-current {
+    color: var(--valo-active-text);
+    font-weight: 600;
+}
+
+/* Dropdowns that live inside glass cards (recent entries, pickers) */
+.valo-glass .bg-card-background .absolute.z-50 {
+    background: var(--valo-sheet-bg);
     box-shadow: var(--valo-sheet-shadow);
     -webkit-backdrop-filter: blur(40px) saturate(1.6);
     backdrop-filter: blur(40px) saturate(1.6);

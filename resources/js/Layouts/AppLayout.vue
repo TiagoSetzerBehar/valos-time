@@ -183,7 +183,10 @@ const page = usePage<{
                 </div>
                 <div
                     class="valo-sidebar-scroll valo-lens-host relative overflow-y-auto flex-1 w-full">
-                    <GlassLens selector=".valo-nav-active" storage-key="nav" axis="y" />
+                    <GlassLens
+                        selector=".valo-nav-active || .valo-nav-parent-current"
+                        storage-key="nav"
+                        axis="y" />
                     <div class="pt-3"></div>
                     <nav>
                         <ul>
@@ -271,7 +274,9 @@ const page = usePage<{
                                 :title="$t('Projects')"
                                 :icon="FolderIcon"
                                 :href="route('projects')"
-                                :current="route().current('projects')"></NavigationSidebarItem>
+                                :current="
+                                    route().current('projects') || route().current('projects.show')
+                                "></NavigationSidebarItem>
                             <NavigationSidebarItem
                                 v-if="canViewClients()"
                                 :title="$t('Clients')"

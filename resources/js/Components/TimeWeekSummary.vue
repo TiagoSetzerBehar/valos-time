@@ -68,10 +68,12 @@ const days = computed(() => {
 const selected = ref(today);
 
 function pick(key: string) {
+    const dayCard = document.querySelector(`[data-valo-day="${key}"]`);
+    if (!dayCard) {
+        return;
+    }
     selected.value = key;
-    document
-        .querySelector(`[data-valo-day="${key}"]`)
-        ?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    dayCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 </script>
 

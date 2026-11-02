@@ -115,7 +115,7 @@ function goToCalendarDay(date: string) {
     <AppLayout :title="$t('Time')" data-testid="time_view">
         <MainContainer class="pt-5 lg:pt-8 pb-4 lg:pb-6">
             <div
-                class="rounded border border-card-border bg-card-background px-2 sm:px-3 py-1.5 shadow-card">
+                class="relative z-20 rounded border border-card-border bg-card-background px-2 sm:px-3 py-1.5 shadow-card">
                 <TimeTracker></TimeTracker>
             </div>
         </MainContainer>

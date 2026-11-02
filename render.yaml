@@ -54,10 +54,15 @@ services:
         value: stderr
       - key: LOG_LEVEL
         value: warning
-      # Until Brevo is set up emails are only logged; then set MAIL_MAILER=smtp and add
-      # MAIL_USERNAME, MAIL_PASSWORD and MAIL_FROM_ADDRESS in the Render dashboard.
+      # Emails go through Brevo (free plan). MAIL_PASSWORD is the Brevo SMTP key.
       - key: MAIL_MAILER
-        value: log
+        value: smtp
+      - key: MAIL_USERNAME
+        value: c117d7001@smtp-brevo.com
+      - key: MAIL_PASSWORD
+        sync: false
+      - key: MAIL_FROM_ADDRESS
+        value: tiago.behar@icloud.com
       - key: MAIL_HOST
         value: smtp-relay.brevo.com
       - key: MAIL_PORT

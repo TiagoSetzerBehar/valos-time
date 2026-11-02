@@ -24,7 +24,7 @@
     ":count min": ":count min",
     ":count overlapping": ":count superpuestos",
     ":count Project|:count Projects": ":count proyecto|:count proyectos",
-    ":count selected": ":count seleccionados",
+    ":count selected": "Seleccionados: :count",
     ":count skipped": ":count omitidos",
     ":count tag selected|:count tags selected": ":count etiqueta seleccionada|:count etiquetas seleccionadas",
     ":count Tag|:count Tags": ":count etiqueta|:count etiquetas",
