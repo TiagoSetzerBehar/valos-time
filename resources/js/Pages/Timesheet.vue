@@ -212,37 +212,40 @@ async function createTag(name: string): Promise<Tag | undefined> {
                 @next="goToNextWeek"
                 @current="goToCurrentWeek" />
 
-            <TimesheetGrid
-                v-if="!isPending"
-                :rows="rows"
-                :week-days="weekDays"
-                :today-date="todayDate"
-                :day-totals="dayTotals"
-                :week-total-formatted="weekTotalFormatted"
-                :break-day-totals="breakDayTotals"
-                :break-grand-total="breakGrandTotal"
-                :projects="projects"
-                :tasks="tasks"
-                :clients="clients"
-                :tags="tags"
-                :currency="getOrganizationCurrencyString()"
-                :can-create-project="canCreateProjects()"
-                :enable-estimated-time="isAllowedToPerformPremiumAction()"
-                :create-project="createProject"
-                :create-client="createClient"
-                :create-tag="createTag"
-                :format-duration="formatDuration"
-                :cell-statuses="cellStatus"
-                :cell-pending-seconds="cellPendingSeconds"
-                :misplaced-break-dates="misplacedBreakDates"
-                @remove-row="handleRemoveRow"
-                @cell-update="handleCellUpdate"
-                @project-task-change="
-                    (row, projectId, taskId) => handleRowIdentityChange(row, { projectId, taskId })
-                "
-                @billable-change="(row, billable) => handleRowIdentityChange(row, { billable })"
-                @tags-change="(row, tags) => handleRowIdentityChange(row, { tags })"
-                @add-row="handleAddRow" />
+            <div class="valo-page-card">
+                <TimesheetGrid
+                    v-if="!isPending"
+                    :rows="rows"
+                    :week-days="weekDays"
+                    :today-date="todayDate"
+                    :day-totals="dayTotals"
+                    :week-total-formatted="weekTotalFormatted"
+                    :break-day-totals="breakDayTotals"
+                    :break-grand-total="breakGrandTotal"
+                    :projects="projects"
+                    :tasks="tasks"
+                    :clients="clients"
+                    :tags="tags"
+                    :currency="getOrganizationCurrencyString()"
+                    :can-create-project="canCreateProjects()"
+                    :enable-estimated-time="isAllowedToPerformPremiumAction()"
+                    :create-project="createProject"
+                    :create-client="createClient"
+                    :create-tag="createTag"
+                    :format-duration="formatDuration"
+                    :cell-statuses="cellStatus"
+                    :cell-pending-seconds="cellPendingSeconds"
+                    :misplaced-break-dates="misplacedBreakDates"
+                    @remove-row="handleRemoveRow"
+                    @cell-update="handleCellUpdate"
+                    @project-task-change="
+                        (row, projectId, taskId) =>
+                            handleRowIdentityChange(row, { projectId, taskId })
+                    "
+                    @billable-change="(row, billable) => handleRowIdentityChange(row, { billable })"
+                    @tags-change="(row, tags) => handleRowIdentityChange(row, { tags })"
+                    @add-row="handleAddRow" />
+            </div>
 
             <TimesheetFooterActions
                 v-if="!isPending"

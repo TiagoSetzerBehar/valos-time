@@ -63,7 +63,7 @@ const emit = defineEmits<{
 </script>
 
 <template>
-    <div class="flow-root max-w-[100vw] overflow-x-auto">
+    <div class="flow-root max-w-full overflow-x-auto">
         <div class="inline-block min-w-full align-middle">
             <div
                 class="grid min-w-full w-max border-y border-default-background-separator"

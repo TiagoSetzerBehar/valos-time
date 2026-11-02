@@ -20,16 +20,16 @@ const showTargetColumn = isGoalsExtensionActivated();
 const gridTemplateColumns = [
     'minmax(180px, 1.25fr)',
     ...(showTargetColumn ? ['minmax(120px, 0.75fr)'] : []),
-    'minmax(200px, 1fr)',
-    'minmax(180px, 1fr)',
     'minmax(160px, 1fr)',
+    'minmax(140px, 1fr)',
+    'minmax(140px, 1fr)',
     'minmax(120px, 0.75fr)',
     '80px',
 ].join(' ');
 </script>
 
 <template>
-    <div class="flow-root max-w-[100vw] overflow-x-auto">
+    <div class="flow-root max-w-full overflow-x-auto">
         <div class="inline-block min-w-full align-middle">
             <div data-testid="goal_table" class="grid min-w-full" :style="{ gridTemplateColumns }">
                 <GoalTableHeading :show-target-column="showTargetColumn"></GoalTableHeading>

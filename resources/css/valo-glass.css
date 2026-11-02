@@ -494,3 +494,27 @@ html.valo-glass.dark {
 .valo-glass [data-radix-popper-content-wrapper] [role='menu'] [role='menu'] {
     margin-left: 4px;
 }
+
+/* Glass card around page content (Detallado, Compartido, Metas, Hoja de horas) */
+.valo-page-card {
+    margin: 0.75rem 0.5rem 1.5rem;
+}
+.valo-glass .valo-page-card {
+    overflow: hidden;
+    border: 1px solid var(--theme-color-card-border);
+    border-radius: 1.5rem;
+    background: var(--theme-color-card-background);
+    box-shadow: var(--valo-sheet-shadow);
+    -webkit-backdrop-filter: blur(24px) saturate(1.8);
+    backdrop-filter: blur(24px) saturate(1.8);
+}
+@media (min-width: 640px) {
+    .valo-page-card {
+        margin: 0.75rem 1rem 1.5rem;
+    }
+}
+@media (min-width: 1024px) {
+    .valo-page-card {
+        margin: 0.75rem 1.5rem 1.5rem;
+    }
+}

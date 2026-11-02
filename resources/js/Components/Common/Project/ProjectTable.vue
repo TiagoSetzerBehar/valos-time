@@ -162,7 +162,7 @@ async function createClient(client: CreateClientBody): Promise<Client | undefine
 }
 
 const gridTemplate = computed(() => {
-    return `grid-template-columns: minmax(300px, 1fr) minmax(150px, auto) minmax(140px, auto) minmax(130px, auto) ${props.showBillableRate ? 'minmax(130px, auto)' : ''} minmax(120px, auto) minmax(120px, auto) 80px;`;
+    return `grid-template-columns: minmax(220px, 1fr) minmax(130px, auto) minmax(140px, auto) minmax(130px, auto) ${props.showBillableRate ? 'minmax(130px, auto)' : ''} minmax(120px, auto) minmax(120px, auto) 80px;`;
 });
 </script>
 
@@ -175,7 +175,7 @@ const gridTemplate = computed(() => {
         :organization-billable-rate="organization?.billable_rate ?? null"
         :clients="clients"
         :enable-estimated-time="isAllowedToPerformPremiumAction()"></ProjectCreateModal>
-    <div class="flow-root max-w-[100vw] overflow-x-auto">
+    <div class="flow-root max-w-full overflow-x-auto">
         <div class="inline-block min-w-full align-middle">
             <div data-testid="project_table" class="grid min-w-full" :style="gridTemplate">
                 <ProjectTableHeading

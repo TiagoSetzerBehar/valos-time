@@ -127,14 +127,14 @@ const page = usePage<{
                         <a
                             target="_blank"
                             :href="page.props.terms_url"
-                            class="underline text-sm text-text-secondary hover:text-white rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                            class="underline text-sm text-text-secondary hover:text-white rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-sky-500"
                             >{{ $t('Terms of Service') }}</a
                         >
                         {{ $t('and') }}
                         <a
                             target="_blank"
                             :href="page.props.privacy_policy_url"
-                            class="underline text-sm text-text-secondary hover:text-white rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                            class="underline text-sm text-text-secondary hover:text-white rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-sky-500"
                             >{{ $t('Privacy Policy') }}</a
                         >
                     </FieldLabel>
@@ -160,7 +160,7 @@ const page = usePage<{
             <div class="flex items-center justify-end mt-4">
                 <Link
                     :href="route('login')"
-                    class="underline text-sm text-text-secondary hover:text-white rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                    class="underline text-sm text-text-secondary hover:text-white rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-sky-500">
                     {{ $t('Already registered?') }}
                 </Link>
 

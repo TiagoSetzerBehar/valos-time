@@ -2,6 +2,7 @@
 import { trans } from 'laravel-vue-i18n';
 import PrimaryButton from '@/packages/ui/src/Buttons/PrimaryButton.vue';
 import { ref } from 'vue';
+import { storeToRefs } from 'pinia';
 import { useNotificationsStore } from '@/utils/notification';
 import { api, type OrganizationExportResponse } from '@/packages/api/src';
 import { getCurrentOrganizationId } from '@/utils/useUser';
@@ -16,7 +17,7 @@ const showResultModal = ref(false);
 const loading = ref(false);
 const exportResponse = ref<OrganizationExportResponse | null>(null);
 
-const { organization } = useOrganizationStore();
+const { organization } = storeToRefs(useOrganizationStore());
 const { handleApiRequestNotifications } = useNotificationsStore();
 
 async function exportData() {

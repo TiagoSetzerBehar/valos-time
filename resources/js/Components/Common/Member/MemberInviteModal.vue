@@ -141,7 +141,7 @@ useFocus(clientNameInput, { initialValue: true });
                             v-for="(role, i) in filterRoles(availableRoles)"
                             :key="role.key"
                             type="button"
-                            class="relative px-4 py-3 inline-flex w-full rounded-lg focus:z-10 focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500"
+                            class="relative px-4 py-3 inline-flex w-full rounded-lg focus:z-10 focus:outline-none focus:border-sky-500 focus:ring-2 focus:ring-sky-500"
                             :class="{
                                 'border-t border-card-border focus:border-none rounded-t-none':
                                     i > 0,

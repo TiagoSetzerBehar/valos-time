@@ -41,10 +41,12 @@ const canCreateMore = computed(() => canCreateMoreGoals(goals.value.length));
                 v-if="canCreateGoals()"
                 :can-create-more-goals="canCreateMore"></GoalCreateButton>
         </MainContainer>
-        <GoalTable
-            :goals="visibleGoals"
-            :is-loading="isLoading"
-            :can-create-more-goals="canCreateMore"
-            :showing-archived="showArchived"></GoalTable>
+        <div class="valo-page-card">
+            <GoalTable
+                :goals="visibleGoals"
+                :is-loading="isLoading"
+                :can-create-more-goals="canCreateMore"
+                :showing-archived="showArchived"></GoalTable>
+        </div>
     </AppLayout>
 </template>

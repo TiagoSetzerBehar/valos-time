@@ -337,70 +337,72 @@ async function downloadExport(format: ExportFormat) {
             v-model:start-date="startDate"
             v-model:end-date="endDate"
             @submit="updateFilteredTimeEntries" />
-        <TimeEntryMassActionRow
-            :selected-time-entries="selectedTimeEntries"
-            :can-create-project="canCreateProjects()"
-            :enable-estimated-time="isAllowedToPerformPremiumAction()"
-            :delete-selected="deleteSelected"
-            :all-selected="selectedTimeEntries.length === timeEntries.length"
-            :projects="projects"
-            :tasks="tasks"
-            :tags="tags"
-            :currency="getOrganizationCurrencyString()"
-            :clients="clients"
-            :organization-billable-rate="organization?.billable_rate ?? null"
-            class="border-b border-default-background-separator"
-            :update-time-entries="
-                (args) =>
-                    updateTimeEntries(
-                        selectedTimeEntries.map((timeEntry) => timeEntry.id),
-                        args
-                    )
-            "
-            :create-project="createProject"
-            :create-client="createClient"
-            :create-tag="createTag"
-            @submit="clearSelectionAndState"
-            @select-all="selectedTimeEntries = [...timeEntries]"
-            @unselect-all="selectedTimeEntries = []"></TimeEntryMassActionRow>
-        <div class="w-full relative @container">
-            <div v-for="entry in timeEntries" :key="entry.id">
-                <TimeEntryRow
-                    :selected="selectedTimeEntries.some((item) => item.id === entry.id)"
-                    :can-create-project="canCreateProjects()"
-                    :create-client
-                    :create-project
-                    :enable-estimated-time="isAllowedToPerformPremiumAction()"
-                    :projects="projects"
-                    :tasks="tasks"
-                    :tags="tags"
-                    :clients
-                    :create-tag
-                    :update-time-entry
-                    :on-start-stop-click="() => startTimeEntryFromExisting(entry)"
-                    :delete-time-entry="() => deleteTimeEntries([entry])"
-                    :currency="getOrganizationCurrencyString()"
-                    :organization-billable-rate="organization?.billable_rate ?? null"
-                    :duplicate-time-entry="() => createTimeEntry(entry)"
-                    :members="members"
-                    is-report
-                    show-date
-                    show-member
-                    :time-entry="entry"
-                    @selected="selectedTimeEntries.push(entry)"
-                    @unselected="
-                        selectedTimeEntries = selectedTimeEntries.filter(
-                            (item) => item.id !== entry.id
+        <div class="valo-page-card">
+            <TimeEntryMassActionRow
+                :selected-time-entries="selectedTimeEntries"
+                :can-create-project="canCreateProjects()"
+                :enable-estimated-time="isAllowedToPerformPremiumAction()"
+                :delete-selected="deleteSelected"
+                :all-selected="selectedTimeEntries.length === timeEntries.length"
+                :projects="projects"
+                :tasks="tasks"
+                :tags="tags"
+                :currency="getOrganizationCurrencyString()"
+                :clients="clients"
+                :organization-billable-rate="organization?.billable_rate ?? null"
+                class="border-b border-default-background-separator"
+                :update-time-entries="
+                    (args) =>
+                        updateTimeEntries(
+                            selectedTimeEntries.map((timeEntry) => timeEntry.id),
+                            args
                         )
-                    "></TimeEntryRow>
-            </div>
-            <div v-if="timeEntries.length === 0">
-                <div class="text-center pt-12">
-                    <ClockIcon class="w-8 text-icon-default inline pb-2"></ClockIcon>
-                    <h3 class="text-text-primary font-semibold">
-                        {{ $t('No time entries found') }}
-                    </h3>
-                    <p class="pb-5">{{ $t('Adjust the filters to see more time entries!') }}</p>
+                "
+                :create-project="createProject"
+                :create-client="createClient"
+                :create-tag="createTag"
+                @submit="clearSelectionAndState"
+                @select-all="selectedTimeEntries = [...timeEntries]"
+                @unselect-all="selectedTimeEntries = []"></TimeEntryMassActionRow>
+            <div class="w-full relative @container">
+                <div v-for="entry in timeEntries" :key="entry.id">
+                    <TimeEntryRow
+                        :selected="selectedTimeEntries.some((item) => item.id === entry.id)"
+                        :can-create-project="canCreateProjects()"
+                        :create-client
+                        :create-project
+                        :enable-estimated-time="isAllowedToPerformPremiumAction()"
+                        :projects="projects"
+                        :tasks="tasks"
+                        :tags="tags"
+                        :clients
+                        :create-tag
+                        :update-time-entry
+                        :on-start-stop-click="() => startTimeEntryFromExisting(entry)"
+                        :delete-time-entry="() => deleteTimeEntries([entry])"
+                        :currency="getOrganizationCurrencyString()"
+                        :organization-billable-rate="organization?.billable_rate ?? null"
+                        :duplicate-time-entry="() => createTimeEntry(entry)"
+                        :members="members"
+                        is-report
+                        show-date
+                        show-member
+                        :time-entry="entry"
+                        @selected="selectedTimeEntries.push(entry)"
+                        @unselected="
+                            selectedTimeEntries = selectedTimeEntries.filter(
+                                (item) => item.id !== entry.id
+                            )
+                        "></TimeEntryRow>
+                </div>
+                <div v-if="timeEntries.length === 0">
+                    <div class="text-center pt-12">
+                        <ClockIcon class="w-8 text-icon-default inline pb-2"></ClockIcon>
+                        <h3 class="text-text-primary font-semibold">
+                            {{ $t('No time entries found') }}
+                        </h3>
+                        <p class="pb-5">{{ $t('Adjust the filters to see more time entries!') }}</p>
+                    </div>
                 </div>
             </div>
         </div>

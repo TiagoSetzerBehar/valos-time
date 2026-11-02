@@ -74,8 +74,10 @@ const reports = computed(() => {
             </div>
         </div>
 
-        <ReportTable
-            v-if="reports.length > 0 || isAllowedToPerformPremiumAction()"
-            :reports="reports"></ReportTable>
+        <div class="valo-page-card">
+            <ReportTable
+                v-if="reports.length > 0 || isAllowedToPerformPremiumAction()"
+                :reports="reports"></ReportTable>
+        </div>
     </AppLayout>
 </template>

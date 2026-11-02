@@ -197,7 +197,7 @@ const showResultModal = ref(false);
                         id="importType"
                         v-model="importType"
                         name="importType"
-                        class="block w-full border-input-border bg-input-background text-text-primary focus:border-input-border-active rounded-md shadow-sm">
+                        class="block w-full truncate py-2 pl-3 pr-10 text-sm border-input-border bg-input-background text-text-primary focus:border-input-border-active rounded-md shadow-sm">
                         <option :value="null" selected disabled>
                             {{ $t('Select an import type to get instructions...') }}
                         </option>
@@ -226,7 +226,7 @@ const showResultModal = ref(false);
                         <div class="mt-4 flex text-sm leading-6 text-text-secondary">
                             <label
                                 for="file-upload"
-                                class="relative cursor-pointer rounded-md font-semibold text-text-primary focus-within:outline-none focus-within:ring-2 focus-within:ring-indigo-600 focus-within:ring-offset-2 focus-within:ring-offset-gray-900 hover:text-indigo-500">
+                                class="relative cursor-pointer rounded-md font-semibold text-text-primary focus-within:outline-none focus-within:ring-2 focus-within:ring-sky-600 focus-within:ring-offset-2 focus-within:ring-offset-gray-900 hover:text-sky-500">
                                 <span v-if="files">{{ filenames }}</span>
                                 <span v-else>{{ $t('Upload the Export file') }}</span>
                                 <input

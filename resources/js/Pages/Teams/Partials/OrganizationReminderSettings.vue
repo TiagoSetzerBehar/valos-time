@@ -75,7 +75,7 @@ async function submit() {
         </template>
 
         <template #form>
-            <div class="col-span-6 sm:col-span-4 space-y-5">
+            <div class="col-span-6 space-y-5">
                 <Field orientation="horizontal">
                     <Checkbox
                         id="dailyReminderEnabled"
