@@ -181,7 +181,7 @@ defineExpose({ submit, focusAfterStart });
         class="z-50 w-[min(640px,100vw-2rem)]"
         :style="floatingStyles">
         <div
-            class="rounded-lg w-full border border-card-border overflow-hidden shadow-dropdown bg-card-background">
+            class="valo-floating-sheet rounded-lg w-full border border-card-border overflow-hidden shadow-dropdown bg-card-background">
             <div
                 class="text-text-tertiary text-xs font-semibold border-b border-border-tertiary px-2 py-1.5">
                 {{ $t('Recently Tracked Time Entries') }}

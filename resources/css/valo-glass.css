@@ -518,3 +518,12 @@ html.valo-glass.dark {
         margin: 0.75rem 1.5rem 1.5rem;
     }
 }
+
+/* Recent entries list under the tracker: it sits inside a glass card, where its own blur cannot reach
+   the page behind, so it needs an almost solid background to stay readable */
+.valo-glass .valo-floating-sheet {
+    background: var(--theme-color-default-background);
+    border-color: var(--valo-sheet-border);
+    border-radius: 1rem;
+    box-shadow: var(--valo-sheet-shadow);
+}
