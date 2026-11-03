@@ -38,6 +38,10 @@ return [
     */
 
     'mailers' => [
+
+        'valo-gmail' => [
+            'transport' => 'valo-gmail',
+        ],
         'smtp' => [
             'transport' => 'smtp',
             'scheme' => env('MAIL_SCHEME'),

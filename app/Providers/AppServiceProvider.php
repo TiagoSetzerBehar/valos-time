@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Providers;
 
+use App\Mail\Transport\ValoGmailRelayTransport;
 use App\Models\Client;
 use App\Models\FailedJob;
 use App\Models\Member;
@@ -32,6 +33,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Foundation\Application;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\URL;
@@ -54,6 +56,12 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        // VALO's Time: emails sent by the VALO Gmail
+        Mail::extend('valo-gmail', fn (): ValoGmailRelayTransport => new ValoGmailRelayTransport(
+            (string) config('valo.mail_relay_url'),
+            (string) config('valo.mail_relay_secret'),
+        ));
+
         if ($this->app->environment('local')) {
             $this->app->register(\Laravel\Telescope\TelescopeServiceProvider::class);
             $this->app->register(TelescopeServiceProvider::class);
