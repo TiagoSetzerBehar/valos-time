@@ -54,9 +54,14 @@ services:
         value: stderr
       - key: LOG_LEVEL
         value: warning
-      # Emails go through Brevo (free plan). MAIL_PASSWORD is the Brevo SMTP key.
+      # Emails are sent by the VALO Gmail through a Google Apps Script web app (lands in the inbox).
+      # The Brevo SMTP settings below stay as a fallback: set MAIL_MAILER=smtp to use them again.
       - key: MAIL_MAILER
-        value: smtp
+        value: valo-gmail
+      - key: VALO_MAIL_RELAY_URL
+        value: https://script.google.com/macros/s/AKfycbzu6B12NuBW9cvyyJSftstu6djYfbXYt4e1bMZzalWWxOdHAqJUjDAW1G3_pAp6xGpDBw/exec
+      - key: VALO_MAIL_RELAY_SECRET
+        sync: false
       - key: MAIL_USERNAME
         value: c117d7001@smtp-brevo.com
       - key: MAIL_PASSWORD
