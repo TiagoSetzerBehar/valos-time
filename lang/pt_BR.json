@@ -1163,5 +1163,9 @@
     "via": "via",
     "week": "semana",
     "will remove the user's access to the organization. You will not be billed for inactive users and all time entries will be preserved.": "ele perde o acesso à organização. Você não será cobrado por usuários inativos e todos os apontamentos serão preservados.",
-    "working": "trabalhando"
+    "working": "trabalhando",
+    "Show all days": "Ver todos os dias",
+    "No time entries on this day.": "Nenhum registro neste dia.",
+    "Add hours": "Adicionar horas",
+    "Press play to start the timer, or add your hours with the button below.": "Toque em ▶ para iniciar o cronômetro, ou adicione suas horas com o botão abaixo."
 }

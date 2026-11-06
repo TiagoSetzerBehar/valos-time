@@ -167,6 +167,9 @@ function groupOverlappingEvents(
     return groups;
 }
 
+/** VALO's Time: colour of entries without a project (formal blue, not grey). */
+export const NO_PROJECT_COLOR = '#4F7CAC';
+
 export function useCalendarEvents(params: {
     timeEntries: () => TimeEntry[];
     projects: () => Project[];
@@ -211,7 +214,7 @@ export function useCalendarEvents(params: {
             } else {
                 title = timeEntry.description || trans('No description');
             }
-            const baseColor = isBreak ? '#F59E0B' : project?.color || '#6B7280';
+            const baseColor = isBreak ? '#F59E0B' : project?.color || NO_PROJECT_COLOR;
             const backgroundColor = chroma
                 .mix(baseColor, themeBackground, isBreak ? 0.75 : 0.65, 'lab')
                 .hex();

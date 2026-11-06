@@ -30,14 +30,7 @@ export function useCalendarGrid(
     const totalGridHeight = computed(() => slots.value.length * SLOT_HEIGHT);
 
     function formatSlotLabel(hour: number): string {
-        const timeFormat = organization?.value?.time_format || '24-hours';
-
-        if (timeFormat === '12-hours') {
-            const period = hour >= 12 ? 'PM' : 'AM';
-            const h = hour % 12 || 12;
-            return `${h} ${period}`;
-        }
-
+        // VALO's Time: the calendar always uses the 24-hour clock (13:00, 13:30).
         return `${String(hour).padStart(2, '0')}:00`;
     }
 

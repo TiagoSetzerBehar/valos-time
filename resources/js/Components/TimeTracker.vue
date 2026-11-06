@@ -164,6 +164,13 @@ function toggleTimeTrackerMode() {
 }
 
 const { tags } = useTagsQuery();
+
+// The phone view opens the manual entry form with its own button.
+defineExpose({
+    openManualEntry: () => {
+        showManualTimeEntryModal.value = true;
+    },
+});
 </script>
 
 <template>

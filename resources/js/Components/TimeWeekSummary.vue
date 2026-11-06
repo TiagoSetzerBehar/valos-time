@@ -1,86 +1,34 @@
 <script setup lang="ts">
-import { computed, inject, ref, type ComputedRef } from 'vue';
 import MainContainer from '@/packages/ui/src/MainContainer.vue';
 import GlassLens from '@/packages/ui/src/GlassLens.vue';
-import type {
-    AggregatedTimeEntries,
-    AggregatedTimeEntriesQueryParams,
-    Organization,
-} from '@/packages/api/src';
-import { useAggregatedTimeEntriesQuery } from '@/utils/useAggregatedTimeEntriesQuery';
-import { getInitialWeekRange } from '@/utils/useTimeEntriesCalendarQuery';
-import { formatHumanReadableDuration, localDateToUtc } from '@/packages/ui/src/utils/time';
-import { getCurrentMembershipId } from '@/utils/useUser';
-import { getDayJsInstance } from '@/packages/ui/src/utils/time';
+import { useWeekSummary } from '@/utils/useWeekSummary';
 
 // Clockify-style "this week" line with the week total of the current member,
-// plus a strip with the hours of each day (click a day to jump to it in the list).
-const organization = inject<ComputedRef<Organization>>('organization');
-const week = getInitialWeekRange();
+// plus a strip with the hours of each day. Clicking a day shows only that day in the list below
+// (the page does not scroll); clicking it again shows every day.
+const { weekTotal, days } = useWeekSummary();
 
-const queryParams = computed<AggregatedTimeEntriesQueryParams>(() => ({
-    start: localDateToUtc(week.start),
-    end: localDateToUtc(week.end.subtract(1, 'second')),
-    member_id: getCurrentMembershipId(),
-    type: 'work',
-    group: 'day',
-}));
-
-const { data } = useAggregatedTimeEntriesQuery('time-week-days', queryParams);
-
-const aggregate = computed(() => data.value?.data as AggregatedTimeEntries | undefined);
-
-const weekTotal = computed(() =>
-    formatHumanReadableDuration(
-        aggregate.value?.seconds ?? 0,
-        organization?.value?.interval_format,
-        organization?.value?.number_format
-    )
-);
-
-const today = getDayJsInstance()().format('YYYY-MM-DD');
-
-const days = computed(() => {
-    const seconds = new Map<string, number>();
-    for (const group of aggregate.value?.grouped_data ?? []) {
-        if (group.key) {
-            seconds.set(group.key.substring(0, 10), group.seconds);
-        }
-    }
-    const list = Array.from({ length: 7 }, (_, i) => {
-        const date = week.start.add(i, 'day');
-        const key = date.format('YYYY-MM-DD');
-        const value = seconds.get(key) ?? 0;
-        const name = date.format('ddd').replace('.', '');
-        return {
-            key,
-            name: name.charAt(0).toUpperCase() + name.slice(1),
-            number: date.format('D'),
-            seconds: value,
-            hours: `${Math.floor(value / 3600)}:${String(Math.floor(value / 60) % 60).padStart(2, '0')}`,
-            isToday: key === today,
-        };
-    });
-    const max = Math.max(8 * 3600, ...list.map((day) => day.seconds));
-    return list.map((day) => ({ ...day, percent: Math.round((day.seconds / max) * 100) }));
-});
-
-const selected = ref(today);
+const selected = defineModel<string | null>('day', { default: null });
 
 function pick(key: string) {
-    const dayCard = document.querySelector(`[data-valo-day="${key}"]`);
-    if (!dayCard) {
-        return;
-    }
-    selected.value = key;
-    dayCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    selected.value = selected.value === key ? null : key;
 }
 </script>
 
 <template>
     <MainContainer class="pt-1 pb-4">
         <div class="flex items-end justify-between pb-2.5">
-            <h2 class="text-base text-text-primary">{{ $t('This Week') }}</h2>
+            <div class="flex items-baseline gap-3">
+                <h2 class="text-base text-text-primary">{{ $t('This Week') }}</h2>
+                <button
+                    v-if="selected"
+                    type="button"
+                    class="valo-accent-text text-sm font-medium hover:underline"
+                    data-testid="time_week_show_all"
+                    @click="selected = null">
+                    {{ $t('Show all days') }}
+                </button>
+            </div>
             <div class="flex items-baseline gap-2 text-sm">
                 <span class="text-text-tertiary">{{ $t('Week Total') }}</span>
                 <span class="text-xl font-medium text-text-primary" data-testid="time_week_total">{{

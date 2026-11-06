@@ -1306,5 +1306,9 @@
     "ZIP contains too many files, maximum is :max": "El ZIP contiene demasiados archivos; el máximo es :max",
     "ZIP entry \":name\" can not be extracted": "No se puede extraer la entrada \":name\" del ZIP",
     "ZIP entry \":name\" can not be read": "No se puede leer la entrada \":name\" del ZIP",
-    "ZIP uncompressed size exceeds the maximum of :max bytes": "El tamaño descomprimido del ZIP supera el máximo de :max bytes"
+    "ZIP uncompressed size exceeds the maximum of :max bytes": "El tamaño descomprimido del ZIP supera el máximo de :max bytes",
+    "Show all days": "Ver todos los días",
+    "No time entries on this day.": "No hay registros este día.",
+    "Add hours": "Añadir horas",
+    "Press play to start the timer, or add your hours with the button below.": "Pulsa ▶ para empezar el cronómetro, o añade tus horas con el botón de abajo."
 }

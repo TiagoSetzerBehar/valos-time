@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import {
+    computed,
     ref,
     watch,
     inject,
@@ -46,6 +47,7 @@ import { useActivityBoxes } from './useActivityBoxes';
 import { useEventDrag } from './useEventDrag';
 import { useEventResize } from './useEventResize';
 import { useSlotSelection } from './useSlotSelection';
+import { NO_PROJECT_COLOR } from './useCalendarEvents';
 import { useContextMenu } from './useContextMenu';
 import type {
     TimeEntry,
@@ -254,6 +256,26 @@ const {
     },
 });
 
+function formatClock(minutes: number): string {
+    const m = ((Math.round(minutes) % 1440) + 1440) % 1440;
+    return `${String(Math.floor(m / 60)).padStart(2, '0')}:${String(m % 60).padStart(2, '0')}`;
+}
+
+const selectionLabel = computed(() => {
+    if (!selectionDay.value) {
+        return '';
+    }
+    const start = pixelsToMinutesFromMidnight(selectionTop.value);
+    if (selectionEndDay.value) {
+        const end = pixelsToMinutesFromMidnight(selectionEndTop.value + selectionEndHeight.value);
+        return `${formatClock(start)} – ${formatClock(end)}`;
+    }
+    const end = pixelsToMinutesFromMidnight(selectionTop.value + selectionHeight.value);
+    const minutes = Math.max(0, Math.round(end - start));
+    const duration = `${Math.floor(minutes / 60)}h ${String(minutes % 60).padStart(2, '0')}min`;
+    return `${formatClock(start)} – ${formatClock(end)} · ${duration}`;
+});
+
 const {
     contextMenuTimeEntry,
     handleCalendarContextMenu,
@@ -427,6 +449,7 @@ function getEventStyle(dayEvent: DayEvent, dayStr: string): Record<string, strin
         width,
         backgroundColor: ev.backgroundColor,
         borderColor: ev.borderColor,
+        '--valo-ev': ev.isBreak ? '#F59E0B' : ev.project?.color || NO_PROJECT_COLOR,
         zIndex,
     };
 }
@@ -530,7 +553,7 @@ function getEventDurationSeconds(dayEvent: DayEvent, dayStr: string): number {
                     @contextmenu="handleCalendarContextMenu">
                     <div
                         ref="rootRef"
-                        class="fc h-full flex flex-col bg-default-background text-foreground font-inherit border border-border border-l-transparent overflow-hidden">
+                        class="fc valo-calendar h-full flex flex-col bg-default-background text-foreground font-inherit border border-border border-l-transparent overflow-hidden">
                         <div
                             class="fc-header-scroll flex border-b border-border shrink-0 sticky top-0 z-10 bg-default-background">
                             <div
@@ -587,6 +610,11 @@ function getEventDurationSeconds(dayEvent: DayEvent, dayStr: string): number {
                                             class="fc-timegrid-slot-label-cushion text-[0.8125rem] text-muted-foreground leading-none block font-light">
                                             {{ formatSlotLabel(slot.minutes / 60) }}
                                         </span>
+                                        <span
+                                            v-else-if="slot.minutes % 60 === 30"
+                                            class="valo-half-label block leading-none text-[0.6875rem] text-muted-foreground opacity-60">
+                                            {{ formatClock(slot.minutes) }}
+                                        </span>
                                     </div>
                                 </div>
 
@@ -605,6 +633,7 @@ function getEventDurationSeconds(dayEvent: DayEvent, dayStr: string): number {
                                             <div
                                                 v-for="day in viewDays"
                                                 :key="'bg-' + day.format('YYYY-MM-DD')"
+                                                :class="{ 'valo-today-col': isToday(day) }"
                                                 :style="
                                                     isToday(day)
                                                         ? {
@@ -621,6 +650,7 @@ function getEventDurationSeconds(dayEvent: DayEvent, dayStr: string): number {
                                             :class="{
                                                 'fc-timegrid-slot-minor border-dotted':
                                                     !slot.isHour,
+                                                'valo-slot-half': slot.minutes % 60 === 30,
                                             }"
                                             :data-time="slot.time"
                                             :style="{ height: SLOT_HEIGHT + 'px' }"></div>
@@ -689,6 +719,7 @@ function getEventDurationSeconds(dayEvent: DayEvent, dayStr: string): number {
                                             :selection-height="selectionHeight"
                                             :selection-end-top="selectionEndTop"
                                             :selection-end-height="selectionEndHeight"
+                                            :selection-label="selectionLabel"
                                             @activity-pointerdown="guardedSlotPointerDown"
                                             @event-pointerdown="
                                                 (e, dayEvent) =>

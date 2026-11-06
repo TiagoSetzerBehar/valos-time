@@ -527,3 +527,75 @@ html.valo-glass.dark {
     border-radius: 1rem;
     box-shadow: var(--valo-sheet-shadow);
 }
+
+/* Calendar, Google Calendar style: clean sheet, hour lines, a faint half-hour line, soft project colours. */
+html.valo-glass.light {
+    --valo-cal-bg: #ffffff;
+    --valo-cal-today: #f0f8fe;
+    --valo-cal-line: #e3e8ee;
+    --valo-cal-half: #f1f4f7;
+    --valo-cal-ev-mix: 16%;
+    --valo-cal-sel-bg: rgba(14, 165, 233, 0.14);
+    --valo-cal-sel-border: #0ea5e9;
+    --valo-cal-sel-text: #0369a1;
+}
+html.valo-glass.dark {
+    --valo-cal-bg: #1a232c;
+    --valo-cal-today: #1e2c39;
+    --valo-cal-line: rgba(255, 255, 255, 0.09);
+    --valo-cal-half: rgba(255, 255, 255, 0.04);
+    --valo-cal-ev-mix: 26%;
+    --valo-cal-sel-bg: rgba(56, 189, 248, 0.2);
+    --valo-cal-sel-border: #38bdf8;
+    --valo-cal-sel-text: #e0f2fe;
+}
+.valo-glass .valo-calendar,
+.valo-glass .valo-calendar .bg-default-background,
+.valo-glass .valo-calendar .fc-col-header-cell {
+    background-color: var(--valo-cal-bg);
+}
+.valo-glass .valo-calendar .fc-col-header-cell.fc-day-today,
+.valo-glass .valo-calendar .valo-today-col {
+    background-color: var(--valo-cal-today) !important;
+}
+.valo-glass .valo-calendar .border-border,
+.valo-glass .valo-calendar .fc-timegrid-slot {
+    border-color: var(--valo-cal-line);
+}
+.valo-glass .valo-calendar .fc-timegrid-slot-minor {
+    border-top-color: transparent !important;
+}
+.valo-glass .valo-calendar .fc-timegrid-slot-lane.valo-slot-half {
+    border-top-style: solid;
+    border-top-color: var(--valo-cal-half) !important;
+}
+.valo-glass .valo-calendar .valo-half-label {
+    transform: translateY(-0.2rem);
+}
+.valo-glass .valo-calendar .fc-event {
+    background: color-mix(
+        in srgb,
+        var(--valo-ev, #4f7cac) var(--valo-cal-ev-mix),
+        var(--valo-cal-bg)
+    ) !important;
+    border: 1px solid color-mix(in srgb, var(--valo-ev, #4f7cac) 28%, transparent) !important;
+    border-left: 4px solid var(--valo-ev, #4f7cac) !important;
+    border-radius: 0.5rem;
+    box-shadow: none;
+}
+.valo-glass .valo-calendar .fc-event:hover {
+    box-shadow: 0 4px 14px rgba(15, 23, 42, 0.14);
+}
+.valo-glass .valo-calendar .valo-selection {
+    background: var(--valo-cal-sel-bg);
+    border: 2px solid var(--valo-cal-sel-border);
+    border-radius: 0.5rem;
+}
+.valo-glass .valo-calendar .valo-selection-label {
+    padding: 0.2rem 0.45rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    line-height: 1.2;
+    color: var(--valo-cal-sel-text);
+    font-variant-numeric: tabular-nums;
+}

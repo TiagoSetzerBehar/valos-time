@@ -46,6 +46,7 @@ const props = defineProps<{
     selectionHeight: number;
     selectionEndTop: number;
     selectionEndHeight: number;
+    selectionLabel?: string;
 }>();
 
 function isUncoveredByEvents(abox: ActivityBox): boolean {
@@ -229,21 +230,28 @@ const emit = defineEmits<{
 
         <div
             v-if="showSelection && isSelectionStart"
-            class="absolute inset-x-0 pointer-events-none bg-accent border border-primary z-[2]"
+            class="valo-selection absolute inset-x-0 pointer-events-none bg-accent border border-primary z-[2]"
             :style="{
                 top: selectionTop + 'px',
                 height: selectionHeight + 'px',
-            }"></div>
+            }">
+            <div
+                v-if="selectionLabel"
+                class="valo-selection-label"
+                data-testid="calendar_selection_label">
+                {{ selectionLabel }}
+            </div>
+        </div>
         <div
             v-if="showSelection && isSelectionIntermediate"
-            class="absolute inset-x-0 pointer-events-none bg-accent border border-primary z-[2]"
+            class="valo-selection absolute inset-x-0 pointer-events-none bg-accent border border-primary z-[2]"
             :style="{
                 top: '0px',
                 height: totalGridHeight + 'px',
             }"></div>
         <div
             v-if="showSelection && isSelectionEnd"
-            class="absolute inset-x-0 pointer-events-none bg-accent border border-primary z-[2]"
+            class="valo-selection absolute inset-x-0 pointer-events-none bg-accent border border-primary z-[2]"
             :style="{
                 top: selectionEndTop + 'px',
                 height: selectionEndHeight + 'px',

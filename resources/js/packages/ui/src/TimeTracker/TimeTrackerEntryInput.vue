@@ -152,7 +152,9 @@ useSelectEvents(
 
 // Called by the shell after the start/stop button starts a timer, so typing can continue.
 function focusAfterStart() {
-    if (!blockRefocus.value) {
+    // VALO's Time: on phones focusing would open the keyboard and the recent list over the clock
+    const isPhone = window.matchMedia('(max-width: 639px), (pointer: coarse)').matches;
+    if (!blockRefocus.value && !isPhone) {
         currentTimeEntryDescriptionInput.value?.focus();
     }
 }

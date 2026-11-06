@@ -14,7 +14,7 @@ import type {
     TimeEntry,
     Client,
 } from '@/packages/api/src';
-import { useElementVisibility } from '@vueuse/core';
+import { useElementVisibility, useMediaQuery } from '@vueuse/core';
 import { ClockIcon } from '@heroicons/vue/20/solid';
 import LoadingSpinner from '@/packages/ui/src/LoadingSpinner.vue';
 import { useCurrentTimeEntryStore } from '@/utils/useCurrentTimeEntry';
@@ -36,6 +36,9 @@ import { useProjectsStore } from '@/utils/useProjects';
 import { useClientsStore } from '@/utils/useClients';
 import { useTimeEntriesInfiniteQuery } from '@/utils/useTimeEntriesInfiniteQuery';
 import { useTimeEntriesMutations } from '@/utils/useTimeEntriesMutations';
+import { getLocalizedDateFromTimestamp } from '@/packages/ui/src/utils/time';
+import MobileTimeView from '@/Components/MobileTimeView.vue';
+import TimeEntryEditModal from '@/packages/ui/src/TimeEntry/TimeEntryEditModal.vue';
 
 const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isPending } =
     useTimeEntriesInfiniteQuery();
@@ -44,9 +47,39 @@ const {
     updateTimeEntry,
     updateTimeEntries: updateTimeEntriesMutation,
     deleteTimeEntries: deleteTimeEntriesMutation,
+    deleteTimeEntry,
 } = useTimeEntriesMutations();
 
+// VALO's Time: on a phone the page is a simple view (timer, today/week, list, add hours).
+const isPhone = useMediaQuery('(max-width: 639px)');
+const phoneTracker = ref<InstanceType<typeof TimeTracker> | null>(null);
+const phoneEditEntry = ref<TimeEntry | null>(null);
+const showPhoneEdit = ref(false);
+
+function editOnPhone(timeEntry: TimeEntry) {
+    phoneEditEntry.value = timeEntry;
+    showPhoneEdit.value = true;
+}
+
+async function updateTimeEntryOnPhone(timeEntry: TimeEntry) {
+    await updateTimeEntry(timeEntry);
+}
+
+async function deleteTimeEntryOnPhone(timeEntryId: string) {
+    await deleteTimeEntry(timeEntryId);
+}
+
 const timeEntries = computed(() => data.value?.pages.flatMap((page) => page.data) || []);
+
+// Day picked in the week strip: the list shows only that day (null = every day).
+const selectedDay = ref<string | null>(null);
+const visibleTimeEntries = computed(() =>
+    selectedDay.value === null
+        ? timeEntries.value
+        : timeEntries.value.filter(
+              (entry) => getLocalizedDateFromTimestamp(entry.start) === selectedDay.value
+          )
+);
 
 async function updateTimeEntries(ids: string[], changes: UpdateMultipleTimeEntriesChangeset) {
     await updateTimeEntriesMutation({ ids, changes });
@@ -113,77 +146,116 @@ function goToCalendarDay(date: string) {
 
 <template>
     <AppLayout :title="$t('Time')" data-testid="time_view">
-        <MainContainer class="pt-5 lg:pt-8 pb-4 lg:pb-6">
-            <div
-                class="relative z-20 rounded border border-card-border bg-card-background px-2 sm:px-3 py-1.5 shadow-card">
-                <TimeTracker></TimeTracker>
+        <template v-if="isPhone">
+            <div class="px-4 pt-4 pb-4">
+                <div
+                    class="valo-mobile-timer relative z-20 rounded border border-card-border bg-card-background px-3 py-2 shadow-card">
+                    <TimeTracker ref="phoneTracker"></TimeTracker>
+                </div>
             </div>
-        </MainContainer>
-        <TimeWeekSummary></TimeWeekSummary>
-        <div class="valo-mass-slot min-h-8">
-            <TimeEntryMassActionRow
-                v-if="selectedTimeEntries.length > 0"
-                :selected-time-entries="selectedTimeEntries"
+            <MobileTimeView
+                :time-entries="timeEntries"
+                :projects="projects"
+                @edit="editOnPhone"
+                @manual="phoneTracker?.openManualEntry()"></MobileTimeView>
+            <TimeEntryEditModal
+                v-model:show="showPhoneEdit"
+                :time-entry="phoneEditEntry"
+                :enable-estimated-time="isAllowedToPerformPremiumAction()"
+                :update-time-entry="updateTimeEntryOnPhone"
+                :delete-time-entry="deleteTimeEntryOnPhone"
+                :create-client
+                :create-project
+                :create-tag
+                :tags
+                :projects
+                :tasks
+                :clients
+                :currency="getOrganizationCurrencyString()"
+                :organization-billable-rate="organization?.billable_rate ?? null"
+                :can-create-project="canCreateProjects()"></TimeEntryEditModal>
+        </template>
+        <template v-else>
+            <MainContainer class="pt-5 lg:pt-8 pb-4 lg:pb-6">
+                <div
+                    class="relative z-20 rounded border border-card-border bg-card-background px-2 sm:px-3 py-1.5 shadow-card">
+                    <TimeTracker></TimeTracker>
+                </div>
+            </MainContainer>
+            <TimeWeekSummary v-model:day="selectedDay"></TimeWeekSummary>
+            <div class="valo-mass-slot min-h-8">
+                <TimeEntryMassActionRow
+                    v-if="selectedTimeEntries.length > 0"
+                    :selected-time-entries="selectedTimeEntries"
+                    :enable-estimated-time="isAllowedToPerformPremiumAction()"
+                    :can-create-project="canCreateProjects()"
+                    :all-selected="selectedTimeEntries.length === timeEntries.length"
+                    :delete-selected="deleteSelected"
+                    :projects="projects"
+                    :tasks="tasks"
+                    :tags="tags"
+                    :currency="getOrganizationCurrencyString()"
+                    :clients="clients"
+                    :organization-billable-rate="organization?.billable_rate ?? null"
+                    class="border-t border-default-background-separator hidden sm:block"
+                    :update-time-entries="
+                        (args) =>
+                            updateTimeEntries(
+                                selectedTimeEntries.map((timeEntry) => timeEntry.id),
+                                args
+                            )
+                    "
+                    :create-project="createProject"
+                    :create-client="createClient"
+                    :create-tag="createTag"
+                    @submit="clearSelectionAndState"
+                    @select-all="selectedTimeEntries = [...timeEntries]"
+                    @unselect-all="selectedTimeEntries = []"></TimeEntryMassActionRow>
+            </div>
+            <TimeEntryGroupedTable
+                v-model:selected="selectedTimeEntries"
+                :create-project
                 :enable-estimated-time="isAllowedToPerformPremiumAction()"
                 :can-create-project="canCreateProjects()"
-                :all-selected="selectedTimeEntries.length === timeEntries.length"
-                :delete-selected="deleteSelected"
+                :organization-billable-rate="organization?.billable_rate ?? null"
+                :clients
+                :create-client
+                :update-time-entry
+                :update-time-entries
+                :delete-time-entries
+                :create-time-entry="startTimeEntry"
+                :create-tag
                 :projects="projects"
                 :tasks="tasks"
-                :tags="tags"
                 :currency="getOrganizationCurrencyString()"
-                :clients="clients"
-                :organization-billable-rate="organization?.billable_rate ?? null"
-                class="border-t border-default-background-separator hidden sm:block"
-                :update-time-entries="
-                    (args) =>
-                        updateTimeEntries(
-                            selectedTimeEntries.map((timeEntry) => timeEntry.id),
-                            args
+                :time-entries="visibleTimeEntries"
+                :group-similar-time-entries="groupSimilarTimeEntriesSetting"
+                :fix-in-calendar="goToCalendarDay"
+                :tags="tags"></TimeEntryGroupedTable>
+            <div v-if="isPending" class="flex justify-center items-center py-12">
+                <LoadingSpinner></LoadingSpinner>
+            </div>
+            <div
+                v-else-if="selectedDay !== null && visibleTimeEntries.length === 0"
+                class="text-center pt-8 text-text-tertiary"
+                data-testid="time_day_empty">
+                {{ $t('No time entries on this day.') }}
+            </div>
+            <div v-else-if="timeEntries.length === 0" class="text-center pt-12">
+                <ClockIcon class="w-8 text-icon-default inline pb-2"></ClockIcon>
+                <h3 class="text-text-primary font-semibold">
+                    {{ $t('Start tracking your time!') }}
+                </h3>
+                <p class="pb-5 max-w-md mx-auto">
+                    {{
+                        $t(
+                            'Write above what you are working on and press start. Already finished? Add it with Manual.'
                         )
-                "
-                :create-project="createProject"
-                :create-client="createClient"
-                :create-tag="createTag"
-                @submit="clearSelectionAndState"
-                @select-all="selectedTimeEntries = [...timeEntries]"
-                @unselect-all="selectedTimeEntries = []"></TimeEntryMassActionRow>
-        </div>
-        <TimeEntryGroupedTable
-            v-model:selected="selectedTimeEntries"
-            :create-project
-            :enable-estimated-time="isAllowedToPerformPremiumAction()"
-            :can-create-project="canCreateProjects()"
-            :organization-billable-rate="organization?.billable_rate ?? null"
-            :clients
-            :create-client
-            :update-time-entry
-            :update-time-entries
-            :delete-time-entries
-            :create-time-entry="startTimeEntry"
-            :create-tag
-            :projects="projects"
-            :tasks="tasks"
-            :currency="getOrganizationCurrencyString()"
-            :time-entries="timeEntries"
-            :group-similar-time-entries="groupSimilarTimeEntriesSetting"
-            :fix-in-calendar="goToCalendarDay"
-            :tags="tags"></TimeEntryGroupedTable>
-        <div v-if="isPending" class="flex justify-center items-center py-12">
-            <LoadingSpinner></LoadingSpinner>
-        </div>
-        <div v-else-if="timeEntries.length === 0" class="text-center pt-12">
-            <ClockIcon class="w-8 text-icon-default inline pb-2"></ClockIcon>
-            <h3 class="text-text-primary font-semibold">{{ $t('Start tracking your time!') }}</h3>
-            <p class="pb-5 max-w-md mx-auto">
-                {{
-                    $t(
-                        'Write above what you are working on and press start. Already finished? Add it with Manual.'
-                    )
-                }}
-            </p>
-        </div>
-        <div ref="loadMoreContainer">
+                    }}
+                </p>
+            </div>
+        </template>
+        <div v-show="selectedDay === null" ref="loadMoreContainer">
             <div
                 v-if="isFetchingNextPage"
                 class="flex justify-center items-center py-5 text-sm text-text-primary font-medium">
