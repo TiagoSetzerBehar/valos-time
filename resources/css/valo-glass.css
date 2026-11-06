@@ -599,3 +599,13 @@ html.valo-glass.dark {
     color: var(--valo-cal-sel-text);
     font-variant-numeric: tabular-nums;
 }
+
+/* Phone: small section labels in the "Añadir horas a mano" sheet */
+.valo-mobile-label {
+    margin: 1.1rem 0 0.45rem;
+    font-size: 0.7rem;
+    font-weight: 500;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--theme-color-text-tertiary, #64748b);
+}

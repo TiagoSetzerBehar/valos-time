@@ -1310,5 +1310,17 @@
     "Show all days": "Ver todos los días",
     "No time entries on this day.": "No hay registros este día.",
     "Add hours": "Añadir horas",
-    "Press play to start the timer, or add your hours with the button below.": "Pulsa ▶ para empezar el cronómetro, o añade tus horas con el botón de abajo."
+    "Press play to start the timer, or add your hours with the button below.": "Pulsa ▶ para empezar el cronómetro, o añade tus horas con el botón de abajo.",
+    "Started at :time": "Empezó a las :time",
+    "No hours yet.": "Todavía no hay horas.",
+    "Summary": "Resumen",
+    "Add hours by hand": "Añadir horas a mano",
+    "What did you do?": "¿Qué hiciste?",
+    "E.g. meeting with a client": "Ej: reunión con cliente",
+    "Project and tag": "Proyecto y etiqueta",
+    "Day": "Día",
+    "From – To": "Desde – Hasta",
+    "From": "Desde",
+    "To": "Hasta",
+    "The end must be after the start": "La hora final debe ser posterior a la inicial"
 }

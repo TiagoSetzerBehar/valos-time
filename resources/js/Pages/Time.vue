@@ -52,7 +52,6 @@ const {
 
 // VALO's Time: on a phone the page is a simple view (timer, today/week, list, add hours).
 const isPhone = useMediaQuery('(max-width: 639px)');
-const phoneTracker = ref<InstanceType<typeof TimeTracker> | null>(null);
 const phoneEditEntry = ref<TimeEntry | null>(null);
 const showPhoneEdit = ref(false);
 
@@ -147,17 +146,10 @@ function goToCalendarDay(date: string) {
 <template>
     <AppLayout :title="$t('Time')" data-testid="time_view">
         <template v-if="isPhone">
-            <div class="px-4 pt-4 pb-4">
-                <div
-                    class="valo-mobile-timer relative z-20 rounded border border-card-border bg-card-background px-3 py-2 shadow-card">
-                    <TimeTracker ref="phoneTracker"></TimeTracker>
-                </div>
-            </div>
             <MobileTimeView
                 :time-entries="timeEntries"
                 :projects="projects"
-                @edit="editOnPhone"
-                @manual="phoneTracker?.openManualEntry()"></MobileTimeView>
+                @edit="editOnPhone"></MobileTimeView>
             <TimeEntryEditModal
                 v-model:show="showPhoneEdit"
                 :time-entry="phoneEditEntry"
