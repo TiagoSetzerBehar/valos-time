@@ -3,6 +3,9 @@ import { computed, ref } from 'vue';
 import { ChartBarIcon, PlusIcon, XMarkIcon } from '@heroicons/vue/20/solid';
 import MobileTimer from '@/Components/MobileTimer.vue';
 import MobileManualEntry from '@/Components/MobileManualEntry.vue';
+import ValoMeetingConfirm from '@/Components/ValoMeetingConfirm.vue';
+import { useMeetingOccurrences, type MeetingOccurrence } from '@/utils/useValoMeetings';
+import { CheckCircleIcon } from '@heroicons/vue/20/solid';
 import { trans } from 'laravel-vue-i18n';
 import type { Project, TimeEntry } from '@/packages/api/src';
 import {
@@ -39,6 +42,19 @@ const projectsById = computed(
 // Summary: how much time went to each project, today or this week.
 const summaryOpen = ref(false);
 const manualOpen = ref(false);
+
+// Weekly meetings of today: OK makes them count
+const todayRange = computed(() => {
+    const today = getLocalizedDayJs().format('YYYY-MM-DD');
+    return { start: today, end: today };
+});
+const { occurrences: todayMeetings } = useMeetingOccurrences(todayRange);
+const meetingToConfirm = ref<MeetingOccurrence | null>(null);
+const showMeetingConfirm = ref(false);
+function openMeeting(occurrence: MeetingOccurrence) {
+    meetingToConfirm.value = occurrence;
+    showMeetingConfirm.value = true;
+}
 
 function hoursMinutes(seconds: number): string {
     return `${Math.floor(seconds / 3600)}:${String(Math.floor(seconds / 60) % 60).padStart(2, '0')}`;
@@ -145,6 +161,40 @@ const days = computed(() => {
         <MobileTimer class="relative z-20"></MobileTimer>
 
         <div
+            v-if="todayMeetings.length > 0"
+            class="mt-4 rounded border border-card-border bg-card-background shadow-card overflow-hidden"
+            data-testid="mobile_meetings">
+            <div class="px-4 pt-3.5 pb-1.5 text-sm font-semibold text-text-primary">
+                {{ $t('Meetings today') }}
+            </div>
+            <div
+                v-for="meeting in todayMeetings"
+                :key="meeting.meeting_id"
+                class="flex items-center gap-3 border-t border-card-background-separator px-4 py-3 first-of-type:border-t-0">
+                <span class="min-w-0 flex-1">
+                    <span class="block truncate text-sm text-text-primary">{{ meeting.name }}</span>
+                    <span class="block text-xs tabular-nums text-text-tertiary"
+                        >{{ meeting.start_time }} – {{ meeting.end_time }}</span
+                    >
+                </span>
+                <span
+                    v-if="meeting.time_entry_id"
+                    class="flex items-center gap-1 text-sm font-medium text-emerald-600 dark:text-emerald-400">
+                    <CheckCircleIcon class="h-5 w-5" />
+                    {{ $t('Counted') }}
+                </span>
+                <button
+                    v-else
+                    type="button"
+                    class="rounded-full bg-sky-500 px-4 py-1.5 text-sm font-semibold text-white shadow-card"
+                    data-testid="mobile_meeting_ok"
+                    @click="openMeeting(meeting)">
+                    OK
+                </button>
+            </div>
+        </div>
+
+        <div
             v-if="days.length > 0"
             class="mt-4 rounded border border-card-border bg-card-background shadow-card overflow-hidden"
             data-testid="mobile_entries">
@@ -195,6 +245,9 @@ const days = computed(() => {
         </button>
 
         <MobileManualEntry v-model:show="manualOpen"></MobileManualEntry>
+        <ValoMeetingConfirm
+            v-model:show="showMeetingConfirm"
+            :occurrence="meetingToConfirm"></ValoMeetingConfirm>
 
         <Teleport to="body">
             <div

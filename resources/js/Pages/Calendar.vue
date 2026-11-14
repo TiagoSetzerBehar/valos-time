@@ -26,6 +26,8 @@ import { canCreateProjects } from '@/utils/permissions';
 import { useCurrentTimeEntryStore } from '@/utils/useCurrentTimeEntry';
 import { useOrganizationQuery } from '@/utils/useOrganizationQuery';
 import { getCurrentOrganizationId } from '@/utils/useUser';
+import { useMeetingOccurrences, type MeetingOccurrence } from '@/utils/useValoMeetings';
+import ValoMeetingConfirm from '@/Components/ValoMeetingConfirm.vue';
 
 const { organization } = useOrganizationQuery(getCurrentOrganizationId()!);
 const calendarStart = ref<Dayjs | undefined>(undefined);
@@ -103,6 +105,35 @@ const { tags } = useTagsQuery();
 
 const queryClient = useQueryClient();
 
+// VALO's Time: weekly meetings appear dashed until the member confirms them
+const meetingRange = computed(() =>
+    calendarStart.value && calendarEnd.value
+        ? {
+              start: calendarStart.value.format('YYYY-MM-DD'),
+              end: calendarEnd.value.format('YYYY-MM-DD'),
+          }
+        : null
+);
+const { occurrences } = useMeetingOccurrences(meetingRange);
+const meetingPlaceholders = computed(() =>
+    occurrences.value
+        .filter((occurrence) => occurrence.time_entry_id === null)
+        .map((occurrence) => ({
+            key: `${occurrence.meeting_id}|${occurrence.date}`,
+            title: occurrence.name,
+            start: occurrence.start,
+            end: occurrence.end,
+        }))
+);
+const meetingToConfirm = ref<MeetingOccurrence | null>(null);
+const showMeetingConfirm = ref(false);
+
+function openMeeting(key: string) {
+    meetingToConfirm.value =
+        occurrences.value.find((o) => `${o.meeting_id}|${o.date}` === key) ?? null;
+    showMeetingConfirm.value = meetingToConfirm.value !== null;
+}
+
 function onDatesChange({ start, end }: { start: Dayjs; end: Dayjs }) {
     calendarStart.value = start;
     calendarEnd.value = end;
@@ -140,7 +171,12 @@ function onRefresh() {
             :create-project="createProject"
             :create-tag="createTag"
             :activity-periods="testActivityPeriods"
+            :placeholders="meetingPlaceholders"
+            @placeholder-click="openMeeting"
             @dates-change="onDatesChange"
             @refresh="onRefresh" />
+        <ValoMeetingConfirm
+            v-model:show="showMeetingConfirm"
+            :occurrence="meetingToConfirm"></ValoMeetingConfirm>
     </AppLayout>
 </template>

@@ -10,6 +10,7 @@ use App\Http\Controllers\Web\OtherBrowserSessionsController;
 use App\Http\Controllers\Web\UserController;
 use App\Http\Controllers\Web\UserProfileController;
 use App\Http\Controllers\Web\ValoCronController;
+use App\Http\Controllers\Web\ValoMeetingController;
 use App\Http\Controllers\Web\ValoReminderSettingsController;
 use App\Service\PermissionStore;
 use Illuminate\Http\RedirectResponse;
@@ -115,6 +116,13 @@ Route::middleware([
     Route::get('/organizations/{organizationId}', [OrganizationController::class, 'show'])->name('organizations.show');
     Route::get('/organizations/{organizationId}/valo-reminders', [ValoReminderSettingsController::class, 'show'])->name('valo.reminders.show');
     Route::put('/organizations/{organizationId}/valo-reminders', [ValoReminderSettingsController::class, 'update'])->name('valo.reminders.update');
+    // VALO's Time: weekly meetings (prepared in the calendar, counted after OK)
+    Route::get('/organizations/{organizationId}/valo-meetings/occurrences', [ValoMeetingController::class, 'occurrences'])->name('valo.meetings.occurrences');
+    Route::post('/organizations/{organizationId}/valo-meetings/{meetingId}/confirm', [ValoMeetingController::class, 'confirm'])->name('valo.meetings.confirm');
+    Route::get('/organizations/{organizationId}/valo-meetings', [ValoMeetingController::class, 'index'])->name('valo.meetings.index');
+    Route::post('/organizations/{organizationId}/valo-meetings', [ValoMeetingController::class, 'store'])->name('valo.meetings.store');
+    Route::put('/organizations/{organizationId}/valo-meetings/{meetingId}', [ValoMeetingController::class, 'update'])->name('valo.meetings.update');
+    Route::delete('/organizations/{organizationId}/valo-meetings/{meetingId}', [ValoMeetingController::class, 'destroy'])->name('valo.meetings.destroy');
     Route::get('/teams/create', function (): RedirectResponse {
         return to_route('organizations.create');
     })->name('teams.create');

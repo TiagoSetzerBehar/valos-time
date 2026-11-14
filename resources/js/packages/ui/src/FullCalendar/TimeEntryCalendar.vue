@@ -48,6 +48,7 @@ import { useEventDrag } from './useEventDrag';
 import { useEventResize } from './useEventResize';
 import { useSlotSelection } from './useSlotSelection';
 import { NO_PROJECT_COLOR } from './useCalendarEvents';
+import type { CalendarPlaceholder, DayPlaceholder } from './calendarTypes';
 import { useContextMenu } from './useContextMenu';
 import type {
     TimeEntry,
@@ -64,6 +65,7 @@ import type { Dayjs } from 'dayjs';
 const emit = defineEmits<{
     (e: 'dates-change', payload: { start: Dayjs; end: Dayjs }): void;
     (e: 'refresh'): void;
+    (e: 'placeholder-click', key: string): void;
 }>();
 
 const props = defineProps<{
@@ -74,6 +76,8 @@ const props = defineProps<{
     tags: Tag[];
     activityPeriods?: ActivityPeriod[];
     loading?: boolean;
+    /** VALO's Time: weekly meetings shown dashed until confirmed */
+    placeholders?: CalendarPlaceholder[];
 
     enableEstimatedTime: boolean;
     currency: string;
@@ -254,6 +258,32 @@ const {
         newEventEnd.value = end;
         showCreateTimeEntryModal.value = true;
     },
+});
+
+// VALO's Time: weekly meetings (not counted yet) laid out per day.
+const placeholdersByDay = computed(() => {
+    const s = calendarSettings.value;
+    const visibleStart = s.startHour * 60;
+    const visibleEnd = s.endHour * 60;
+    const result: Record<string, DayPlaceholder[]> = {};
+    for (const placeholder of props.placeholders ?? []) {
+        const start = getLocalizedDayJs(placeholder.start);
+        const end = getLocalizedDayJs(placeholder.end);
+        const startMin = Math.max(visibleStart, start.hour() * 60 + start.minute());
+        const endMin = Math.min(visibleEnd, end.hour() * 60 + end.minute());
+        if (endMin <= startMin) {
+            continue;
+        }
+        const day = start.format('YYYY-MM-DD');
+        (result[day] ??= []).push({
+            key: placeholder.key,
+            title: placeholder.title,
+            time: `${start.format('HH:mm')} – ${end.format('HH:mm')}`,
+            top: minutesToPixels(startMin - visibleStart),
+            height: Math.max(minutesToPixels(endMin - startMin), 22),
+        });
+    }
+    return result;
 });
 
 function formatClock(minutes: number): string {
@@ -720,10 +750,16 @@ function getEventDurationSeconds(dayEvent: DayEvent, dayStr: string): number {
                                             :selection-end-top="selectionEndTop"
                                             :selection-end-height="selectionEndHeight"
                                             :selection-label="selectionLabel"
+                                            :placeholders="
+                                                placeholdersByDay[day.format('YYYY-MM-DD')]
+                                            "
                                             @activity-pointerdown="guardedSlotPointerDown"
                                             @event-pointerdown="
                                                 (e, dayEvent) =>
                                                     onEventPointerDown(e, dayEvent.event, dayEvent)
+                                            "
+                                            @placeholder-click="
+                                                (key) => emit('placeholder-click', key)
                                             "
                                             @event-keydown-enter="
                                                 (dayEvent) => {

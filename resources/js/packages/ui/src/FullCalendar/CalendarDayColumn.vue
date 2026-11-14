@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import FullCalendarEventContent from './FullCalendarEventContent.vue';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '..';
-import type { DayEvent, ActivityBox } from './calendarTypes';
+import type { DayEvent, ActivityBox, DayPlaceholder } from './calendarTypes';
 import type { WindowActivityInPeriod } from './activityTypes';
 
 const props = defineProps<{
@@ -47,6 +47,7 @@ const props = defineProps<{
     selectionEndTop: number;
     selectionEndHeight: number;
     selectionLabel?: string;
+    placeholders?: DayPlaceholder[];
 }>();
 
 function isUncoveredByEvents(abox: ActivityBox): boolean {
@@ -69,6 +70,7 @@ const emit = defineEmits<{
         edge: 'start' | 'end'
     ): void;
     (e: 'activity-pointerdown', event: PointerEvent): void;
+    (e: 'placeholder-click', key: string): void;
 }>();
 </script>
 
@@ -81,6 +83,19 @@ const emit = defineEmits<{
         }"
         :data-date="dayStr"
         :style="{ height: totalGridHeight + 'px' }">
+        <button
+            v-for="placeholder in placeholders ?? []"
+            :key="placeholder.key"
+            type="button"
+            class="valo-meeting-ghost absolute left-0.5 right-0.5 z-0 pointer-events-auto overflow-hidden text-left"
+            :style="{ top: placeholder.top + 'px', height: placeholder.height + 'px' }"
+            :title="$t('Did you attend? Click to count it')"
+            data-testid="calendar_meeting_placeholder"
+            @pointerdown.stop
+            @click.stop="emit('placeholder-click', placeholder.key)">
+            <span class="block truncate text-xs font-semibold">{{ placeholder.title }}</span>
+            <span class="block truncate text-[11px] opacity-80">{{ placeholder.time }}</span>
+        </button>
         <div
             class="absolute inset-y-0 left-0.5 right-0.5"
             :class="{

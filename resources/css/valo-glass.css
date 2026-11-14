@@ -609,3 +609,30 @@ html.valo-glass.dark {
     text-transform: uppercase;
     color: var(--theme-color-text-tertiary, #64748b);
 }
+
+/* Calendar: weekly meeting not counted yet (dashed); click to confirm */
+.valo-meeting-ghost {
+    padding: 0.2rem 0.45rem;
+    border: 1.5px dashed rgba(14, 165, 233, 0.65);
+    border-radius: 0.5rem;
+    background: rgba(14, 165, 233, 0.07);
+    color: #0369a1;
+    line-height: 1.25;
+    cursor: pointer;
+    transition: background 0.15s;
+}
+.valo-meeting-ghost:hover {
+    background: rgba(14, 165, 233, 0.16);
+}
+html.dark .valo-meeting-ghost {
+    border-color: rgba(56, 189, 248, 0.6);
+    background: rgba(56, 189, 248, 0.08);
+    color: #bae6fd;
+}
+
+.valo-glass .valo-calendar .valo-meeting-ghost {
+    border-color: rgba(14, 165, 233, 0.7);
+}
+html.valo-glass.dark .valo-calendar .valo-meeting-ghost {
+    border-color: rgba(56, 189, 248, 0.65);
+}

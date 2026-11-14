@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import OrganizationReminderSettings from '@/Pages/Teams/Partials/OrganizationReminderSettings.vue';
+import OrganizationMeetings from '@/Pages/Teams/Partials/OrganizationMeetings.vue';
 import { isMoneyVisible } from '@/utils/valo';
 import AppLayout from '@/Layouts/AppLayout.vue';
 import DeleteTeamForm from '@/Pages/Teams/Partials/DeleteTeamForm.vue';
@@ -61,6 +62,9 @@ onMounted(async () => {
 
                     <SectionBorder v-if="permissions.canUpdateTeam" />
                     <OrganizationReminderSettings v-if="permissions.canUpdateTeam" :team="team" />
+
+                    <SectionBorder v-if="permissions.canUpdateTeam" />
+                    <OrganizationMeetings v-if="permissions.canUpdateTeam" :team="team" />
 
                     <template v-if="isBillingActivated() && isInTrial() && canManageBilling()">
                         <SectionBorder />

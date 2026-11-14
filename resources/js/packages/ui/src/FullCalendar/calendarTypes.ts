@@ -23,6 +23,22 @@ export interface CalendarEvent {
     dayEnd: Dayjs;
 }
 
+/** VALO's Time: something prepared in the calendar that only counts after confirming it (weekly meetings). */
+export interface CalendarPlaceholder {
+    key: string;
+    title: string;
+    start: string;
+    end: string;
+}
+
+export interface DayPlaceholder {
+    key: string;
+    title: string;
+    time: string;
+    top: number;
+    height: number;
+}
+
 export interface DayEvent {
     event: CalendarEvent;
     top: number;
