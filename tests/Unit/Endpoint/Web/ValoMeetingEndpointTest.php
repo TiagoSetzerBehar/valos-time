@@ -81,6 +81,54 @@ class ValoMeetingEndpointTest extends EndpointTestAbstract
         $list->assertJsonPath('data.0.time_entry_id', $entry->getKey());
     }
 
+    public function test_a_meeting_logged_by_hand_counts_whatever_the_spelling_or_with_its_tag_during_the_meeting(): void
+    {
+        // Arrange
+        $data = $this->createUserWithRole(Role::Employee);
+        $data->user->timezone = 'Europe/Madrid';
+        $data->user->save();
+        $tsa = Tag::factory()->forOrganization($data->organization)->create(['name' => 'tsa']);
+        $legal = ValoMeeting::create([
+            'organization_id' => $data->organization->getKey(), 'name' => 'TSA Legal', 'weekday' => 2,
+            'start_time' => '10:00', 'end_time' => '11:00', 'tag_ids' => [$tsa->getKey()], 'member_ids' => null,
+        ]);
+        $finanzas = ValoMeeting::create([
+            'organization_id' => $data->organization->getKey(), 'name' => 'TSA Finanzas', 'weekday' => 4,
+            'start_time' => '14:00', 'end_time' => '15:00', 'tag_ids' => [$tsa->getKey()], 'member_ids' => null,
+        ]);
+        $tech = ValoMeeting::create([
+            'organization_id' => $data->organization->getKey(), 'name' => 'TSA Tech', 'weekday' => 1,
+            'start_time' => '16:00', 'end_time' => '17:00', 'tag_ids' => [$tsa->getKey()], 'member_ids' => null,
+        ]);
+        // Tuesday: written in lowercase (10:00-11:00 Madrid = 09:00-10:00 UTC)
+        $byName = TimeEntry::factory()->forMember($data->member)->create([
+            'description' => '  tsa  legal ', 'start' => '2026-11-10 09:00:00', 'end' => '2026-11-10 10:00:00', 'tags' => [],
+        ]);
+        // Thursday: another name, but during the meeting and with its tag
+        $byTag = TimeEntry::factory()->forMember($data->member)->create([
+            'description' => 'finanzas con Paul', 'start' => '2026-11-12 13:10:00', 'end' => '2026-11-12 14:00:00', 'tags' => [$tsa->getKey()],
+        ]);
+        // Monday: same hour but no tag and another name -> still pending
+        TimeEntry::factory()->forMember($data->member)->create([
+            'description' => 'OBV', 'start' => '2026-11-09 15:00:00', 'end' => '2026-11-09 16:00:00', 'tags' => [],
+        ]);
+
+        // Act
+        $response = $this->actingAs($data->user)->getJson(route('valo.meetings.occurrences', [
+            $data->organization->getKey(), 'start' => '2026-11-09', 'end' => '2026-11-15',
+        ]));
+        $ok = $this->actingAs($data->user)->postJson(
+            route('valo.meetings.confirm', [$data->organization->getKey(), $legal->getKey()]), ['date' => '2026-11-10']);
+
+        // Assert
+        $byMeeting = collect($response->json('data'))->keyBy('meeting_id');
+        $this->assertSame($byName->getKey(), $byMeeting[$legal->getKey()]['time_entry_id']);
+        $this->assertSame($byTag->getKey(), $byMeeting[$finanzas->getKey()]['time_entry_id']);
+        $this->assertNull($byMeeting[$tech->getKey()]['time_entry_id']);
+        $ok->assertOk()->assertJsonPath('data.time_entry_id', $byName->getKey());
+        $this->assertSame(3, TimeEntry::query()->count());
+    }
+
     public function test_members_can_not_confirm_meetings_they_do_not_belong_to_or_on_another_weekday(): void
     {
         // Arrange
