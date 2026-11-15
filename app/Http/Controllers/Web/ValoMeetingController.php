@@ -16,7 +16,6 @@ use Carbon\CarbonImmutable;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
-use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Validator;
@@ -71,7 +70,7 @@ class ValoMeetingController extends Controller
                     'start_time' => $meeting->start_time,
                     'end_time' => $meeting->end_time,
                     'tag_ids' => $meeting->tag_ids,
-                    'time_entry_id' => $this->attendedEntry($meeting, $date, $timezone, $entries)?->getKey(),
+                    'time_entry_id' => $meeting->attendedEntry($date, $timezone, $entries)?->getKey(),
                 ];
             }
         }
@@ -114,7 +113,7 @@ class ValoMeetingController extends Controller
             ->where('start', '>=', $dayStart->utc())
             ->where('start', '<', $dayStart->addDay()->utc())
             ->get(['id', 'description', 'start', 'end', 'tags']);
-        $existing = $this->attendedEntry($meeting, $data['date'], $timezone, $entriesOfDay);
+        $existing = $meeting->attendedEntry($data['date'], $timezone, $entriesOfDay);
         if ($existing !== null) {
             return response()->json(['data' => ['time_entry_id' => $existing->getKey()]]);
         }
@@ -230,37 +229,6 @@ class ValoMeetingController extends Controller
             'tag_ids' => array_values($meeting->tag_ids),
             'member_ids' => $meeting->member_ids === null ? null : array_values($meeting->member_ids),
         ];
-    }
-
-    /**
-     * The entry that shows the member already counted this meeting on that day: same name (capitals and
-     * spaces do not matter) or an entry during the meeting time with one of the meeting's tags.
-     *
-     * @param  Collection<int, TimeEntry>  $entries
-     */
-    private function attendedEntry(ValoMeeting $meeting, string $date, string $timezone, Collection $entries): ?TimeEntry
-    {
-        $name = $this->normalizeName($meeting->name);
-        $meetingStart = CarbonImmutable::createFromFormat('Y-m-d H:i', $date.' '.$meeting->start_time, $timezone)->second(0);
-        $meetingEnd = CarbonImmutable::createFromFormat('Y-m-d H:i', $date.' '.$meeting->end_time, $timezone)->second(0);
-
-        return $entries->first(function (TimeEntry $entry) use ($name, $date, $timezone, $meeting, $meetingStart, $meetingEnd): bool {
-            if ($entry->start->copy()->setTimezone($timezone)->format('Y-m-d') !== $date) {
-                return false;
-            }
-            if ($this->normalizeName($entry->description) === $name) {
-                return true;
-            }
-            $sharesTag = array_intersect($entry->tags, $meeting->tag_ids) !== [];
-            $overlaps = $entry->end !== null && $entry->start->lt($meetingEnd) && $entry->end->gt($meetingStart);
-
-            return $sharesTag && $overlaps;
-        });
-    }
-
-    private function normalizeName(string $name): string
-    {
-        return mb_strtolower((string) preg_replace('/\s+/u', ' ', trim($name)));
     }
 
     private function utc(string $date, string $time, string $timezone): string

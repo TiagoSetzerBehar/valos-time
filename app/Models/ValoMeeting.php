@@ -5,8 +5,10 @@ declare(strict_types=1);
 namespace App\Models;
 
 use App\Models\Concerns\HasUuids;
+use Carbon\CarbonImmutable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Collection;
 
 /**
  * VALO's Time: a meeting that repeats every week (e.g. "TSA Tech", Monday 16:00–17:00).
@@ -68,5 +70,36 @@ class ValoMeeting extends Model
     public function isForMember(Member $member): bool
     {
         return $this->member_ids === null || in_array($member->getKey(), $this->member_ids, true);
+    }
+
+    /**
+     * The entry that shows the member already counted this meeting on that day: same name (capitals and
+     * spaces do not matter) or an entry during the meeting time with one of the meeting's tags.
+     *
+     * @param  Collection<int, TimeEntry>  $entries  entries of one member
+     */
+    public function attendedEntry(string $date, string $timezone, Collection $entries): ?TimeEntry
+    {
+        $name = self::normalizeName($this->name);
+        $meetingStart = CarbonImmutable::createFromFormat('Y-m-d H:i', $date.' '.$this->start_time, $timezone)->second(0);
+        $meetingEnd = CarbonImmutable::createFromFormat('Y-m-d H:i', $date.' '.$this->end_time, $timezone)->second(0);
+
+        return $entries->first(function (TimeEntry $entry) use ($name, $date, $timezone, $meetingStart, $meetingEnd): bool {
+            if ($entry->start->copy()->setTimezone($timezone)->format('Y-m-d') !== $date) {
+                return false;
+            }
+            if (self::normalizeName($entry->description) === $name) {
+                return true;
+            }
+            $sharesTag = array_intersect($entry->tags, $this->tag_ids) !== [];
+            $overlaps = $entry->end !== null && $entry->start->lt($meetingEnd) && $entry->end->gt($meetingStart);
+
+            return $sharesTag && $overlaps;
+        });
+    }
+
+    public static function normalizeName(string $name): string
+    {
+        return mb_strtolower((string) preg_replace('/\s+/u', ' ', trim($name)));
     }
 }

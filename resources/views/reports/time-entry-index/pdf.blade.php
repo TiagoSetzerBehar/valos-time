@@ -157,7 +157,9 @@
                 <th>{{ __('User') }}</th>
                 <th style="text-align: center;">{{ __('Date and time') }}</th>
                 <th>{{ __('Duration') }}</th>
+                @if(config('valo.show_money'))
                 <th>{{ __('Billable') }}</th>
+                @endif
                 <th>{{ __('Break') }}</th>
                 <th>{{ __('Tags') }}</th>
             </tr>
@@ -192,7 +194,9 @@
                     <td style="overflow-wrap: break-word; min-width: 75px;">
                         {{ $localization->formatIntervalForReporting($timeEntry->getDuration()) }}
                     </td>
+                    @if(config('valo.show_money'))
                     <td style="overflow-wrap: break-word;">{{ $timeEntry->billable ? __('Yes') : __('No') }}</td>
+                    @endif
                     <td style="overflow-wrap: break-word;">{{ $timeEntry->type === \App\Enums\TimeEntryType::Break ? __('Yes') : __('No') }}</td>
                     <td style="overflow-wrap: break-word; min-width: 75px;">{{ count($timeEntry->tagsRelation) === 0 ? '-' : $timeEntry->tagsRelation->implode('name', ', ') }}</td>
                 </tr>

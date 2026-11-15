@@ -50,6 +50,7 @@ import { getCurrentMembershipId, getCurrentOrganizationId, getCurrentRole } from
 import { useSessionStorage, useStorage } from '@vueuse/core';
 import { useNotificationsStore } from '@/utils/notification';
 import type { ExportFormat } from '@/types/reporting';
+import { saveReportPdf } from '@/utils/valoPdf';
 import { getRandomColorWithSeed } from '@/packages/ui/src/utils/color';
 import { useProjectsQuery } from '@/utils/useProjectsQuery';
 import { useAggregatedTimeEntriesQuery } from '@/utils/useAggregatedTimeEntriesQuery';
@@ -202,11 +203,18 @@ async function downloadExport(format: ExportFormat) {
                         sub_group: subGroup.value,
                         history_group: getOptimalGroupingOption(startDate.value, endDate.value),
                         format: format,
+                        // VALO's Time: the PDF is built in the browser from the report HTML.
+                        ...(format === 'pdf' ? { debug: 'true' as const } : {}),
                     },
                 }),
             trans('Export successful'),
             trans('Export failed')
         );
+        const pdfHtml = (response as { html?: string } | undefined)?.html;
+        if (format === 'pdf' && pdfHtml) {
+            await saveReportPdf(pdfHtml);
+            return;
+        }
 
         if (response?.download_url) {
             showExportModal.value = true;

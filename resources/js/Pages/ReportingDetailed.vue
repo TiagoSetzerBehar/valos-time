@@ -46,6 +46,7 @@ import { getCurrentOrganizationId, getCurrentMembershipId } from '@/utils/useUse
 import ReportingTabNavbar from '@/Components/Common/Reporting/ReportingTabNavbar.vue';
 import UpgradeModal from '@/packages/ui/src/UpgradeModal.vue';
 import type { ExportFormat } from '@/types/reporting';
+import { saveReportPdf } from '@/utils/valoPdf';
 import { useNotificationsStore } from '@/utils/notification';
 import TimeEntryMassActionRow from '@/packages/ui/src/TimeEntry/TimeEntryMassActionRow.vue';
 import { isAllowedToPerformPremiumAction } from '@/utils/billing';
@@ -236,11 +237,18 @@ async function downloadExport(format: ExportFormat) {
                     queries: {
                         ...getFilterAttributes(),
                         format: format,
+                        // VALO's Time: the PDF is built in the browser from the report HTML.
+                        ...(format === 'pdf' ? { debug: 'true' as const } : {}),
                     },
                 }),
             trans('Export successful'),
             trans('Export failed')
         );
+        const pdfHtml = (response as { html?: string } | undefined)?.html;
+        if (format === 'pdf' && pdfHtml) {
+            await saveReportPdf(pdfHtml);
+            return;
+        }
         if (response?.download_url) {
             showExportModal.value = true;
             exportUrl.value = response.download_url as string;

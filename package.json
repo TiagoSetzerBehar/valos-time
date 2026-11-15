@@ -76,6 +76,8 @@
         "dayjs": "^1.11.20",
         "echarts": "^6.0.0",
         "focus-trap": "^8.2.0",
+        "html2canvas-pro": "^2.5.0",
+        "jspdf": "^4.2.1",
         "laravel-vue-i18n": "^2.9.0",
         "parse-duration": "^2.1.6",
         "pinia": "^3.0.4",

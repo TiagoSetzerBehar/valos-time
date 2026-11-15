@@ -1,5 +1,11 @@
 <script setup lang="ts">
-import { ChartBarIcon } from '@heroicons/vue/20/solid';
+import { ArrowDownTrayIcon, ChartBarIcon } from '@heroicons/vue/20/solid';
+import axios from 'axios';
+import { trans } from 'laravel-vue-i18n';
+import { SecondaryButton } from '@/packages/ui/src';
+import { canViewAllTimeEntries } from '@/utils/permissions';
+import { useNotificationsStore } from '@/utils/notification';
+import { downloadOnePagePdf } from '@/utils/valoPdf';
 import { computed, type ComputedRef, inject, ref } from 'vue';
 import type { Dayjs } from 'dayjs';
 import { useStorage } from '@vueuse/core';
@@ -16,7 +22,7 @@ import type {
 } from '@/packages/api/src';
 import { useAggregatedTimeEntriesQuery } from '@/utils/useAggregatedTimeEntriesQuery';
 import { useReportingStore } from '@/utils/useReporting';
-import { getCurrentMembershipId, getCurrentRole } from '@/utils/useUser';
+import { getCurrentMembershipId, getCurrentOrganizationId, getCurrentRole } from '@/utils/useUser';
 import { getInitialWeekRange } from '@/utils/useTimeEntriesCalendarQuery';
 import { formatHumanReadableDuration, localDateToUtc } from '@/packages/ui/src/utils/time';
 import { getDateRangeLabel } from '@/packages/ui/src/utils/dateRange';
@@ -85,6 +91,26 @@ function formatDuration(seconds: number): string {
     );
 }
 
+// VALO's Time: one-page summary of the shown week (vs the week before) to share with the team.
+const summaryLoading = ref(false);
+async function downloadSummary() {
+    summaryLoading.value = true;
+    try {
+        const response = await axios.get<{ html: string; filename: string }>(
+            route('valo.weekly-summary', {
+                organizationId: getCurrentOrganizationId(),
+                week_start: weekStart.value.format('YYYY-MM-DD'),
+            })
+        );
+        await downloadOnePagePdf(response.data.html, response.data.filename);
+    } catch (error) {
+        console.error(error);
+        useNotificationsStore().addNotification('error', trans('Export failed'));
+    } finally {
+        summaryLoading.value = false;
+    }
+}
+
 const gridStyle =
     'grid-template-columns: minmax(180px, 1fr) repeat(7, minmax(72px, 96px)) minmax(88px, 110px)';
 </script>
@@ -96,6 +122,14 @@ const gridStyle =
             <PageTitle :icon="ChartBarIcon" :title="$t('Reporting')"></PageTitle>
             <ReportingTabNavbar active="weekly" class="hidden sm:flex"></ReportingTabNavbar>
         </div>
+        <SecondaryButton
+            v-if="canViewAllTimeEntries()"
+            :icon="ArrowDownTrayIcon"
+            :loading="summaryLoading"
+            data-testid="weekly_summary_pdf"
+            @click="downloadSummary">
+            {{ $t('Weekly summary (PDF)') }}
+        </SecondaryButton>
     </MainContainer>
     <MainContainer class="pt-5 pb-10">
         <TimesheetHeader
