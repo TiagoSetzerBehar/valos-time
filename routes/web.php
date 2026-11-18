@@ -10,7 +10,9 @@ use App\Http\Controllers\Web\OtherBrowserSessionsController;
 use App\Http\Controllers\Web\UserController;
 use App\Http\Controllers\Web\UserProfileController;
 use App\Http\Controllers\Web\ValoCronController;
+use App\Http\Controllers\Web\ValoLongEntryController;
 use App\Http\Controllers\Web\ValoMeetingController;
+use App\Http\Controllers\Web\ValoPasswordLinkController;
 use App\Http\Controllers\Web\ValoReminderSettingsController;
 use App\Http\Controllers\Web\ValoWeeklySummaryController;
 use App\Service\PermissionStore;
@@ -118,6 +120,9 @@ Route::middleware([
     Route::get('/organizations/{organizationId}/valo-reminders', [ValoReminderSettingsController::class, 'show'])->name('valo.reminders.show');
     Route::put('/organizations/{organizationId}/valo-reminders', [ValoReminderSettingsController::class, 'update'])->name('valo.reminders.update');
     // VALO's Time: weekly meetings (prepared in the calendar, counted after OK)
+    // VALO's Time: forgotten timers (entries of more than 16 h in a row) shown apart in the weekly report
+    Route::get('/organizations/{organizationId}/valo-long-entries', [ValoLongEntryController::class, 'index'])->name('valo.long-entries.index');
+    Route::put('/organizations/{organizationId}/valo-long-entries/{timeEntryId}', [ValoLongEntryController::class, 'update'])->name('valo.long-entries.update');
     Route::get('/organizations/{organizationId}/valo-weekly-summary', [ValoWeeklySummaryController::class, 'show'])->name('valo.weekly-summary');
     Route::get('/organizations/{organizationId}/valo-meetings/occurrences', [ValoMeetingController::class, 'occurrences'])->name('valo.meetings.occurrences');
     Route::post('/organizations/{organizationId}/valo-meetings/{meetingId}/confirm', [ValoMeetingController::class, 'confirm'])->name('valo.meetings.confirm');
@@ -132,6 +137,8 @@ Route::middleware([
         return to_route('organizations.show', [$organizationId]);
     })->name('teams.show');
     Route::get('/user/profile', [UserProfileController::class, 'show'])->name('profile.show');
+    // VALO's Time: "I do not remember my current password" -> email with the reset link
+    Route::post('/user/password-link', [ValoPasswordLinkController::class, 'send'])->name('valo.password.link');
     Route::delete('/user/other-browser-sessions', [OtherBrowserSessionsController::class, 'destroy'])
         ->name('other-browser-sessions.destroy');
 });

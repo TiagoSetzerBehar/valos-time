@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import AppLayout from '@/Layouts/AppLayout.vue';
-import ReportingOverview from '@/Components/Common/Reporting/ReportingOverview.vue';
+import ValoReportingSummary from '@/Components/Common/Reporting/ValoReportingSummary.vue';
 </script>
 
 <template>
     <AppLayout :title="$t('Reporting')" data-testid="reporting_view" class="overflow-hidden">
-        <ReportingOverview></ReportingOverview>
+        <ValoReportingSummary></ValoReportingSummary>
     </AppLayout>
 </template>

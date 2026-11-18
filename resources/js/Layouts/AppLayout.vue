@@ -36,7 +36,6 @@ import {
     canViewInvoices,
     canViewMembers,
     canViewProjects,
-    canViewReport,
     canViewTags,
 } from '@/utils/permissions';
 import { canUseBillableRates, isBillingActivated, isInvoicingActivated } from '@/utils/billing';
@@ -255,28 +254,6 @@ const page = usePage<{
                             <NavigationSidebarItem
                                 :title="$t('Reporting')"
                                 :icon="ChartBarIcon"
-                                :sub-items="[
-                                    {
-                                        title: $t('Overview'),
-                                        route: 'reporting',
-                                        show: true,
-                                    },
-                                    {
-                                        title: $t('Detailed'),
-                                        route: 'reporting.detailed',
-                                        show: true,
-                                    },
-                                    {
-                                        title: $t('Weekly'),
-                                        route: 'reporting.weekly',
-                                        show: true,
-                                    },
-                                    {
-                                        title: $t('Shared'),
-                                        route: 'reporting.shared',
-                                        show: canViewReport(),
-                                    },
-                                ]"
                                 :current="
                                     route().current('reporting') ||
                                     route().current('reporting.detailed') ||
@@ -392,8 +369,8 @@ const page = usePage<{
                 <BillingBanner v-if="isBillingActivated()" />
 
                 <header
-                    data-valo-page-header
                     v-if="$slots.header"
+                    data-valo-page-header
                     class="bg-default-background border-b border-default-background-separator shadow">
                     <div class="pt-8 pb-3">
                         <MainContainer>

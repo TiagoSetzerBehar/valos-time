@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { PencilSquareIcon } from '@heroicons/vue/20/solid';
+import { PencilSquareIcon, PlusCircleIcon } from '@heroicons/vue/20/solid';
 import { usePage } from '@inertiajs/vue3';
 import { type User } from '@/types/models';
 import { computed, onMounted, watch } from 'vue';
@@ -39,6 +39,9 @@ import { useNotificationsStore } from '@/utils/notification';
 import { useTimeEntriesMutations } from '@/utils/useTimeEntriesMutations';
 import { useTimeEntriesInfiniteQuery } from '@/utils/useTimeEntriesInfiniteQuery';
 import { trans } from 'laravel-vue-i18n';
+
+// VALO's Time: `hero` draws the big two-row card of the home screen.
+withDefaults(defineProps<{ hero?: boolean }>(), { hero: false });
 
 const page = usePage<{
     auth: {
@@ -206,6 +209,7 @@ const { tags } = useTagsQuery();
                         :time-entries
                         :create-tag
                         :is-active
+                        :hero
                         :is-on-break="isOnBreak"
                         :breaks-enabled="breaksEnabled"
                         :can-resume-after-break="canResumeAfterBreak"
@@ -219,9 +223,22 @@ const { tags } = useTagsQuery();
                         @start-break="startBreak"
                         @resume-after-break="resumePreviousWorkAfterBreak"
                         @update-time-entry="updateTimeEntry"
-                        @create-time-entry="createTimeEntryFromCurrentEntry"></TimeTrackerControls>
+                        @create-time-entry="createTimeEntryFromCurrentEntry">
+                        <template v-if="hero" #extra>
+                            <button
+                                type="button"
+                                class="valo-manual-btn"
+                                data-testid="manual_time_entry_button"
+                                :title="$t('Create manual time entry')"
+                                @click="showManualTimeEntryModal = true">
+                                <PlusCircleIcon class="w-5 h-5" />
+                                <span>{{ $t('Add hours by hand') }}</span>
+                            </button>
+                        </template>
+                    </TimeTrackerControls>
                 </div>
                 <button
+                    v-if="!hero"
                     type="button"
                     class="hidden sm:flex items-center gap-1.5 h-8 rounded-md px-2.5 text-sm text-text-secondary hover:text-text-primary hover:bg-card-background transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                     data-testid="manual_time_entry_button"

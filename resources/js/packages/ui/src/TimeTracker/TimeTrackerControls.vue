@@ -42,6 +42,8 @@ const props = withDefaults(
         canResumeAfterBreak?: boolean;
         resumeDescription?: string | null;
         timeTrackerMode?: TimeTrackerMode;
+        /** VALO's Time: big two-row card for the home screen */
+        hero?: boolean;
     }>(),
     {
         isOnBreak: false,
@@ -49,6 +51,7 @@ const props = withDefaults(
         canResumeAfterBreak: false,
         resumeDescription: null,
         timeTrackerMode: 'project',
+        hero: false,
     }
 );
 
@@ -93,14 +96,20 @@ watch(
 </script>
 
 <template>
-    <div class="flex items-center relative @container" data-testid="dashboard_timer">
+    <div
+        class="flex items-center relative @container"
+        :class="{ 'valo-hero': hero }"
+        data-testid="dashboard_timer">
         <div
-            class="flex flex-col @2xl:flex-row w-full justify-between rounded-lg border transition shadow-card"
-            :class="
-                isOnBreak
-                    ? 'bg-amber-500/10 border-amber-500/30'
-                    : 'bg-card-background border-card-border'
-            ">
+            class="flex flex-col w-full justify-between transition"
+            :class="[
+                hero ? '' : '@2xl:flex-row rounded-lg border shadow-card',
+                hero
+                    ? ''
+                    : isOnBreak
+                      ? 'bg-amber-500/10 border-amber-500/30'
+                      : 'bg-card-background border-card-border',
+            ]">
             <div class="flex flex-1 items-center relative">
                 <div
                     v-if="isOnBreak"
@@ -118,7 +127,7 @@ watch(
                     :is-active="isActive"
                     @start-timer="emit('startTimer')"
                     @update-time-entry="emit('updateTimeEntry')"></TimeTrackerEntryInput>
-                <div class="@2xl:hidden pr-3 shrink-0 flex items-center space-x-2">
+                <div v-if="!hero" class="@2xl:hidden pr-3 shrink-0 flex items-center space-x-2">
                     <button
                         v-if="breaksEnabled && !isOnBreak && isActive"
                         type="button"
@@ -134,7 +143,9 @@ watch(
                         @changed="onToggleButtonPress"></TimeTrackerStartStop>
                 </div>
             </div>
-            <div class="flex items-center justify-between pl-2 shrink min-w-0">
+            <div
+                class="flex items-center shrink min-w-0"
+                :class="hero ? 'valo-hero-row' : 'justify-between pl-2'">
                 <TimeTrackerProjectControls
                     v-if="!isOnBreak && timeTrackerMode !== 'simple'"
                     v-model:current-time-entry="currentTimeEntry"
@@ -150,6 +161,7 @@ watch(
                     :enable-estimated-time="enableEstimatedTime"
                     :can-create-project="canCreateProject"
                     @update-time-entry="emit('updateTimeEntry')"></TimeTrackerProjectControls>
+                <slot name="extra"></slot>
                 <button
                     v-if="isOnBreak && canResumeAfterBreak"
                     type="button"
@@ -161,8 +173,10 @@ watch(
                     }}</span>
                 </button>
                 <div
-                    class="border-l"
-                    :class="isOnBreak ? 'border-amber-500/40' : 'border-card-border'">
+                    :class="[
+                        hero ? 'valo-hero-range' : 'border-l',
+                        isOnBreak ? 'border-amber-500/40' : 'border-card-border',
+                    ]">
                     <TimeTrackerRangeSelector
                         v-model:current-time-entry="currentTimeEntry"
                         v-model:live-timer="liveTimer"
@@ -174,9 +188,25 @@ watch(
                         @create-time-entry="emit('createTimeEntry')"
                         @keydown.enter="onRangeEnter"></TimeTrackerRangeSelector>
                 </div>
+                <template v-if="hero">
+                    <button
+                        v-if="breaksEnabled && !isOnBreak && isActive"
+                        type="button"
+                        :title="$t('Take a break')"
+                        :aria-label="$t('Take a break')"
+                        class="flex items-center justify-center w-9 h-9 rounded-full bg-quaternary text-text-tertiary hover:text-amber-500 focus:ring-2 focus:ring-border-tertiary transition"
+                        @click="emit('startBreak')">
+                        <Coffee class="w-5 h-5" />
+                    </button>
+                    <TimeTrackerStartStop
+                        :active="isActive"
+                        :variant="isOnBreak ? 'break' : 'primary'"
+                        size="large"
+                        @changed="onToggleButtonPress"></TimeTrackerStartStop>
+                </template>
             </div>
         </div>
-        <div class="pl-4 @2xl:pl-6 pr-3 hidden @2xl:flex items-center space-x-3">
+        <div v-if="!hero" class="pl-4 @2xl:pl-6 pr-3 hidden @2xl:flex items-center space-x-3">
             <button
                 v-if="breaksEnabled && !isOnBreak && isActive"
                 type="button"

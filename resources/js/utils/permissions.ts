@@ -1,3 +1,4 @@
+import { valoSectionVisible } from '@/utils/valo';
 import { usePage } from '@inertiajs/vue3';
 
 const page = usePage<{
@@ -62,7 +63,8 @@ export function canDeleteClients() {
 }
 
 export function canViewClients() {
-    return currentUserHasPermission('clients:view');
+    // VALO's Time does not use clients: the section is hidden everywhere.
+    return valoSectionVisible('clients') && currentUserHasPermission('clients:view');
 }
 
 export function canViewMembers() {
@@ -143,7 +145,8 @@ export function canViewOrganizationGoals() {
     return currentUserHasPermission('goals:view:organization-type');
 }
 export function canViewGoals() {
-    return canViewOwnGoals() || canViewOrganizationGoals();
+    // VALO's Time does not use goals: the section is hidden everywhere.
+    return valoSectionVisible('goals') && (canViewOwnGoals() || canViewOrganizationGoals());
 }
 export function canCreateOwnGoals() {
     return currentUserHasPermission('goals:create:own');

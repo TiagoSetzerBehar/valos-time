@@ -636,3 +636,582 @@ html.dark .valo-meeting-ghost {
 html.valo-glass.dark .valo-calendar .valo-meeting-ghost {
     border-color: rgba(56, 189, 248, 0.65);
 }
+
+/* ---------- VALO's Time: weekly report as a heat map ---------- */
+.valo-avatar {
+    flex: none;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    color: #fff;
+    font-size: 11px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.valo-weekly-bar,
+.valo-weekly-table {
+    border-radius: 22px;
+    background: rgba(255, 255, 255, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.85);
+    box-shadow: 0 10px 34px rgba(15, 23, 42, 0.08);
+    backdrop-filter: blur(22px);
+    -webkit-backdrop-filter: blur(22px);
+}
+.valo-weekly-bar {
+    padding: 10px 18px 10px 12px;
+}
+.valo-weekly-week,
+.valo-weekly-pill {
+    height: 40px;
+    border-radius: 13px;
+    background: rgba(255, 255, 255, 0.7);
+    border: 1px solid rgba(148, 163, 184, 0.4);
+}
+.valo-weekly-week {
+    padding: 0 6px;
+}
+.valo-weekly-pill {
+    padding: 0 16px;
+    font-size: 14px;
+    font-weight: 500;
+    color: #1e293b;
+}
+.valo-weekly-arrow {
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 9px;
+    color: #334155;
+}
+.valo-weekly-arrow:hover {
+    background: rgba(148, 163, 184, 0.2);
+}
+.valo-weekly-seg {
+    display: flex;
+    gap: 4px;
+    padding: 3px;
+    border-radius: 14px;
+    background: rgba(255, 255, 255, 0.5);
+    border: 1px solid rgba(148, 163, 184, 0.35);
+}
+.valo-weekly-seg button {
+    height: 34px;
+    padding: 0 16px;
+    border-radius: 11px;
+    font-size: 14px;
+    font-weight: 500;
+    color: #334155;
+}
+.valo-weekly-seg button.on {
+    background: #fff;
+    color: #0369a1;
+    font-weight: 600;
+    box-shadow: 0 3px 10px rgba(2, 132, 199, 0.16);
+}
+.valo-weekly-review {
+    min-height: 60px;
+    padding: 10px 18px;
+    border-radius: 20px;
+    background: rgba(254, 243, 199, 0.82);
+    border: 1px solid #f59e0b;
+    color: #78350f;
+    font-size: 14px;
+}
+.valo-weekly-review-chip {
+    min-height: 40px;
+    padding: 4px 12px 4px 6px;
+    border-radius: 13px;
+    background: rgba(255, 255, 255, 0.75);
+}
+.valo-weekly-table {
+    overflow: hidden;
+    color: #0f172a;
+}
+.valo-weekly-row {
+    display: grid;
+    grid-template-columns: 240px repeat(7, minmax(0, 1fr)) 150px;
+    align-items: center;
+}
+.valo-weekly-head {
+    height: 46px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #334155;
+    border-bottom: 1px solid rgba(148, 163, 184, 0.35);
+}
+.valo-weekly-head > span,
+.valo-weekly-foot > span {
+    text-align: center;
+}
+.valo-weekly-row > span:first-child {
+    text-align: left;
+}
+.valo-weekly-row > span:last-child {
+    text-align: right;
+}
+.valo-weekly-weekend {
+    color: #64748b;
+    font-weight: 500;
+}
+.valo-weekly-today {
+    color: #0369a1;
+}
+.valo-weekly-line {
+    font-size: 14px;
+}
+.valo-weekly-row.valo-weekly-line {
+    min-height: 42px;
+}
+.valo-weekly-line + .valo-weekly-line {
+    border-top: 1px solid rgba(148, 163, 184, 0.16);
+}
+.valo-weekly-foot {
+    height: 50px;
+    border-top: 1px solid rgba(148, 163, 184, 0.45);
+    font-size: 14px;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+}
+.valo-weekly-total-bar {
+    display: block;
+    height: 5px;
+    border-radius: 99px;
+    margin: 4px 0 0 auto;
+    background: linear-gradient(90deg, #38bdf8, #0284c7);
+}
+.valo-heat {
+    justify-self: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 92px;
+    max-width: calc(100% - 6px);
+    height: 30px;
+    border-radius: 10px;
+    font-size: 13px;
+    font-weight: 500;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+    color: #0c4a6e;
+}
+.valo-heat-0 {
+    justify-self: center;
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: rgba(100, 116, 139, 0.4);
+}
+.valo-heat-1 {
+    background: rgba(14, 165, 233, 0.14);
+}
+.valo-heat-2 {
+    background: rgba(14, 165, 233, 0.3);
+}
+.valo-heat-3 {
+    background: rgba(14, 165, 233, 0.5);
+}
+.valo-heat-4 {
+    background: #0369a1;
+    color: #fff;
+    font-weight: 600;
+}
+.valo-heat-key {
+    display: inline-block;
+    width: 22px;
+    height: 14px;
+    border-radius: 5px;
+}
+html.dark .valo-weekly-bar,
+html.dark .valo-weekly-table {
+    background: rgba(15, 23, 42, 0.58);
+    border-color: rgba(148, 163, 184, 0.22);
+    box-shadow: 0 10px 34px rgba(0, 0, 0, 0.4);
+}
+html.dark .valo-weekly-table {
+    color: #e2e8f0;
+}
+html.dark .valo-weekly-week,
+html.dark .valo-weekly-pill {
+    background: rgba(30, 41, 59, 0.75);
+    border-color: rgba(148, 163, 184, 0.3);
+    color: #e2e8f0;
+}
+html.dark .valo-weekly-arrow {
+    color: #cbd5e1;
+}
+html.dark .valo-weekly-seg {
+    background: rgba(30, 41, 59, 0.5);
+    border-color: rgba(148, 163, 184, 0.3);
+}
+html.dark .valo-weekly-seg button {
+    color: #cbd5e1;
+}
+html.dark .valo-weekly-seg button.on {
+    background: rgba(56, 189, 248, 0.2);
+    color: #7dd3fc;
+    box-shadow: none;
+}
+html.dark .valo-weekly-head {
+    color: #cbd5e1;
+    border-bottom-color: rgba(148, 163, 184, 0.25);
+}
+html.dark .valo-weekly-weekend {
+    color: #94a3b8;
+}
+html.dark .valo-weekly-today {
+    color: #7dd3fc;
+}
+html.dark .valo-weekly-review {
+    background: rgba(245, 158, 11, 0.14);
+    border-color: rgba(245, 158, 11, 0.7);
+    color: #fde68a;
+}
+html.dark .valo-weekly-review-chip {
+    background: rgba(15, 23, 42, 0.6);
+}
+html.dark .valo-heat {
+    color: #e0f2fe;
+}
+html.dark .valo-heat-0 {
+    background: rgba(148, 163, 184, 0.45);
+}
+html.dark .valo-heat-1 {
+    background: rgba(56, 189, 248, 0.14);
+}
+html.dark .valo-heat-2 {
+    background: rgba(56, 189, 248, 0.28);
+}
+html.dark .valo-heat-3 {
+    background: rgba(56, 189, 248, 0.46);
+}
+html.dark .valo-heat-4 {
+    background: #38bdf8;
+    color: #082f49;
+}
+
+/* ---------- VALO's Time: home screen, big timer card ---------- */
+.valo-glass .valo-timer-hero {
+    border-radius: 28px;
+}
+.valo-hero [data-testid='time_entry_description'] {
+    height: 60px;
+    padding: 4px 2px 12px;
+    font-size: 27px;
+    font-weight: 500;
+}
+.valo-hero-row {
+    gap: 10px;
+    padding-top: 16px;
+    border-top: 1px solid rgba(148, 163, 184, 0.3);
+}
+.valo-hero-range {
+    margin-left: auto;
+}
+.valo-hero [data-testid='time_entry_time'] {
+    width: 214px;
+    height: 60px;
+    padding: 0;
+    font-size: 42px;
+    font-weight: 600;
+    letter-spacing: -0.5px;
+    background: transparent;
+    box-shadow: none;
+}
+.valo-hero .valo-start {
+    height: 60px;
+    min-width: 190px;
+    padding: 0 40px;
+    font-size: 17px;
+    letter-spacing: 1.2px;
+    border-radius: 20px !important;
+    box-shadow: 0 10px 24px rgba(2, 132, 199, 0.35);
+}
+.valo-manual-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    height: 44px;
+    padding: 0 18px;
+    border-radius: 14px;
+    border: 1.5px solid #0ea5e9;
+    background: rgba(14, 165, 233, 0.12);
+    color: #0369a1;
+    font-size: 15px;
+    font-weight: 600;
+    white-space: nowrap;
+    transition: background 0.15s;
+}
+.valo-manual-btn:hover {
+    background: rgba(14, 165, 233, 0.22);
+}
+html.dark .valo-manual-btn {
+    border-color: #38bdf8;
+    background: rgba(56, 189, 248, 0.14);
+    color: #7dd3fc;
+}
+
+/* ---------- VALO's Time: summary report, projects and dashboard cards ---------- */
+.valo-gcard {
+    border-radius: 22px;
+    background: rgba(255, 255, 255, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.85);
+    box-shadow: 0 10px 34px rgba(15, 23, 42, 0.08);
+    backdrop-filter: blur(22px);
+    -webkit-backdrop-filter: blur(22px);
+}
+.valo-pill {
+    height: 40px;
+    padding: 0 16px;
+    border-radius: 13px;
+    border: 1px solid rgba(148, 163, 184, 0.4);
+    background: rgba(255, 255, 255, 0.7);
+    font-size: 14px;
+    font-weight: 500;
+    color: #1e293b;
+    white-space: nowrap;
+}
+.valo-pill.on {
+    background: #fff;
+    border-color: #fff;
+    color: #0369a1;
+    font-weight: 600;
+    box-shadow: 0 4px 14px rgba(2, 132, 199, 0.2);
+}
+.valo-kpi {
+    min-height: 118px;
+    padding: 18px 22px;
+    border-radius: 22px;
+    color: #0f172a;
+}
+.valo-kpi-main {
+    background: linear-gradient(160deg, #0274b3, #0369a1);
+    box-shadow: 0 12px 30px rgba(2, 132, 199, 0.32);
+    color: #fff;
+}
+.valo-kpi-label {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    color: #475569;
+}
+.valo-kpi-value {
+    margin-top: 8px;
+    font-size: 30px;
+    font-weight: 700;
+    letter-spacing: -0.4px;
+    line-height: 1.1;
+    font-variant-numeric: tabular-nums;
+}
+.valo-kpi-of {
+    font-size: 18px;
+    font-weight: 500;
+    color: #475569;
+}
+.valo-kpi-note {
+    margin-top: 4px;
+    font-size: 13px;
+    color: #475569;
+}
+.valo-kpi-main .valo-kpi-label,
+.valo-kpi-main .valo-kpi-note {
+    color: #e0f2fe;
+}
+.valo-rcard {
+    padding: 20px 24px;
+    border-radius: 24px;
+    color: #0f172a;
+}
+.valo-rcard h2 {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 12px;
+    font-size: 18px;
+    font-weight: 600;
+}
+.valo-rcard h2 span {
+    font-size: 13px;
+    font-weight: 400;
+    color: #475569;
+}
+.valo-bar-row {
+    display: grid;
+    align-items: center;
+    gap: 14px;
+    width: 100%;
+    font-size: 15px;
+    text-align: left;
+}
+.valo-bar-person {
+    grid-template-columns: minmax(0, 210px) 1fr 104px;
+    min-height: 40px;
+    padding: 0 6px;
+    margin: 0 -6px;
+    width: calc(100% + 12px);
+    border-radius: 12px;
+}
+.valo-bar-person:not(:disabled):hover {
+    background: rgba(14, 165, 233, 0.1);
+}
+.valo-bar-tag {
+    grid-template-columns: minmax(0, 190px) 1fr 104px;
+    min-height: 38px;
+}
+.valo-bar-project {
+    grid-template-columns: 1fr 110px 48px;
+    row-gap: 6px;
+    margin-top: 14px;
+}
+.valo-track {
+    display: block;
+    height: 10px;
+    border-radius: 99px;
+    background: rgba(148, 163, 184, 0.22);
+    overflow: hidden;
+}
+.valo-bar-project .valo-track {
+    height: 8px;
+}
+.valo-track i {
+    display: block;
+    height: 100%;
+    border-radius: 99px;
+    background: linear-gradient(90deg, #38bdf8, #0284c7);
+}
+.valo-dot {
+    flex: none;
+    width: 11px;
+    height: 11px;
+    border-radius: 4px;
+}
+.valo-bars {
+    display: flex;
+    align-items: flex-end;
+    gap: 10px;
+    height: 150px;
+    margin-top: 30px;
+    border-bottom: 1px solid rgba(148, 163, 184, 0.4);
+}
+.valo-bars > div {
+    flex: 1;
+    position: relative;
+    min-width: 0;
+    border-radius: 8px 8px 2px 2px;
+    background: linear-gradient(180deg, #38bdf8, #0284c7);
+}
+.valo-bars > div > span {
+    position: absolute;
+    left: -6px;
+    right: -6px;
+    top: -21px;
+    text-align: center;
+    font-size: 12px;
+    font-weight: 600;
+    white-space: nowrap;
+}
+.valo-bar-labels {
+    display: flex;
+    gap: 10px;
+    margin-top: 8px;
+}
+.valo-bar-labels > span {
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-align: center;
+    font-size: 12px;
+    color: #475569;
+    white-space: nowrap;
+}
+html.dark .valo-gcard {
+    background: rgba(15, 23, 42, 0.58);
+    border-color: rgba(148, 163, 184, 0.22);
+    box-shadow: 0 10px 34px rgba(0, 0, 0, 0.4);
+}
+html.dark .valo-pill {
+    background: rgba(30, 41, 59, 0.75);
+    border-color: rgba(148, 163, 184, 0.3);
+    color: #e2e8f0;
+}
+html.dark .valo-pill.on {
+    background: rgba(56, 189, 248, 0.2);
+    border-color: transparent;
+    color: #7dd3fc;
+    box-shadow: none;
+}
+html.dark .valo-kpi,
+html.dark .valo-rcard {
+    color: #f1f5f9;
+}
+html.dark .valo-kpi-label,
+html.dark .valo-kpi-note,
+html.dark .valo-kpi-of,
+html.dark .valo-rcard h2 span,
+html.dark .valo-bar-labels > span {
+    color: #94a3b8;
+}
+html.dark .valo-kpi-main .valo-kpi-label,
+html.dark .valo-kpi-main .valo-kpi-note {
+    color: #e0f2fe;
+}
+html.dark .valo-bar-person:not(:disabled):hover {
+    background: rgba(56, 189, 248, 0.12);
+}
+
+.valo-pcard {
+    min-height: 150px;
+    padding: 18px 20px;
+    border-radius: 24px;
+}
+.valo-pcard-hours {
+    margin-top: 2px;
+    font-size: 26px;
+    font-weight: 700;
+    letter-spacing: -0.3px;
+    font-variant-numeric: tabular-nums;
+    color: #0f172a;
+}
+.valo-pcard-hours.zero {
+    font-size: 17px;
+    font-weight: 500;
+    line-height: 39px;
+    color: #64748b;
+}
+html.dark .valo-pcard-hours {
+    color: #f1f5f9;
+}
+html.dark .valo-pcard-hours.zero {
+    color: #94a3b8;
+}
+.valo-meet-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    min-height: 58px;
+    border-top: 1px solid rgba(148, 163, 184, 0.25);
+}
+.valo-ok-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    height: 38px;
+    padding: 0 14px;
+    border-radius: 12px;
+    border: 1px dashed #0284c7;
+    background: rgba(224, 242, 254, 0.75);
+    color: #0369a1;
+    font-size: 14px;
+    font-weight: 600;
+    white-space: nowrap;
+}
+html.dark .valo-ok-btn {
+    border-color: #38bdf8;
+    background: rgba(56, 189, 248, 0.14);
+    color: #7dd3fc;
+}

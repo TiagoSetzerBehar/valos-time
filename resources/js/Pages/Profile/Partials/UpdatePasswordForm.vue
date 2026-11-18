@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue';
+import axios from 'axios';
+import { trans } from 'laravel-vue-i18n';
 import { useForm } from '@inertiajs/vue3';
 import ActionMessage from '@/Components/ActionMessage.vue';
 import FormSection from '@/Components/FormSection.vue';
@@ -15,6 +17,25 @@ const form = useForm({
     password: '',
     password_confirmation: '',
 });
+
+// VALO's Time: who forgot the current password asks for the reset email from here.
+const linkState = ref<'idle' | 'sending' | 'sent' | 'error'>('idle');
+const linkMessage = ref('');
+async function sendPasswordLink() {
+    linkState.value = 'sending';
+    try {
+        const response = await axios.post<{ email: string }>(route('valo.password.link'));
+        linkMessage.value = trans(
+            'We sent an email to :email with a link to create a new password. It expires in 60 minutes.',
+            { email: response.data.email }
+        );
+        linkState.value = 'sent';
+    } catch (error) {
+        const message = axios.isAxiosError(error) ? error.response?.data?.message : null;
+        linkMessage.value = message ?? trans('The email could not be sent. Try again in a minute.');
+        linkState.value = 'error';
+    }
+}
 
 const updatePassword = () => {
     form.put(route('user-password.update'), {
@@ -57,6 +78,22 @@ const updatePassword = () => {
                 <FieldError v-if="form.errors.current_password">{{
                     form.errors.current_password
                 }}</FieldError>
+                <div class="mt-2 text-sm" data-testid="forgot_current_password">
+                    <button
+                        type="button"
+                        class="font-medium text-accent-300 underline hover:no-underline disabled:opacity-50"
+                        :disabled="linkState === 'sending'"
+                        @click="sendPasswordLink">
+                        {{ $t('Forgot your current password? Send me a link by email') }}
+                    </button>
+                    <p
+                        v-if="linkState === 'sent' || linkState === 'error'"
+                        class="mt-2"
+                        :class="linkState === 'sent' ? 'text-text-primary' : 'text-red-500'"
+                        role="status">
+                        {{ linkMessage }}
+                    </p>
+                </div>
             </Field>
 
             <Field class="col-span-6 sm:col-span-4">

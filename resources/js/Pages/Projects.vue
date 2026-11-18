@@ -1,11 +1,10 @@
 <script setup lang="ts">
-import { isMoneyVisible } from '@/utils/valo';
 import AppLayout from '@/Layouts/AppLayout.vue';
 import MainContainer from '@/packages/ui/src/MainContainer.vue';
 import { FolderIcon, PlusIcon } from '@heroicons/vue/20/solid';
 import { Search } from '@lucide/vue';
 import PrimaryButton from '@/packages/ui/src/Buttons/PrimaryButton.vue';
-import ProjectTable from '@/Components/Common/Project/ProjectTable.vue';
+import ValoProjectCards from '@/Components/Common/Project/ValoProjectCards.vue';
 import TextInput from '@/packages/ui/src/Input/TextInput.vue';
 import { computed, ref } from 'vue';
 import { useProjectsQuery } from '@/utils/useProjectsQuery';
@@ -17,7 +16,7 @@ import { useClientsQuery } from '@/utils/useClientsQuery';
 import { useClientsStore } from '@/utils/useClients';
 import type { CreateClientBody, Client, CreateProjectBody, Project } from '@/packages/api/src';
 import { getOrganizationCurrencyString } from '@/utils/money';
-import { getCurrentOrganizationId, getCurrentRole } from '@/utils/useUser';
+import { getCurrentOrganizationId } from '@/utils/useUser';
 import { useOrganizationQuery } from '@/utils/useOrganizationQuery';
 import { isAllowedToPerformPremiumAction } from '@/utils/billing';
 import { useStorage } from '@vueuse/core';
@@ -45,7 +44,7 @@ interface ProjectTableState {
     };
 }
 
-const { tableState, handleSort } = useTableSortState<SortColumn, ProjectTableState>(
+const { tableState } = useTableSortState<SortColumn, ProjectTableState>(
     'project-table-state',
     {
         sortColumn: 'name',
@@ -142,13 +141,6 @@ async function createProject(project: CreateProjectBody): Promise<Project | unde
 async function createClient(client: CreateClientBody): Promise<Client | undefined> {
     return await useClientsStore().createClient(client);
 }
-
-const showBillableRate = computed(() => {
-    return (
-        isMoneyVisible() &&
-        !!(getCurrentRole() !== 'employee' || organization.value?.employees_can_see_billable_rates)
-    );
-});
 </script>
 
 <template>
@@ -158,8 +150,8 @@ const showBillableRate = computed(() => {
                 <PageTitle :icon="FolderIcon" :title="$t('Projects')"></PageTitle>
             </div>
             <PrimaryButton
-                class="uppercase tracking-wide text-xs"
                 v-if="canCreateProjects()"
+                class="uppercase tracking-wide text-xs"
                 :icon="PlusIcon"
                 @click="showCreateProjectModal = true"
                 >{{ $t('Create Project') }}
@@ -224,16 +216,11 @@ const showBillableRate = computed(() => {
         </MainContainer>
 
         <MainContainer class="pb-8">
-            <div class="valo-card">
-                <ProjectTable
-                    :show-billable-rate="showBillableRate"
-                    :is-filtered="hasActiveFilters"
-                    :is-loading="projectsLoading"
-                    :projects="filteredProjects"
-                    :sort-column="tableState.sortColumn"
-                    :sort-direction="tableState.sortDirection"
-                    @sort="handleSort"></ProjectTable>
-            </div>
+            <ValoProjectCards
+                :projects="filteredProjects"
+                :is-filtered="hasActiveFilters"
+                :is-loading="projectsLoading"
+                @create="showCreateProjectModal = true"></ValoProjectCards>
         </MainContainer>
     </AppLayout>
 </template>

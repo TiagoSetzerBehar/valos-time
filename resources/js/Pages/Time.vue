@@ -170,8 +170,8 @@ function goToCalendarDay(date: string) {
         <template v-else>
             <MainContainer class="pt-5 lg:pt-8 pb-4 lg:pb-6">
                 <div
-                    class="relative z-20 rounded border border-card-border bg-card-background px-2 sm:px-3 py-1.5 shadow-card">
-                    <TimeTracker></TimeTracker>
+                    class="valo-timer-hero relative z-20 rounded border border-card-border bg-card-background px-5 lg:px-7 pt-4 pb-5 shadow-card">
+                    <TimeTracker hero></TimeTracker>
                 </div>
             </MainContainer>
             <TimeWeekSummary v-model:day="selectedDay"></TimeWeekSummary>
