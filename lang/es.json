@@ -1458,5 +1458,9 @@
     "Routine": "Rutina",
     "Your timer is running since :start. The same hour can not count twice.": "Tu cronómetro está en marcha desde las :start. Una misma hora no puede contar dos veces.",
     "You already have hours from :start to :end in that time. The same hour can not count twice.": "Ya tienes horas de :start a :end en ese tramo. Una misma hora no puede contar dos veces.",
-    "Click to confirm": "Clic para confirmar"
+    "Click to confirm": "Clic para confirmar",
+    "Those hours are already tracked": "Esas horas ya están registradas",
+    "The same hour can not count twice. Check your entries for that day.": "La misma hora no puede contar dos veces. Revisa tus registros de ese día.",
+    "Only the free hours were added": "Se añadieron solo las horas libres",
+    "You already had hours tracked in part of that time. The same hour never counts twice.": "Ya tenías horas registradas en parte de ese horario. La misma hora nunca cuenta dos veces."
 }

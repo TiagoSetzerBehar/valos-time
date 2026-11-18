@@ -61,9 +61,10 @@ export const useNotificationsStore = defineStore('notifications', () => {
                     } else if (error?.response?.data?.key === 'overlapping_time_entry') {
                         addNotification(
                             'error',
-                            trans('Overlapping time entries are not allowed'),
-                            error.response?.data?.message ??
-                                trans('This change would overlap with an existing time entry.')
+                            trans('Those hours are already tracked'),
+                            trans(
+                                'The same hour can not count twice. Check your entries for that day.'
+                            )
                         );
                     } else {
                         addNotification(

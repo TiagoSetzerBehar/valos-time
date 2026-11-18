@@ -71,7 +71,7 @@ class ValoSameHourOnceTest extends EndpointTestAbstract
         $this->assertSame('2026-11-18 09:30:00', $added->end?->format('Y-m-d H:i:s'));
     }
 
-    public function test_a_new_entry_can_not_overlap_hours_already_tracked(): void
+    public function test_a_new_entry_only_adds_the_hours_that_are_still_free(): void
     {
         // Arrange
         $data = $this->createUserWithRole(Role::Employee);
@@ -92,8 +92,37 @@ class ValoSameHourOnceTest extends EndpointTestAbstract
         ]);
 
         // Assert
-        $overlapping->assertStatus(400);
-        $after->assertCreated();
+        $overlapping->assertCreated();
+        $this->assertSame('11:00', $overlapping->json('data.start') ? substr((string) $overlapping->json('data.start'), 11, 5) : null);
+        $after->assertStatus(400);
         $this->assertSame(2, TimeEntry::query()->count());
+    }
+
+    public function test_seven_hours_at_once_skip_a_meeting_and_a_one_second_entry(): void
+    {
+        // Arrange: TLT 11-13 UTC and an accidental 1 second timer at 18:50:02
+        $data = $this->createUserWithRole(Role::Employee);
+        $data->organization->prevent_overlapping_time_entries = true;
+        $data->organization->save();
+        TimeEntry::factory()->forOrganization($data->organization)->forMember($data->member)->create([
+            'start' => '2026-11-18 11:00:00', 'end' => '2026-11-18 13:00:00',
+        ]);
+        TimeEntry::factory()->forOrganization($data->organization)->forMember($data->member)->create([
+            'start' => '2026-11-18 18:50:02', 'end' => '2026-11-18 18:50:03',
+        ]);
+        Passport::actingAs($data->user);
+
+        // Act
+        $response = $this->postJson(route('api.v1.time-entries.store', [$data->organization->getKey()]), [
+            'member_id' => $data->member->getKey(), 'start' => '2026-11-18T12:00:00Z', 'end' => '2026-11-18T19:00:00Z',
+            'billable' => false, 'description' => 'Trabajo',
+        ]);
+
+        // Assert: 13:00-19:00 saved, nothing counted twice
+        $response->assertCreated();
+        $added = TimeEntry::query()->where('description', '=', 'Trabajo')->orderBy('start')->get();
+        $this->assertSame(6 * 3600 - 1, (int) $added->sum(fn (TimeEntry $e): int => (int) $e->start->diffInSeconds($e->end, true)));
+        $this->assertSame('13:00', $added->first()?->start->format('H:i'));
+        $this->assertSame('19:00', $added->last()?->end?->format('H:i'));
     }
 }

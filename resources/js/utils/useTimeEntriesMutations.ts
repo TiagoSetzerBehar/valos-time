@@ -1,5 +1,6 @@
 import { useMutation, useQueryClient } from '@tanstack/vue-query';
 import { trans, transChoice } from 'laravel-vue-i18n';
+import dayjs from 'dayjs';
 import {
     api,
     type CreateTimeEntryBody,
@@ -30,8 +31,27 @@ export function useTimeEntriesMutations() {
                                 organization: organizationId,
                             },
                         }),
-                    trans('Time entry created successfully'),
-                    trans('Failed to create time entry')
+                    undefined,
+                    trans('Failed to create time entry'),
+                    (response) => {
+                        const saved = response.data;
+                        const onlyFreePart =
+                            !!timeEntry.end &&
+                            (!dayjs(saved.start).isSame(dayjs(String(timeEntry.start))) ||
+                                !saved.end ||
+                                !dayjs(saved.end).isSame(dayjs(String(timeEntry.end))));
+                        if (onlyFreePart) {
+                            addNotification(
+                                'success',
+                                trans('Only the free hours were added'),
+                                trans(
+                                    'You already had hours tracked in part of that time. The same hour never counts twice.'
+                                )
+                            );
+                        } else {
+                            addNotification('success', trans('Time entry created successfully'));
+                        }
+                    }
                 );
             }
         },

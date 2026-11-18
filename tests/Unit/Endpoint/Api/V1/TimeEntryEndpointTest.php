@@ -4623,7 +4623,7 @@ class TimeEntryEndpointTest extends ApiEndpointTestAbstract
         ]);
     }
 
-    public function test_store_endpoint_blocks_overlapping_entries_when_start_overlaps(): void
+    public function test_store_endpoint_keeps_only_the_free_part_when_start_overlaps(): void
     {
         // Arrange
         $data = $this->createUserWithPermission([
@@ -4634,7 +4634,7 @@ class TimeEntryEndpointTest extends ApiEndpointTestAbstract
         $data->organization->save();
         $baseStart = Carbon::create(2025, 1, 1, 12, 0, 0, 'UTC');
         $baseEnd = Carbon::create(2025, 1, 1, 13, 0, 0, 'UTC');
-        TimeEntry::factory()->forOrganization($data->organization)->forMember($data->member)
+        $existing = TimeEntry::factory()->forOrganization($data->organization)->forMember($data->member)
             ->create([
                 'start' => $baseStart,
                 'end' => $baseEnd,
@@ -4650,15 +4650,14 @@ class TimeEntryEndpointTest extends ApiEndpointTestAbstract
         ]);
 
         // Assert
-        $response->assertStatus(400);
-        $response->assertExactJson([
-            'error' => true,
-            'key' => 'overlapping_time_entry',
-            'message' => 'Overlapping time entries are not allowed.',
-        ]);
+        $response->assertStatus(201);
+        $added = TimeEntry::query()->where('id', '!=', $existing->getKey())->orderBy('start')->get();
+        $this->assertCount(1, $added);
+        $this->assertSame('13:00', $added[0]->start->format('H:i'));
+        $this->assertSame('13:30', $added[0]->end?->format('H:i'));
     }
 
-    public function test_store_endpoint_blocks_overlapping_entries_when_end_overlaps(): void
+    public function test_store_endpoint_keeps_only_the_free_part_when_end_overlaps(): void
     {
         // Arrange
         $data = $this->createUserWithPermission([
@@ -4669,7 +4668,7 @@ class TimeEntryEndpointTest extends ApiEndpointTestAbstract
         $data->organization->save();
         $baseStart = Carbon::create(2025, 1, 1, 12, 0, 0, 'UTC');
         $baseEnd = Carbon::create(2025, 1, 1, 13, 0, 0, 'UTC');
-        TimeEntry::factory()->forOrganization($data->organization)->forMember($data->member)
+        $existing = TimeEntry::factory()->forOrganization($data->organization)->forMember($data->member)
             ->create([
                 'start' => $baseStart,
                 'end' => $baseEnd,
@@ -4685,12 +4684,11 @@ class TimeEntryEndpointTest extends ApiEndpointTestAbstract
         ]);
 
         // Assert
-        $response->assertStatus(400);
-        $response->assertExactJson([
-            'error' => true,
-            'key' => 'overlapping_time_entry',
-            'message' => 'Overlapping time entries are not allowed.',
-        ]);
+        $response->assertStatus(201);
+        $added = TimeEntry::query()->where('id', '!=', $existing->getKey())->orderBy('start')->get();
+        $this->assertCount(1, $added);
+        $this->assertSame('11:30', $added[0]->start->format('H:i'));
+        $this->assertSame('12:00', $added[0]->end?->format('H:i'));
     }
 
     public function test_store_endpoint_blocks_overlapping_entries_when_new_entry_is_within_existing(): void
@@ -4728,7 +4726,7 @@ class TimeEntryEndpointTest extends ApiEndpointTestAbstract
         ]);
     }
 
-    public function test_store_endpoint_blocks_overlapping_entries_when_new_entry_surrounds_existing(): void
+    public function test_store_endpoint_keeps_the_free_parts_around_an_existing_entry(): void
     {
         // Arrange
         $data = $this->createUserWithPermission([
@@ -4739,7 +4737,7 @@ class TimeEntryEndpointTest extends ApiEndpointTestAbstract
         $data->organization->save();
         $baseStart = Carbon::create(2025, 1, 1, 12, 0, 0, 'UTC');
         $baseEnd = Carbon::create(2025, 1, 1, 13, 0, 0, 'UTC');
-        TimeEntry::factory()->forOrganization($data->organization)->forMember($data->member)
+        $existing = TimeEntry::factory()->forOrganization($data->organization)->forMember($data->member)
             ->create([
                 'start' => $baseStart,
                 'end' => $baseEnd,
@@ -4755,12 +4753,13 @@ class TimeEntryEndpointTest extends ApiEndpointTestAbstract
         ]);
 
         // Assert
-        $response->assertStatus(400);
-        $response->assertExactJson([
-            'error' => true,
-            'key' => 'overlapping_time_entry',
-            'message' => 'Overlapping time entries are not allowed.',
-        ]);
+        $response->assertStatus(201);
+        $added = TimeEntry::query()->where('id', '!=', $existing->getKey())->orderBy('start')->get();
+        $this->assertCount(2, $added);
+        $this->assertSame('11:30', $added[0]->start->format('H:i'));
+        $this->assertSame('12:00', $added[0]->end?->format('H:i'));
+        $this->assertSame('13:00', $added[1]->start->format('H:i'));
+        $this->assertSame('13:30', $added[1]->end?->format('H:i'));
     }
 
     public function test_store_endpoint_blocks_starting_active_entry_when_it_overlaps_with_existing(): void

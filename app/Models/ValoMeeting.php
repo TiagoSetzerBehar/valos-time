@@ -125,11 +125,11 @@ class ValoMeeting extends Model
      * @param  Collection<int, TimeEntry>  $entries
      * @return list<array{0: CarbonImmutable, 1: CarbonImmutable}>
      */
-    public static function freeGaps(CarbonImmutable $from, CarbonImmutable $to, Collection $entries): array
+    public static function freeGaps(CarbonImmutable $from, CarbonImmutable $to, Collection $entries, bool $breaksAreBusy = false): array
     {
         $now = CarbonImmutable::now();
         $busy = $entries
-            ->filter(fn (TimeEntry $entry): bool => $entry->type !== TimeEntryType::Break)
+            ->filter(fn (TimeEntry $entry): bool => $breaksAreBusy || $entry->type !== TimeEntryType::Break)
             ->map(fn (TimeEntry $entry): array => [
                 CarbonImmutable::instance($entry->start),
                 $entry->end === null ? $now : CarbonImmutable::instance($entry->end),

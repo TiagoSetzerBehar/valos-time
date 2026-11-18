@@ -29,6 +29,7 @@ use App\Models\Organization;
 use App\Models\Project;
 use App\Models\Task;
 use App\Models\TimeEntry;
+use App\Models\ValoMeeting;
 use App\Service\BillableRateService;
 use App\Service\LocalizationService;
 use App\Service\ReportExport\TimeEntriesDetailedCsvExport;
@@ -38,6 +39,7 @@ use App\Service\TimeEntryAggregationService;
 use App\Service\TimeEntryFilter;
 use App\Service\TimeEntryService;
 use App\Service\TimezoneService;
+use Carbon\CarbonImmutable;
 use Gotenberg\Exceptions\GotenbergApiErrored;
 use Gotenberg\Exceptions\NoOutputFileInResponse;
 use Gotenberg\Gotenberg;
@@ -98,6 +100,38 @@ class TimeEntryController extends Controller
         if ($query->exists()) {
             throw new OverlappingTimeEntryApiException;
         }
+    }
+
+    /**
+     * VALO: "the same hour never counts twice". When a finished work entry overlaps hours that are
+     * already tracked, only the free parts are saved. Null = no overlap (or not applicable), save as sent.
+     *
+     * @return array<int, array{0: CarbonImmutable, 1: CarbonImmutable}>|null
+     *
+     * @throws OverlappingTimeEntryApiException when nothing of the range is free
+     */
+    private function valoFreeParts(Organization $organization, Member $member, Carbon $start, ?Carbon $end, mixed $type): ?array
+    {
+        if (! $organization->prevent_overlapping_time_entries || $end === null || $type === TimeEntryType::Break->value) {
+            return null;
+        }
+        $overlapping = TimeEntry::query()
+            ->where('organization_id', $organization->getKey())
+            ->where('member_id', $member->getKey())
+            ->where('start', '<', $end)
+            ->where(function (Builder $q) use ($start): void {
+                $q->where('end', '>', $start)->orWhereNull('end');
+            })
+            ->get(['id', 'start', 'end', 'type']);
+        if ($overlapping->isEmpty()) {
+            return null;
+        }
+        $gaps = ValoMeeting::freeGaps(CarbonImmutable::instance($start), CarbonImmutable::instance($end), $overlapping, true);
+        if ($gaps === []) {
+            throw new OverlappingTimeEntryApiException;
+        }
+
+        return $gaps;
     }
 
     protected function checkPermission(Organization $organization, string $permission, ?TimeEntry $timeEntry = null): void
@@ -639,24 +673,36 @@ class TimeEntryController extends Controller
         // Overlap check for create
         $start = Carbon::parse($request->input('start'));
         $end = $request->input('end') !== null ? Carbon::parse($request->input('end')) : null;
-        $this->assertNoOverlap($organization, $member, $start, $end);
+        $freeParts = $this->valoFreeParts($organization, $member, $start, $end, $request->input('type'));
+        if ($freeParts === null) {
+            $this->assertNoOverlap($organization, $member, $start, $end);
+        }
 
         $project = $request->input('project_id') !== null ? Project::findOrFail((string) $request->input('project_id')) : null;
         $client = $project?->client;
         $task = $request->input('task_id') !== null ? $project->tasks()->findOrFail((string) $request->input('task_id')) : null;
 
-        $timeEntry = new TimeEntry;
-        $timeEntry->fill($request->validated());
-        // Organizations that can not use billable rates can not create billable time entries
-        if ($timeEntry->billable && ! $this->canUseBillableRates($organization)) {
-            $timeEntry->billable = false;
+        $created = [];
+        foreach ($freeParts ?? [null] as $part) {
+            $timeEntry = new TimeEntry;
+            $timeEntry->fill($request->validated());
+            if ($part !== null) {
+                $timeEntry->start = Carbon::instance($part[0]->toMutable())->utc();
+                $timeEntry->end = Carbon::instance($part[1]->toMutable())->utc();
+            }
+            // Organizations that can not use billable rates can not create billable time entries
+            if ($timeEntry->billable && ! $this->canUseBillableRates($organization)) {
+                $timeEntry->billable = false;
+            }
+            $timeEntry->client()->associate($client);
+            $timeEntry->user_id = $member->user_id;
+            $timeEntry->description = $request->input('description') ?? '';
+            $timeEntry->organization()->associate($organization);
+            $timeEntry->setComputedAttributeValue('billable_rate');
+            $timeEntry->save();
+            $created[] = $timeEntry;
         }
-        $timeEntry->client()->associate($client);
-        $timeEntry->user_id = $member->user_id;
-        $timeEntry->description = $request->input('description') ?? '';
-        $timeEntry->organization()->associate($organization);
-        $timeEntry->setComputedAttributeValue('billable_rate');
-        $timeEntry->save();
+        $timeEntry = $created[0];
 
         if ($project !== null) {
             RecalculateSpentTimeForProject::dispatch($project);
