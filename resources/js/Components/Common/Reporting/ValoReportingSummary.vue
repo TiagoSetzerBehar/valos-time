@@ -17,9 +17,8 @@ import PageTitle from '@/Components/Common/PageTitle.vue';
 import ReportingTabNavbar from '@/Components/Common/Reporting/ReportingTabNavbar.vue';
 import ReportingExportButton from '@/Components/Common/Reporting/ReportingExportButton.vue';
 import ReportingExportModal from '@/Components/Common/Reporting/ReportingExportModal.vue';
-import ProjectMultiselectDropdown from '@/Components/Common/Project/ProjectMultiselectDropdown.vue';
+import ValoPicker from '@/Components/ValoPicker.vue';
 import DateRangePicker from '@/packages/ui/src/Input/DateRangePicker.vue';
-import TagDropdown from '@/packages/ui/src/Tag/TagDropdown.vue';
 import {
     api,
     type AggregatedTimeEntries,
@@ -31,7 +30,6 @@ import { useAggregatedTimeEntriesQuery } from '@/utils/useAggregatedTimeEntriesQ
 import { useMembersQuery } from '@/utils/useMembersQuery';
 import { useProjectsQuery } from '@/utils/useProjectsQuery';
 import { useTagsQuery } from '@/utils/useTagsQuery';
-import { useTagsStore } from '@/utils/useTags';
 import { useReportingStore } from '@/utils/useReporting';
 import { useNotificationsStore } from '@/utils/notification';
 import { getInitialWeekRange } from '@/utils/useTimeEntriesCalendarQuery';
@@ -169,9 +167,18 @@ const firstProject = computed(() =>
     projects.value.find((project) => project.id === selectedProjects.value[0])
 );
 const firstTag = computed(() => tags.value.find((tag) => tag.id === selectedTags.value[0]));
-async function createTag(name: string) {
-    return await useTagsStore().createTag(name);
-}
+const projectItems = computed(() =>
+    [...projects.value]
+        .sort(
+            (a, b) => Number(a.is_archived) - Number(b.is_archived) || a.name.localeCompare(b.name)
+        )
+        .map((project) => ({ id: project.id, name: project.name, color: project.color }))
+);
+const tagItems = computed(() =>
+    [...tags.value]
+        .sort((a, b) => a.name.localeCompare(b.name))
+        .map((tag) => ({ id: tag.id, name: tag.name }))
+);
 
 /** One member selected (or an employee, who only sees their own hours) = that person's summary. */
 const person = computed(() => {
@@ -461,7 +468,12 @@ async function downloadExport(format: ExportFormat) {
             <div class="valo-report-filters">
                 <span class="valo-report-filters-label">{{ $t('Filter by') }}</span>
                 <div class="valo-filter" :class="{ on: selectedProjects.length > 0 }">
-                    <ProjectMultiselectDropdown v-model="selectedProjects">
+                    <ValoPicker
+                        v-model="selectedProjects"
+                        :items="projectItems"
+                        :title="$t('Projects')"
+                        :search-placeholder="$t('Search project')"
+                        :none-label="$t('No Project')">
                         <template #trigger>
                             <button
                                 type="button"
@@ -486,7 +498,7 @@ async function downloadExport(format: ExportFormat) {
                                     class="h-4 w-4 shrink-0 opacity-60" />
                             </button>
                         </template>
-                    </ProjectMultiselectDropdown>
+                    </ValoPicker>
                     <button
                         v-if="selectedProjects.length > 0"
                         type="button"
@@ -498,7 +510,11 @@ async function downloadExport(format: ExportFormat) {
                     </button>
                 </div>
                 <div class="valo-filter" :class="{ on: selectedTags.length > 0 }">
-                    <TagDropdown v-model="selectedTags" :create-tag :tags="tags">
+                    <ValoPicker
+                        v-model="selectedTags"
+                        :items="tagItems"
+                        :title="$t('Tags')"
+                        :search-placeholder="$t('Search tag')">
                         <template #trigger>
                             <button
                                 type="button"
@@ -517,7 +533,7 @@ async function downloadExport(format: ExportFormat) {
                                     class="h-4 w-4 shrink-0 opacity-60" />
                             </button>
                         </template>
-                    </TagDropdown>
+                    </ValoPicker>
                     <button
                         v-if="selectedTags.length > 0"
                         type="button"

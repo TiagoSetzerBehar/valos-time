@@ -15,6 +15,8 @@ import OrganizationTrial from '@/Pages/Teams/Partials/OrganizationTrial.vue';
 import { isBillingActivated, isInTrial } from '@/utils/billing';
 import { canManageBilling } from '@/utils/permissions';
 import { onMounted, ref } from 'vue';
+import { Link } from '@inertiajs/vue3';
+import { TagIcon, UserGroupIcon } from '@heroicons/vue/20/solid';
 import { useOrganizationStore } from '@/utils/useOrganization';
 import { storeToRefs } from 'pinia';
 
@@ -47,6 +49,26 @@ onMounted(async () => {
                     {{ $t('Loading organization settings...') }}
                 </div>
                 <template v-else>
+                    <div
+                        class="mb-8 grid gap-3 px-4 sm:grid-cols-2 sm:px-0"
+                        data-testid="settings_links">
+                        <Link :href="route('members')" class="valo-gcard valo-settings-link">
+                            <UserGroupIcon class="h-6 w-6 valo-accent-text" />
+                            <span>
+                                <b>{{ $t('Members') }}</b>
+                                <small>{{
+                                    $t('Invite people, roles and who is in the team')
+                                }}</small>
+                            </span>
+                        </Link>
+                        <Link :href="route('tags')" class="valo-gcard valo-settings-link">
+                            <TagIcon class="h-6 w-6 valo-accent-text" />
+                            <span>
+                                <b>{{ $t('Tags') }}</b>
+                                <small>{{ $t('The tags everyone can use in their hours') }}</small>
+                            </span>
+                        </Link>
+                    </div>
                     <UpdateTeamNameForm :team="team" :permissions="permissions" />
 
                     <SectionBorder v-if="isMoneyVisible() && permissions.canUpdateTeam" />

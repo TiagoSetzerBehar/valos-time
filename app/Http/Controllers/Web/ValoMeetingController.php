@@ -143,6 +143,7 @@ class ValoMeetingController extends Controller
 
         return response()->json(['data' => ValoMeeting::query()
             ->where('organization_id', '=', $organization->getKey())
+            ->whereNull('created_by_member_id')
             ->orderBy('weekday')
             ->orderBy('start_time')
             ->get()
@@ -159,6 +160,58 @@ class ValoMeetingController extends Controller
         $meeting->save();
 
         return response()->json(['data' => $this->toArray($meeting)], 201);
+    }
+
+    /**
+     * The routines the current member created for themself.
+     */
+    public function routines(string $organizationId): JsonResponse
+    {
+        [$organization, $member] = $this->currentMember($organizationId);
+
+        return response()->json(['data' => ValoMeeting::query()
+            ->where('organization_id', '=', $organization->getKey())
+            ->where('created_by_member_id', '=', $member->getKey())
+            ->orderBy('weekday')
+            ->orderBy('start_time')
+            ->get()
+            ->map(fn (ValoMeeting $meeting): array => $this->toArray($meeting))
+            ->values()]);
+    }
+
+    /**
+     * "Crear rutina": any member adds a weekly routine that only appears in their own calendar.
+     */
+    public function storeRoutine(Request $request, string $organizationId): JsonResponse
+    {
+        [$organization, $member] = $this->currentMember($organizationId);
+        $meeting = new ValoMeeting;
+        $meeting->organization_id = $organization->getKey();
+        $meeting->fill($this->validated($request, $organization));
+        $meeting->member_ids = [$member->getKey()];
+        $meeting->created_by_member_id = $member->getKey();
+        $meeting->save();
+
+        return response()->json(['data' => $this->toArray($meeting)], 201);
+    }
+
+    public function updateRoutine(Request $request, string $organizationId, string $meetingId): JsonResponse
+    {
+        [$organization, $member] = $this->currentMember($organizationId);
+        $meeting = $this->routine($organization, $member, $meetingId);
+        $meeting->fill($this->validated($request, $organization));
+        $meeting->member_ids = [$member->getKey()];
+        $meeting->save();
+
+        return response()->json(['data' => $this->toArray($meeting)]);
+    }
+
+    public function destroyRoutine(string $organizationId, string $meetingId): JsonResponse
+    {
+        [$organization, $member] = $this->currentMember($organizationId);
+        $this->routine($organization, $member, $meetingId)->delete();
+
+        return response()->json(null, 204);
     }
 
     public function update(Request $request, string $organizationId, string $meetingId): JsonResponse
@@ -244,6 +297,17 @@ class ValoMeetingController extends Controller
         /** @var ValoMeeting $meeting */
         $meeting = ValoMeeting::query()
             ->where('organization_id', '=', $organization->getKey())
+            ->findOrFail($meetingId);
+
+        return $meeting;
+    }
+
+    private function routine(Organization $organization, Member $member, string $meetingId): ValoMeeting
+    {
+        /** @var ValoMeeting $meeting */
+        $meeting = ValoMeeting::query()
+            ->where('organization_id', '=', $organization->getKey())
+            ->where('created_by_member_id', '=', $member->getKey())
             ->findOrFail($meetingId);
 
         return $meeting;

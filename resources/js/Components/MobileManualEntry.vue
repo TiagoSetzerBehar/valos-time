@@ -6,7 +6,7 @@ import { useProjectsQuery } from '@/utils/useProjectsQuery';
 import { useTagsQuery } from '@/utils/useTagsQuery';
 import { useTagsStore } from '@/utils/useTags';
 import { useTimeEntriesMutations } from '@/utils/useTimeEntriesMutations';
-import TagDropdown from '@/packages/ui/src/Tag/TagDropdown.vue';
+import ValoPicker from '@/Components/ValoPicker.vue';
 import {
     formatWeekday,
     getDayJsInstance,
@@ -90,8 +90,16 @@ const dayLabel = computed(() => {
 
 const canSave = computed(() => !saving.value && !!day.value && (durationMinutes.value ?? 0) > 0);
 
+const tagItems = computed(() =>
+    [...tags.value]
+        .sort((a, b) => a.name.localeCompare(b.name))
+        .map((tag) => ({ id: tag.id, name: tag.name }))
+);
 async function createTag(name: string) {
-    return await useTagsStore().createTag(name);
+    const tag = await useTagsStore().createTag(name);
+    if (tag) {
+        tagIds.value = [...tagIds.value, tag.id];
+    }
 }
 
 async function save() {
@@ -178,7 +186,13 @@ async function save() {
                             </option>
                         </select>
                     </label>
-                    <TagDropdown v-model="tagIds" :tags="tags" :create-tag="createTag">
+                    <ValoPicker
+                        v-model="tagIds"
+                        :items="tagItems"
+                        :title="$t('Tags')"
+                        :search-placeholder="$t('Search tag')"
+                        :create-label="$t('Create tag')"
+                        @create="createTag">
                         <template #trigger>
                             <button
                                 type="button"
@@ -190,7 +204,7 @@ async function save() {
                                 }}</span>
                             </button>
                         </template>
-                    </TagDropdown>
+                    </ValoPicker>
                 </div>
 
                 <div class="valo-mobile-label">{{ $t('Day') }}</div>

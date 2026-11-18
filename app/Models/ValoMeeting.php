@@ -22,6 +22,7 @@ use Illuminate\Support\Collection;
  * @property string $end_time HH:MM
  * @property array<int, string> $tag_ids
  * @property array<int, string>|null $member_ids null = every member
+ * @property string|null $created_by_member_id set for a member's own routine ("Crear rutina")
  * @property-read Organization $organization
  */
 class ValoMeeting extends Model
@@ -41,6 +42,7 @@ class ValoMeeting extends Model
         'end_time',
         'tag_ids',
         'member_ids',
+        'created_by_member_id',
     ];
 
     /**

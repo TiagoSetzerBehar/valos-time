@@ -28,8 +28,14 @@ import { useOrganizationQuery } from '@/utils/useOrganizationQuery';
 import { getCurrentOrganizationId } from '@/utils/useUser';
 import { useMeetingOccurrences, type MeetingOccurrence } from '@/utils/useValoMeetings';
 import ValoMeetingConfirm from '@/Components/ValoMeetingConfirm.vue';
+import ValoRoutineSheet from '@/Components/ValoRoutineSheet.vue';
+import MobileCalendar from '@/Components/MobileCalendar.vue';
+import { useMediaQuery } from '@vueuse/core';
+import { PlusIcon } from '@heroicons/vue/20/solid';
 
 const { organization } = useOrganizationQuery(getCurrentOrganizationId()!);
+const isPhone = useMediaQuery('(max-width: 639px)');
+const routineOpen = ref(false);
 const calendarStart = ref<Dayjs | undefined>(undefined);
 const calendarEnd = ref<Dayjs | undefined>(undefined);
 
@@ -151,8 +157,10 @@ function onRefresh() {
     <AppLayout
         :title="$t('Calendar')"
         data-testid="calendar_view"
-        main-class="p-0 min-h-0 overflow-hidden">
+        :main-class="isPhone ? '' : 'p-0 min-h-0 overflow-hidden'">
+        <MobileCalendar v-if="isPhone" :initial-date="initialDate"></MobileCalendar>
         <TimeEntryCalendar
+            v-else
             :time-entries="currentTimeEntries"
             :projects="projects"
             :tasks="tasks"
@@ -174,7 +182,19 @@ function onRefresh() {
             :placeholders="meetingPlaceholders"
             @placeholder-click="openMeeting"
             @dates-change="onDatesChange"
-            @refresh="onRefresh" />
+            @refresh="onRefresh">
+            <template #toolbar-extra>
+                <button
+                    type="button"
+                    class="valo-routine-chip mr-1"
+                    data-testid="calendar_create_routine"
+                    @click="routineOpen = true">
+                    <PlusIcon class="h-4 w-4" />
+                    {{ $t('Create routine') }}
+                </button>
+            </template>
+        </TimeEntryCalendar>
+        <ValoRoutineSheet v-model:show="routineOpen"></ValoRoutineSheet>
         <ValoMeetingConfirm
             v-model:show="showMeetingConfirm"
             :occurrence="meetingToConfirm"></ValoMeetingConfirm>

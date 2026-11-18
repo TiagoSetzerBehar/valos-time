@@ -50,8 +50,9 @@ Route::middleware([
 ])->group(function (): void {
     Route::get('/dashboard', [DashboardController::class, 'dashboard'])->name('dashboard');
 
+    // VALO's Time: "Tiempo" lives inside the Panel now
     Route::get('/time', function () {
-        return Inertia::render('Time');
+        return redirect()->route('dashboard');
     })->name('time');
 
     Route::get('/calendar', function () {
@@ -126,6 +127,10 @@ Route::middleware([
     Route::get('/organizations/{organizationId}/valo-weekly-summary', [ValoWeeklySummaryController::class, 'show'])->name('valo.weekly-summary');
     Route::get('/organizations/{organizationId}/valo-meetings/occurrences', [ValoMeetingController::class, 'occurrences'])->name('valo.meetings.occurrences');
     Route::post('/organizations/{organizationId}/valo-meetings/{meetingId}/confirm', [ValoMeetingController::class, 'confirm'])->name('valo.meetings.confirm');
+    Route::get('/organizations/{organizationId}/valo-routines', [ValoMeetingController::class, 'routines'])->name('valo.routines.index');
+    Route::post('/organizations/{organizationId}/valo-routines', [ValoMeetingController::class, 'storeRoutine'])->name('valo.routines.store');
+    Route::put('/organizations/{organizationId}/valo-routines/{meetingId}', [ValoMeetingController::class, 'updateRoutine'])->name('valo.routines.update');
+    Route::delete('/organizations/{organizationId}/valo-routines/{meetingId}', [ValoMeetingController::class, 'destroyRoutine'])->name('valo.routines.destroy');
     Route::get('/organizations/{organizationId}/valo-meetings', [ValoMeetingController::class, 'index'])->name('valo.meetings.index');
     Route::post('/organizations/{organizationId}/valo-meetings', [ValoMeetingController::class, 'store'])->name('valo.meetings.store');
     Route::put('/organizations/{organizationId}/valo-meetings/{meetingId}', [ValoMeetingController::class, 'update'])->name('valo.meetings.update');

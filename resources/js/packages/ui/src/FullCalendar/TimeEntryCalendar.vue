@@ -574,7 +574,9 @@ function getEventDurationSeconds(dayEvent: DayEvent, dayStr: string): number {
                 @next="handleNext"
                 @today="handleToday"
                 @change-view="handleChangeView"
-                @update:settings="onSettingsUpdate" />
+                @update:settings="onSettingsUpdate">
+                <template #extra><slot name="toolbar-extra"></slot></template>
+            </CalendarToolbar>
 
             <ContextMenu v-model:open="contextMenuOpen">
                 <ContextMenuTrigger

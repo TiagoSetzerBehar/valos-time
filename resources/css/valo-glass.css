@@ -1607,3 +1607,474 @@ html.dark .valo-wp-foot {
         min-height: 54px;
     }
 }
+
+/* ---------- VALO's Time: project / tag picker (glass list, sheet on the phone) ---------- */
+.valo-picker-pop {
+    border-radius: 18px !important;
+    border: 1px solid rgba(255, 255, 255, 0.85) !important;
+    background: rgba(255, 255, 255, 0.86) !important;
+    box-shadow: 0 18px 50px rgba(15, 23, 42, 0.18) !important;
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    overflow: hidden;
+}
+.valo-picker-search {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    height: 40px;
+    padding: 0 12px;
+    border-radius: 12px;
+    border: 1px solid rgba(148, 163, 184, 0.35);
+    background: rgba(255, 255, 255, 0.7);
+    color: #334155;
+}
+.valo-picker-search input {
+    flex: 1;
+    min-width: 0;
+    border: 0;
+    padding: 0;
+    background: transparent;
+    font-size: 15px;
+    color: inherit;
+    box-shadow: none !important;
+}
+.valo-picker-search input::-webkit-search-cancel-button {
+    display: none;
+}
+.valo-picker-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    min-height: 50px;
+    padding: 0 12px;
+    border-radius: 14px;
+    text-align: left;
+    font-size: 15px;
+    color: #0f172a;
+}
+.valo-picker-row.compact {
+    min-height: 38px;
+    gap: 10px;
+    padding: 0 10px;
+    border-radius: 10px;
+    font-size: 14px;
+}
+.valo-picker-row:hover {
+    background: rgba(14, 165, 233, 0.08);
+}
+.valo-picker-row.on {
+    background: rgba(14, 165, 233, 0.12);
+    font-weight: 600;
+    color: #075985;
+}
+.valo-picker-dot {
+    flex: none;
+    width: 11px;
+    height: 11px;
+    border-radius: 4px;
+}
+.valo-picker-check {
+    flex: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    border: 1.5px solid rgba(148, 163, 184, 0.6);
+    color: #fff;
+}
+.valo-picker-row.compact .valo-picker-check {
+    width: 18px;
+    height: 18px;
+}
+.valo-picker-row.on .valo-picker-check {
+    border-color: #0ea5e9;
+    background: #0ea5e9;
+}
+html.dark .valo-picker-pop {
+    border-color: rgba(148, 163, 184, 0.25) !important;
+    background: rgba(15, 23, 42, 0.88) !important;
+    box-shadow: 0 18px 50px rgba(0, 0, 0, 0.5) !important;
+}
+html.dark .valo-picker-search {
+    border-color: rgba(148, 163, 184, 0.25);
+    background: rgba(30, 41, 59, 0.7);
+    color: #e2e8f0;
+}
+html.dark .valo-picker-row {
+    color: #e2e8f0;
+}
+html.dark .valo-picker-row:hover {
+    background: rgba(56, 189, 248, 0.1);
+}
+html.dark .valo-picker-row.on {
+    background: rgba(56, 189, 248, 0.16);
+    color: #bae6fd;
+}
+
+/* ---------- VALO's Time: routines ---------- */
+.valo-routine-sheet {
+    border-radius: 1.5rem 1.5rem 0 0;
+}
+.valo-routine-day {
+    height: 44px;
+    border-radius: 12px;
+    border: 1px solid rgba(148, 163, 184, 0.4);
+    background: rgba(255, 255, 255, 0.7);
+    font-size: 13px;
+    font-weight: 600;
+    color: #334155;
+}
+.valo-routine-day.on {
+    border-color: #0ea5e9;
+    background: #0ea5e9;
+    color: #fff;
+    box-shadow: 0 4px 14px rgba(2, 132, 199, 0.3);
+}
+.valo-routine-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    height: 34px;
+    padding: 0 12px;
+    border-radius: 11px;
+    background: #0ea5e9;
+    color: #fff;
+    font-size: 13px;
+    font-weight: 600;
+    white-space: nowrap;
+    box-shadow: 0 4px 14px rgba(2, 132, 199, 0.28);
+}
+.valo-routine-btn:hover {
+    background: #0284c7;
+}
+.valo-routine-fab {
+    position: fixed;
+    right: 28px;
+    bottom: 28px;
+    z-index: 30;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    height: 48px;
+    padding: 0 20px;
+    border-radius: 16px;
+    background: #0ea5e9;
+    color: #fff;
+    font-size: 15px;
+    font-weight: 600;
+    box-shadow: 0 12px 30px rgba(2, 132, 199, 0.35);
+}
+.valo-routine-fab:hover {
+    background: #0284c7;
+}
+.valo-dash-meetings {
+    min-height: 0;
+}
+.valo-settings-link {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 16px 18px;
+    border-radius: 18px;
+}
+.valo-settings-link b {
+    display: block;
+    font-size: 15px;
+    font-weight: 600;
+    color: #0f172a;
+}
+.valo-settings-link small {
+    display: block;
+    font-size: 13px;
+    color: #64748b;
+}
+.valo-settings-link:hover {
+    border-color: rgba(14, 165, 233, 0.5);
+}
+.valo-bars-pick > button {
+    flex: 1;
+    position: relative;
+    min-width: 0;
+    border-radius: 8px 8px 2px 2px;
+    background: linear-gradient(180deg, #38bdf8, #0284c7);
+    cursor: pointer;
+}
+.valo-bars-pick > button > span {
+    position: absolute;
+    left: -6px;
+    right: -6px;
+    top: -21px;
+    text-align: center;
+    font-size: 12px;
+    font-weight: 600;
+    white-space: nowrap;
+}
+.valo-bars-pick > button.picked {
+    background: linear-gradient(180deg, #7dd3fc, #0369a1);
+    box-shadow: 0 0 0 2px #0ea5e9, 0 6px 16px rgba(2, 132, 199, 0.35);
+}
+.valo-bar-labels > button {
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-align: center;
+    font-size: 12px;
+    color: #475569;
+    white-space: nowrap;
+}
+html.dark .valo-routine-day {
+    border-color: rgba(148, 163, 184, 0.3);
+    background: rgba(30, 41, 59, 0.7);
+    color: #cbd5e1;
+}
+html.dark .valo-routine-day.on {
+    background: #0ea5e9;
+    color: #fff;
+}
+html.dark .valo-settings-link b {
+    color: #f1f5f9;
+}
+html.dark .valo-settings-link small,
+html.dark .valo-bar-labels > button {
+    color: #94a3b8;
+}
+
+/* ---------- VALO's Time: calendar on the phone ---------- */
+.valo-mcal-head {
+    padding: 10px;
+    border-radius: 22px;
+}
+.valo-mcal-day {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1px;
+    padding: 6px 0 5px;
+    border-radius: 14px;
+    font-size: 11px;
+    font-weight: 600;
+    color: #64748b;
+}
+.valo-mcal-day b {
+    font-size: 17px;
+    font-weight: 700;
+    color: #0f172a;
+}
+.valo-mcal-day small {
+    font-size: 10.5px;
+    font-weight: 500;
+    font-variant-numeric: tabular-nums;
+}
+.valo-mcal-day.today b {
+    color: #0284c7;
+}
+.valo-mcal-day.on {
+    background: #0ea5e9;
+    color: #e0f2fe;
+    box-shadow: 0 6px 16px rgba(2, 132, 199, 0.32);
+}
+.valo-mcal-day.on b {
+    color: #fff;
+}
+.valo-mcal-timeline {
+    height: calc(100vh - 330px);
+    min-height: 380px;
+    overflow-y: auto;
+    border-radius: 22px;
+    -webkit-overflow-scrolling: touch;
+}
+.valo-mcal-hour {
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 60px;
+}
+.valo-mcal-hour::after {
+    content: '';
+    position: absolute;
+    left: 52px;
+    right: 0;
+    top: 0;
+    border-top: 1px solid rgba(148, 163, 184, 0.2);
+}
+.valo-mcal-hour span {
+    position: absolute;
+    top: -8px;
+    left: 6px;
+    font-size: 11px;
+    font-variant-numeric: tabular-nums;
+    color: #64748b;
+}
+.valo-mcal-hour:first-child span {
+    top: 3px;
+}
+.valo-mcal-now {
+    position: absolute;
+    left: 48px;
+    right: 6px;
+    height: 2px;
+    background: #ef4444;
+    z-index: 3;
+}
+.valo-mcal-now::before {
+    content: '';
+    position: absolute;
+    left: -5px;
+    top: -4px;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #ef4444;
+}
+.valo-mcal-block {
+    position: absolute;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    gap: 1px;
+    overflow: hidden;
+    padding: 4px 8px 4px 10px;
+    border-radius: 10px;
+    border-left: 4px solid var(--c);
+    background: color-mix(in srgb, var(--c) 18%, rgba(255, 255, 255, 0.92));
+    text-align: left;
+    font-size: 13px;
+    color: #0f172a;
+    box-shadow: 0 2px 8px rgba(15, 23, 42, 0.08);
+}
+.valo-mcal-block b {
+    font-weight: 600;
+    line-height: 1.25;
+}
+.valo-mcal-block span {
+    font-size: 11.5px;
+    color: #475569;
+}
+.valo-mcal-block.meeting {
+    border: 1.5px dashed #0ea5e9;
+    background: rgba(224, 242, 254, 0.75);
+    color: #075985;
+}
+.valo-mcal-block em {
+    font-style: normal;
+    font-size: 11px;
+    font-weight: 600;
+    color: #0284c7;
+}
+.valo-mcal-actions {
+    position: fixed;
+    left: 12px;
+    right: 12px;
+    bottom: 18px;
+    z-index: 30;
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+.valo-mcal-routine,
+.valo-mcal-add {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    height: 48px;
+    padding: 0 18px;
+    border-radius: 999px;
+    font-size: 14px;
+    font-weight: 600;
+    box-shadow: 0 10px 28px rgba(15, 23, 42, 0.25);
+}
+.valo-mcal-routine {
+    background: #0ea5e9;
+    color: #fff;
+}
+.valo-mcal-add {
+    background: #0f172a;
+    color: #fff;
+}
+html.dark .valo-mcal-add {
+    background: #fff;
+    color: #0f172a;
+}
+html.dark .valo-mcal-day {
+    color: #94a3b8;
+}
+html.dark .valo-mcal-day b {
+    color: #f1f5f9;
+}
+html.dark .valo-mcal-day.today b {
+    color: #38bdf8;
+}
+html.dark .valo-mcal-day.on b {
+    color: #fff;
+}
+html.dark .valo-mcal-hour::after {
+    border-top-color: rgba(148, 163, 184, 0.14);
+}
+html.dark .valo-mcal-day.on {
+    color: #e0f2fe;
+}
+html.dark .valo-mcal-hour span {
+    color: #94a3b8;
+}
+html.dark .valo-mcal-block {
+    background: color-mix(in srgb, var(--c) 30%, rgba(15, 23, 42, 0.92));
+    color: #f1f5f9;
+    box-shadow: none;
+}
+html.dark .valo-mcal-block span {
+    color: #cbd5e1;
+}
+html.dark .valo-mcal-block.meeting {
+    border-color: #38bdf8;
+    background: rgba(56, 189, 248, 0.12);
+    color: #bae6fd;
+}
+html.dark .valo-mcal-block em {
+    color: #7dd3fc;
+}
+
+@media (min-width: 640px) {
+    .valo-routine-sheet {
+        border-radius: 1.5rem;
+    }
+}
+@media (max-width: 639px) {
+    .valo-filter-main {
+        flex: 1;
+    }
+    .valo-dash-meetings .valo-kpi-label {
+        font-size: 11px;
+    }
+}
+
+/* discreet "Crear rutina" in the calendar */
+.valo-routine-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    height: 32px;
+    padding: 0 12px;
+    border-radius: 10px;
+    border: 1px solid rgba(14, 165, 233, 0.35);
+    background: rgba(224, 242, 254, 0.6);
+    color: #0369a1;
+    font-size: 13px;
+    font-weight: 600;
+    white-space: nowrap;
+}
+.valo-routine-chip:hover {
+    background: rgba(224, 242, 254, 0.95);
+}
+html.dark .valo-routine-chip {
+    border-color: rgba(56, 189, 248, 0.35);
+    background: rgba(56, 189, 248, 0.1);
+    color: #7dd3fc;
+}
+html.dark .valo-routine-chip:hover {
+    background: rgba(56, 189, 248, 0.18);
+}

@@ -6,17 +6,13 @@ import CurrentSidebarTimer from '@/Components/CurrentSidebarTimer.vue';
 import {
     CalendarIcon,
     ChartBarIcon,
-    ClockIcon,
     Cog6ToothIcon,
     CreditCardIcon,
     FolderIcon,
     HomeIcon,
-    TagIcon,
     UserCircleIcon,
-    UserGroupIcon,
     XMarkIcon,
     DocumentTextIcon,
-    TableCellsIcon,
 } from '@heroicons/vue/20/solid';
 import { Target } from '@lucide/vue';
 import NavigationSidebarItem from '@/Components/NavigationSidebarItem.vue';
@@ -34,9 +30,7 @@ import {
     canViewClients,
     canViewGoals,
     canViewInvoices,
-    canViewMembers,
     canViewProjects,
-    canViewTags,
 } from '@/utils/permissions';
 import { canUseBillableRates, isBillingActivated, isInvoicingActivated } from '@/utils/billing';
 import UpgradeModal from '@/packages/ui/src/UpgradeModal.vue';
@@ -227,27 +221,12 @@ const page = usePage<{
                                 :href="route('dashboard')"
                                 :current="route().current('dashboard')"></NavigationSidebarItem>
                             <NavigationSidebarItem
-                                :title="$t('Time')"
-                                :icon="ClockIcon"
-                                :current="route().current('time')"
-                                :href="route('time')"></NavigationSidebarItem>
-                            <NavigationSidebarItem
                                 :title="$t('Calendar')"
                                 :icon="CalendarIcon"
                                 :current="route().current('calendar')"
                                 :href="route('calendar')"></NavigationSidebarItem>
-                            <NavigationSidebarItem
-                                :title="$t('Timesheet')"
-                                :icon="TableCellsIcon"
-                                :current="route().current('timesheet')"
-                                :href="route('timesheet')"></NavigationSidebarItem>
                         </ul>
                     </nav>
-
-                    <div
-                        class="text-text-quaternary text-[11px] font-semibold uppercase tracking-wider pt-6 pb-1.5 px-2">
-                        {{ $t('Analyze') }}
-                    </div>
 
                     <nav>
                         <ul>
@@ -293,18 +272,6 @@ const page = usePage<{
                                 :current="route().current('clients')"
                                 :href="route('clients')"></NavigationSidebarItem>
                             <NavigationSidebarItem
-                                v-if="canViewMembers()"
-                                :title="$t('Members')"
-                                :icon="UserGroupIcon"
-                                :current="route().current('members')"
-                                :href="route('members')"></NavigationSidebarItem>
-                            <NavigationSidebarItem
-                                v-if="canViewTags()"
-                                :title="$t('Tags')"
-                                :icon="TagIcon"
-                                :current="route().current('tags')"
-                                :href="route('tags')"></NavigationSidebarItem>
-                            <NavigationSidebarItem
                                 v-if="isInvoicingActivated() && canViewInvoices()"
                                 :title="$t('Invoices')"
                                 :icon="DocumentTextIcon"
@@ -347,7 +314,9 @@ const page = usePage<{
                                     route().current(
                                         'organizations.show',
                                         page.props.auth.user.current_team.id
-                                    )
+                                    ) ||
+                                    route().current('members') ||
+                                    route().current('tags')
                                 "></NavigationSidebarItem>
                         </ul>
                     </nav>
