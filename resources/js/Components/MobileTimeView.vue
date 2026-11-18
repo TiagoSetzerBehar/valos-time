@@ -198,6 +198,14 @@ const days = computed(() => {
             v-if="days.length > 0"
             class="mt-4 rounded border border-card-border bg-card-background shadow-card overflow-hidden"
             data-testid="mobile_entries">
+            <div
+                class="flex items-center justify-between border-b border-card-background-separator bg-[var(--valo-bar)]/40 px-4 py-2.5 text-xs font-semibold uppercase tracking-wider text-text-secondary"
+                data-testid="mobile_week_total">
+                <span>{{ $t('This week') }}</span>
+                <span class="text-sm normal-case tracking-normal tabular-nums text-text-primary">{{
+                    weekTotal
+                }}</span>
+            </div>
             <template v-for="(day, index) in days" :key="day.key">
                 <div
                     class="flex items-center justify-between px-4 pb-1.5 text-sm"
@@ -234,6 +242,7 @@ const days = computed(() => {
         <p v-else class="pt-8 text-center text-sm text-text-tertiary">
             {{ $t('Press play to start the timer, or add your hours with the button below.') }}
         </p>
+        <slot name="after-list"></slot>
 
         <button
             type="button"

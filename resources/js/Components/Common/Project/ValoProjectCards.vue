@@ -158,7 +158,10 @@ function remove(project: Project) {
             >{{ $t('Create your First Project') }}
         </SecondaryButton>
     </div>
-    <div v-else class="grid gap-4 sm:grid-cols-2 xl:grid-cols-3" data-testid="project_table">
+    <div
+        v-else
+        class="grid grid-cols-1 gap-3 sm:gap-4 sm:grid-cols-2 xl:grid-cols-3"
+        data-testid="project_table">
         <article
             v-for="card in cards"
             :key="card.project.id"

@@ -3,12 +3,13 @@ import {
     ArrowLeftIcon,
     ChartBarIcon,
     ExclamationTriangleIcon,
+    ChevronDownIcon,
     TagIcon,
-    UserGroupIcon,
+    XMarkIcon,
 } from '@heroicons/vue/20/solid';
 import { FolderIcon } from '@heroicons/vue/16/solid';
 import { Link } from '@inertiajs/vue3';
-import { useSessionStorage } from '@vueuse/core';
+import { useMediaQuery, useSessionStorage } from '@vueuse/core';
 import { trans } from 'laravel-vue-i18n';
 import { computed, type ComputedRef, inject, ref } from 'vue';
 import MainContainer from '@/packages/ui/src/MainContainer.vue';
@@ -16,8 +17,6 @@ import PageTitle from '@/Components/Common/PageTitle.vue';
 import ReportingTabNavbar from '@/Components/Common/Reporting/ReportingTabNavbar.vue';
 import ReportingExportButton from '@/Components/Common/Reporting/ReportingExportButton.vue';
 import ReportingExportModal from '@/Components/Common/Reporting/ReportingExportModal.vue';
-import ReportingFilterBadge from '@/Components/Common/Reporting/ReportingFilterBadge.vue';
-import MemberMultiselectDropdown from '@/Components/Common/Member/MemberMultiselectDropdown.vue';
 import ProjectMultiselectDropdown from '@/Components/Common/Project/ProjectMultiselectDropdown.vue';
 import DateRangePicker from '@/packages/ui/src/Input/DateRangePicker.vue';
 import TagDropdown from '@/packages/ui/src/Tag/TagDropdown.vue';
@@ -56,6 +55,7 @@ import { valoAvatarColor, valoInitials } from '@/utils/valo';
 // VALO's Time summary report: the numbers of a period at a glance (vs the period before), who worked,
 // on which projects and on which days. With one member selected it becomes that person's summary,
 // with the tags they used.
+const isPhone = useMediaQuery('(max-width: 639px)');
 type Preset = 'this-week' | 'last-week' | 'this-month' | 'last-month';
 const NO_PROJECT_COLOR = '#4F7CAC';
 
@@ -154,11 +154,21 @@ const hasFilters = computed(
     () =>
         selectedMembers.value.length + selectedProjects.value.length + selectedTags.value.length > 0
 );
+// People are picked by clicking their name; the bar only filters by project and tag.
+const hasExtraFilters = computed(
+    () => selectedProjects.value.length + selectedTags.value.length > 0
+);
 function clearFilters() {
-    selectedMembers.value = [];
     selectedProjects.value = [];
     selectedTags.value = [];
 }
+function showWholeTeam() {
+    selectedMembers.value = [];
+}
+const firstProject = computed(() =>
+    projects.value.find((project) => project.id === selectedProjects.value[0])
+);
+const firstTag = computed(() => tags.value.find((tag) => tag.id === selectedTags.value[0]));
 async function createTag(name: string) {
     return await useTagsStore().createTag(name);
 }
@@ -340,7 +350,7 @@ const timeBars = computed(() => {
             key: dayKey,
             label:
                 timeGroup.value === 'day'
-                    ? date.format(periodDays.value > 10 ? 'D' : 'ddd D')
+                    ? date.format(periodDays.value > 10 ? 'D' : isPhone.value ? 'dd D' : 'ddd D')
                     : timeGroup.value === 'week'
                       ? date.format('D MMM')
                       : date.format('MMM'),
@@ -417,7 +427,7 @@ async function downloadExport(format: ExportFormat) {
     <ReportingExportModal
         v-model:show="showExportModal"
         :export-url="exportUrl"></ReportingExportModal>
-    <MainContainer class="h-14 sm:h-16 flex flex-wrap gap-y-3 justify-between items-center">
+    <MainContainer class="pt-3 sm:pt-0 sm:h-16 flex flex-wrap gap-y-2 justify-between items-center">
         <div class="flex items-center space-x-3 sm:space-x-6">
             <PageTitle :icon="ChartBarIcon" :title="$t('Reporting')"></PageTitle>
             <ReportingTabNavbar active="reporting" class="hidden sm:flex"></ReportingTabNavbar>
@@ -425,18 +435,18 @@ async function downloadExport(format: ExportFormat) {
         <div class="hidden sm:block">
             <ReportingExportButton :download="downloadExport"></ReportingExportButton>
         </div>
+        <ReportingTabNavbar active="reporting" class="w-full sm:hidden"></ReportingTabNavbar>
     </MainContainer>
 
-    <MainContainer class="pb-10 valo-report" data-testid="valo_report">
+    <MainContainer class="pt-3 sm:pt-0 pb-10 valo-report" data-testid="valo_report">
         <!-- period and filters -->
-        <div class="valo-gcard flex flex-col gap-2.5 p-2.5">
-            <div class="flex flex-wrap items-center justify-between gap-2.5">
-                <div class="flex flex-wrap gap-2" role="group" :aria-label="$t('Period')">
+        <div class="valo-gcard valo-report-controls" data-testid="report_controls">
+            <div class="valo-report-controls-top">
+                <div class="valo-period-seg" role="group" :aria-label="$t('Period')">
                     <button
                         v-for="preset in presets"
                         :key="preset.value"
                         type="button"
-                        class="valo-pill"
                         :class="{ on: activePreset === preset.value }"
                         :aria-pressed="activePreset === preset.value"
                         :data-testid="'report_period_' + preset.value"
@@ -444,44 +454,84 @@ async function downloadExport(format: ExportFormat) {
                         {{ preset.label }}
                     </button>
                 </div>
-                <DateRangePicker v-model:start="startDate" v-model:end="endDate" allow-future />
+                <div class="valo-report-range">
+                    <DateRangePicker v-model:start="startDate" v-model:end="endDate" allow-future />
+                </div>
             </div>
-            <div class="flex flex-wrap items-center gap-2 pl-2">
-                <span
-                    class="pr-1 text-xs font-semibold uppercase tracking-wider text-text-secondary"
-                    >{{ $t('Filter by') }}</span
-                >
-                <MemberMultiselectDropdown v-if="seesAll" v-model="selectedMembers">
-                    <template #trigger>
-                        <ReportingFilterBadge
-                            :count="selectedMembers.length"
-                            :active="selectedMembers.length > 0"
-                            :title="$t('Members')"
-                            :icon="UserGroupIcon" />
-                    </template>
-                </MemberMultiselectDropdown>
-                <ProjectMultiselectDropdown v-model="selectedProjects">
-                    <template #trigger>
-                        <ReportingFilterBadge
-                            :count="selectedProjects.length"
-                            :active="selectedProjects.length > 0"
-                            :title="$t('Projects')"
-                            :icon="FolderIcon" />
-                    </template>
-                </ProjectMultiselectDropdown>
-                <TagDropdown v-model="selectedTags" :create-tag :tags="tags">
-                    <template #trigger>
-                        <ReportingFilterBadge
-                            :count="selectedTags.length"
-                            :active="selectedTags.length > 0"
-                            :title="$t('Tags')"
-                            :icon="TagIcon" />
-                    </template>
-                </TagDropdown>
+            <div class="valo-report-filters">
+                <span class="valo-report-filters-label">{{ $t('Filter by') }}</span>
+                <div class="valo-filter" :class="{ on: selectedProjects.length > 0 }">
+                    <ProjectMultiselectDropdown v-model="selectedProjects">
+                        <template #trigger>
+                            <button
+                                type="button"
+                                class="valo-filter-main"
+                                data-testid="report_filter_projects">
+                                <span
+                                    v-if="firstProject && selectedProjects.length === 1"
+                                    class="valo-dot"
+                                    :style="{ background: firstProject.color }"></span>
+                                <FolderIcon v-else class="h-4 w-4 shrink-0 opacity-70" />
+                                <span class="truncate">{{
+                                    selectedProjects.length > 1
+                                        ? $t(':count projects', {
+                                              count: String(selectedProjects.length),
+                                          })
+                                        : selectedProjects.length === 1
+                                          ? (firstProject?.name ?? $t('No Project'))
+                                          : $t('Projects')
+                                }}</span>
+                                <ChevronDownIcon
+                                    v-if="selectedProjects.length === 0"
+                                    class="h-4 w-4 shrink-0 opacity-60" />
+                            </button>
+                        </template>
+                    </ProjectMultiselectDropdown>
+                    <button
+                        v-if="selectedProjects.length > 0"
+                        type="button"
+                        class="valo-filter-x"
+                        :aria-label="$t('Remove filter')"
+                        data-testid="report_filter_projects_clear"
+                        @click="selectedProjects = []">
+                        <XMarkIcon class="h-4 w-4" />
+                    </button>
+                </div>
+                <div class="valo-filter" :class="{ on: selectedTags.length > 0 }">
+                    <TagDropdown v-model="selectedTags" :create-tag :tags="tags">
+                        <template #trigger>
+                            <button
+                                type="button"
+                                class="valo-filter-main"
+                                data-testid="report_filter_tags">
+                                <TagIcon class="h-4 w-4 shrink-0 opacity-70" />
+                                <span class="truncate">{{
+                                    selectedTags.length > 1
+                                        ? $t(':count tags', { count: String(selectedTags.length) })
+                                        : selectedTags.length === 1
+                                          ? (firstTag?.name ?? $t('No tag'))
+                                          : $t('Tags')
+                                }}</span>
+                                <ChevronDownIcon
+                                    v-if="selectedTags.length === 0"
+                                    class="h-4 w-4 shrink-0 opacity-60" />
+                            </button>
+                        </template>
+                    </TagDropdown>
+                    <button
+                        v-if="selectedTags.length > 0"
+                        type="button"
+                        class="valo-filter-x"
+                        :aria-label="$t('Remove filter')"
+                        data-testid="report_filter_tags_clear"
+                        @click="selectedTags = []">
+                        <XMarkIcon class="h-4 w-4" />
+                    </button>
+                </div>
                 <button
-                    v-if="hasFilters"
+                    v-if="hasExtraFilters"
                     type="button"
-                    class="valo-accent-text ml-1 text-sm font-medium hover:underline"
+                    class="valo-accent-text hidden text-sm font-medium hover:underline sm:inline"
                     data-testid="report_clear_filters"
                     @click="clearFilters">
                     {{ $t('Clear filters') }}
@@ -509,7 +559,8 @@ async function downloadExport(format: ExportFormat) {
             <button
                 type="button"
                 class="valo-pill ml-auto flex items-center gap-2"
-                @click="clearFilters">
+                data-testid="report_whole_team"
+                @click="showWholeTeam">
                 <ArrowLeftIcon class="h-4 w-4" />
                 {{ $t('See the whole team') }}
             </button>
@@ -611,9 +662,9 @@ async function downloadExport(format: ExportFormat) {
             </template>
         </div>
 
-        <div class="mt-4 grid gap-4 lg:grid-cols-[1.12fr_1fr]">
+        <div class="mt-4 grid grid-cols-1 gap-4 lg:grid-cols-[1.12fr_1fr]">
             <!-- left column -->
-            <div class="flex flex-col gap-4">
+            <div class="flex min-w-0 flex-col gap-4">
                 <section v-if="!person" class="valo-gcard valo-rcard" data-testid="report_people">
                     <h2>
                         {{ $t('By person') }}
@@ -725,7 +776,7 @@ async function downloadExport(format: ExportFormat) {
             </div>
 
             <!-- right column -->
-            <div class="flex flex-col gap-4">
+            <div class="flex min-w-0 flex-col gap-4">
                 <section v-if="!person" class="valo-gcard valo-rcard" data-testid="report_projects">
                     <h2>
                         {{ $t('By project') }} <span>{{ $t('% of the time') }}</span>
@@ -772,7 +823,7 @@ async function downloadExport(format: ExportFormat) {
                             }}</span>
                         </div>
                     </div>
-                    <div class="valo-bar-labels">
+                    <div class="valo-bar-labels" :class="{ dense: timeBars.length > 12 }">
                         <span v-for="bar in timeBars" :key="bar.key" class="capitalize">{{
                             bar.label
                         }}</span>

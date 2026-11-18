@@ -206,7 +206,7 @@ const page = usePage<{
                     </Button>
                 </div>
                 <div
-                    v-if="!route().current('time')"
+                    v-if="!route().current('time') && !route().current('dashboard')"
                     class="border-b border-default-background-separator">
                     <CurrentSidebarTimer></CurrentSidebarTimer>
                 </div>
@@ -221,6 +221,11 @@ const page = usePage<{
                     <div class="pt-3"></div>
                     <nav>
                         <ul>
+                            <NavigationSidebarItem
+                                :title="$t('Dashboard')"
+                                :icon="HomeIcon"
+                                :href="route('dashboard')"
+                                :current="route().current('dashboard')"></NavigationSidebarItem>
                             <NavigationSidebarItem
                                 :title="$t('Time')"
                                 :icon="ClockIcon"
@@ -246,11 +251,6 @@ const page = usePage<{
 
                     <nav>
                         <ul>
-                            <NavigationSidebarItem
-                                :title="$t('Dashboard')"
-                                :icon="HomeIcon"
-                                :href="route('dashboard')"
-                                :current="route().current('dashboard')"></NavigationSidebarItem>
                             <NavigationSidebarItem
                                 :title="$t('Reporting')"
                                 :icon="ChartBarIcon"

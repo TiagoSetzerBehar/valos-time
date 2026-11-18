@@ -1215,3 +1215,395 @@ html.dark .valo-ok-btn {
     background: rgba(56, 189, 248, 0.14);
     color: #7dd3fc;
 }
+
+/* ---------- VALO's Time: report controls (period + project/tag filters) ---------- */
+.valo-report-controls {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 10px;
+    border-radius: 22px;
+}
+.valo-report-controls-top {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+}
+.valo-period-seg {
+    display: flex;
+    gap: 4px;
+    padding: 4px;
+    border-radius: 15px;
+    background: rgba(148, 163, 184, 0.14);
+    border: 1px solid rgba(148, 163, 184, 0.28);
+}
+.valo-period-seg button {
+    height: 36px;
+    padding: 0 16px;
+    border-radius: 11px;
+    font-size: 14px;
+    font-weight: 500;
+    color: #334155;
+    white-space: nowrap;
+    transition:
+        background-color 0.15s,
+        color 0.15s,
+        box-shadow 0.15s;
+}
+.valo-period-seg button:hover:not(.on) {
+    background: rgba(255, 255, 255, 0.55);
+}
+.valo-period-seg button.on {
+    background: #fff;
+    color: #0369a1;
+    font-weight: 600;
+    box-shadow: 0 3px 12px rgba(2, 132, 199, 0.18);
+}
+.valo-report-range {
+    display: flex;
+    min-width: 0;
+}
+.valo-report-filters {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 4px 2px 6px;
+    border-top: 1px solid rgba(148, 163, 184, 0.22);
+}
+.valo-report-filters-label {
+    padding-right: 4px;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    color: #64748b;
+}
+.valo-filter {
+    display: inline-flex;
+    align-items: center;
+    min-width: 0;
+    height: 40px;
+    border-radius: 13px;
+    border: 1px solid rgba(148, 163, 184, 0.4);
+    background: rgba(255, 255, 255, 0.7);
+    color: #1e293b;
+    transition:
+        border-color 0.15s,
+        background-color 0.15s;
+}
+.valo-filter:hover {
+    border-color: rgba(2, 132, 199, 0.45);
+}
+.valo-filter > div {
+    min-width: 0;
+}
+.valo-filter-main {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    max-width: 240px;
+    height: 38px;
+    padding: 0 12px 0 13px;
+    border-radius: 13px;
+    font-size: 14px;
+    font-weight: 500;
+    color: inherit;
+}
+.valo-filter-main:focus {
+    outline: none;
+    box-shadow: none;
+}
+.valo-filter:has(.valo-filter-main:focus-visible) {
+    box-shadow: 0 0 0 2px #38bdf8;
+}
+.valo-filter.on {
+    background: #e0f2fe;
+    border-color: #7dd3fc;
+    color: #075985;
+}
+.valo-filter.on .valo-filter-main {
+    padding-right: 4px;
+    font-weight: 600;
+}
+.valo-filter-more {
+    flex: none;
+    padding: 1px 7px;
+    border-radius: 99px;
+    background: rgba(2, 132, 199, 0.16);
+    font-size: 12px;
+    font-weight: 600;
+}
+.valo-filter-x {
+    flex: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+    margin-right: 4px;
+    border-radius: 9px;
+    color: inherit;
+    opacity: 0.75;
+}
+.valo-filter-x:hover {
+    opacity: 1;
+    background: rgba(2, 132, 199, 0.14);
+}
+html.dark .valo-period-seg {
+    background: rgba(15, 23, 42, 0.45);
+    border-color: rgba(148, 163, 184, 0.22);
+}
+html.dark .valo-period-seg button {
+    color: #cbd5e1;
+}
+html.dark .valo-period-seg button:hover:not(.on) {
+    background: rgba(148, 163, 184, 0.14);
+}
+html.dark .valo-period-seg button.on {
+    background: rgba(56, 189, 248, 0.18);
+    color: #7dd3fc;
+    box-shadow: none;
+}
+html.dark .valo-report-filters {
+    border-top-color: rgba(148, 163, 184, 0.18);
+}
+html.dark .valo-report-filters-label {
+    color: #94a3b8;
+}
+html.dark .valo-filter {
+    background: rgba(15, 23, 42, 0.5);
+    border-color: rgba(148, 163, 184, 0.3);
+    color: #e2e8f0;
+}
+html.dark .valo-filter.on {
+    background: rgba(56, 189, 248, 0.16);
+    border-color: rgba(56, 189, 248, 0.5);
+    color: #bae6fd;
+}
+html.dark .valo-filter-more {
+    background: rgba(56, 189, 248, 0.22);
+}
+
+/* ---------- VALO's Time: weekly heat map on the phone ---------- */
+.valo-wp {
+    padding: 6px 0 4px;
+}
+.valo-wp-days,
+.valo-wp-cells {
+    display: grid;
+    grid-template-columns: repeat(7, minmax(0, 1fr));
+    gap: 5px;
+}
+.valo-wp-days {
+    padding: 8px 14px 10px;
+    border-bottom: 1px solid rgba(148, 163, 184, 0.25);
+}
+.valo-wp-days > span {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-size: 12px;
+    font-weight: 600;
+    color: #475569;
+}
+.valo-wp-days small {
+    font-size: 11px;
+    font-weight: 500;
+    color: #64748b;
+}
+.valo-wp-days .valo-weekly-today {
+    border-radius: 10px;
+}
+.valo-wp-row {
+    padding: 12px 14px;
+}
+.valo-wp-row + .valo-wp-row {
+    border-top: 1px solid rgba(148, 163, 184, 0.2);
+}
+.valo-wp-cells {
+    margin-top: 9px;
+}
+.valo-wp-cells .valo-heat {
+    width: 100%;
+    max-width: none;
+    height: 32px;
+    border-radius: 9px;
+    font-size: 12px;
+}
+.valo-wp-empty {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 32px;
+}
+.valo-wp-foot {
+    background: rgba(148, 163, 184, 0.1);
+    border-radius: 0 0 22px 22px;
+    color: #0f172a;
+}
+.valo-wp-total {
+    text-align: center;
+    font-size: 12px;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    color: #334155;
+}
+html.dark .valo-wp-days > span,
+html.dark .valo-wp-total {
+    color: #cbd5e1;
+}
+html.dark .valo-wp-days small {
+    color: #94a3b8;
+}
+html.dark .valo-wp-foot {
+    color: #f1f5f9;
+    background: rgba(148, 163, 184, 0.08);
+}
+
+/* ---------- VALO's Time: everything fits a phone ---------- */
+@media (max-width: 639px) {
+    .valo-report-controls-top {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    .valo-period-seg {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    .valo-period-seg button {
+        padding: 0 8px;
+    }
+    .valo-report-range > * {
+        width: 100%;
+    }
+    .valo-report-range button[data-testid='date_range_picker_display'] {
+        flex: 1;
+        justify-content: center;
+    }
+    .valo-report-filters {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        padding: 10px 0 0;
+    }
+    .valo-report-filters-label {
+        display: none;
+    }
+    .valo-filter > div:first-child {
+        flex: 1;
+    }
+    .valo-filter-main {
+        width: 100%;
+        max-width: none;
+    }
+    .valo-kpi {
+        min-height: 104px;
+        padding: 14px 16px;
+        border-radius: 20px;
+    }
+    .valo-kpi-label {
+        font-size: 11px;
+        letter-spacing: 0.6px;
+    }
+    .valo-kpi-value {
+        font-size: 24px;
+    }
+    .valo-kpi-of {
+        font-size: 15px;
+    }
+    .valo-kpi-note {
+        font-size: 12px;
+    }
+    .valo-rcard {
+        padding: 16px;
+        border-radius: 22px;
+    }
+    .valo-rcard h2 {
+        flex-wrap: wrap;
+        row-gap: 2px;
+        font-size: 17px;
+    }
+    .valo-rcard h2 span {
+        font-size: 12px;
+    }
+    .valo-bar-person,
+    .valo-bar-tag {
+        grid-template-columns: minmax(0, 1fr) auto;
+        row-gap: 7px;
+        padding-top: 9px;
+        padding-bottom: 9px;
+    }
+    .valo-bar-person .valo-track,
+    .valo-bar-tag .valo-track {
+        grid-column: 1 / -1;
+        grid-row: 2;
+        height: 8px;
+    }
+    .valo-bar-person .valo-track {
+        margin-left: 38px;
+    }
+    .valo-bar-project {
+        grid-template-columns: minmax(0, 1fr) auto 40px;
+        gap: 10px;
+    }
+    .valo-bars {
+        gap: 5px;
+        height: 130px;
+    }
+    .valo-bars > div > span {
+        font-size: 11px;
+    }
+    .valo-bar-labels {
+        gap: 5px;
+    }
+    .valo-bar-labels > span {
+        font-size: 11px;
+    }
+    .valo-bar-labels.dense > span:nth-child(even) {
+        visibility: hidden;
+    }
+    .valo-pcard {
+        min-height: 0;
+        padding: 15px 16px;
+        border-radius: 20px;
+    }
+    .valo-pcard-hours {
+        font-size: 22px;
+    }
+    .valo-pcard-hours.zero {
+        font-size: 15px;
+        line-height: 30px;
+    }
+    .valo-weekly-bar {
+        padding: 10px;
+    }
+    .valo-weekly-bar > div:first-child {
+        width: 100%;
+    }
+    .valo-weekly-week {
+        flex: 1 1 100%;
+        justify-content: space-between;
+    }
+    .valo-weekly-seg {
+        flex: 1 1 100%;
+    }
+    .valo-weekly-seg button {
+        flex: 1;
+    }
+    .valo-weekly-bar > div:last-child {
+        width: 100%;
+        padding: 2px 6px 0;
+        text-align: left;
+    }
+    .valo-weekly-review {
+        padding: 10px 12px;
+    }
+    .valo-weekly-review-chip {
+        flex-wrap: wrap;
+    }
+    .valo-meet-row {
+        min-height: 54px;
+    }
+}

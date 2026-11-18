@@ -237,11 +237,17 @@ async function saveFix() {
         fixError.value = message ?? trans('The action failed. Please try again later.');
     }
 }
+
+/** "7:56" style hours for the small phone cells. */
+function compactDuration(seconds: number): string {
+    const minutes = Math.round(seconds / 60);
+    return Math.floor(minutes / 60) + ':' + String(minutes % 60).padStart(2, '0');
+}
 </script>
 
 <template>
     <MainContainer
-        class="h-14 sm:h-16 border-b border-default-background-separator flex flex-wrap gap-y-3 justify-between items-center">
+        class="pt-3 sm:pt-0 sm:h-16 sm:border-b border-default-background-separator flex flex-wrap gap-y-2 justify-between items-center">
         <div class="flex items-center space-x-3 sm:space-x-6">
             <PageTitle :icon="ChartBarIcon" :title="$t('Reporting')"></PageTitle>
             <ReportingTabNavbar active="weekly" class="hidden sm:flex"></ReportingTabNavbar>
@@ -252,8 +258,10 @@ async function saveFix() {
             :loading="summaryLoading"
             data-testid="weekly_summary_pdf"
             @click="downloadSummary">
-            {{ $t('Weekly summary (PDF)') }}
+            <span class="sm:hidden">PDF</span>
+            <span class="hidden sm:inline">{{ $t('Weekly summary (PDF)') }}</span>
         </SecondaryButton>
+        <ReportingTabNavbar active="weekly" class="w-full sm:hidden"></ReportingTabNavbar>
     </MainContainer>
     <MainContainer class="pt-5 pb-10 valo-weekly">
         <!-- week, grouping and total -->
@@ -289,7 +297,9 @@ async function saveFix() {
                     @click="weekStart = thisWeek">
                     {{ $t('Go to this week') }}
                 </button>
-                <span class="ml-2 text-sm text-text-secondary">{{ $t('Group by') }}</span>
+                <span class="ml-2 hidden text-sm text-text-secondary sm:inline">{{
+                    $t('Group by')
+                }}</span>
                 <div class="valo-weekly-seg" data-testid="weekly_report_group">
                     <button
                         type="button"
@@ -361,7 +371,88 @@ async function saveFix() {
         </div>
 
         <!-- heat map -->
-        <div class="valo-weekly-table mt-4 overflow-x-auto" data-testid="weekly_report">
+        <!-- phone: one block per row, the 7 days as small heat squares -->
+        <div class="valo-weekly-table valo-wp mt-4 sm:hidden" data-testid="weekly_report_phone">
+            <div class="valo-wp-days">
+                <span
+                    v-for="(day, index) in weekDays"
+                    :key="dayKeys[index]"
+                    class="capitalize"
+                    :class="{
+                        'valo-weekly-weekend': day.day() === 0 || day.day() === 6,
+                        'valo-weekly-today': dayKeys[index] === todayKey,
+                    }"
+                    >{{ day.format('dd') }}<small>{{ day.format('D') }}</small></span
+                >
+            </div>
+            <div v-if="isPending" class="flex justify-center py-10">
+                <LoadingSpinner />
+            </div>
+            <template v-else-if="rows.length > 0">
+                <div
+                    v-for="row in rows"
+                    :key="row.key"
+                    class="valo-wp-row"
+                    data-testid="weekly_row_phone">
+                    <div class="flex items-center gap-2.5">
+                        <span
+                            class="valo-avatar"
+                            :style="{ background: valoAvatarColor(row.key) }"
+                            >{{ valoInitials(row.name) }}</span
+                        >
+                        <Link
+                            v-if="row.memberId"
+                            :href="personLink(row.memberId)"
+                            class="min-w-0 flex-1 truncate font-medium text-text-primary">
+                            {{ row.name }}
+                        </Link>
+                        <span
+                            v-else
+                            class="min-w-0 flex-1 truncate font-medium text-text-primary"
+                            >{{ row.name }}</span
+                        >
+                        <span class="shrink-0 font-semibold tabular-nums text-text-primary">{{
+                            formatDuration(row.total)
+                        }}</span>
+                    </div>
+                    <div class="valo-wp-cells">
+                        <template v-for="(seconds, index) in row.days" :key="index">
+                            <span v-if="seconds > 0" class="valo-heat" :class="heat(seconds)">{{
+                                compactDuration(seconds)
+                            }}</span>
+                            <span v-else class="valo-wp-empty"><i class="valo-heat-0"></i></span>
+                        </template>
+                    </div>
+                </div>
+                <div v-if="withoutHours.length > 0" class="valo-wp-row text-sm text-text-secondary">
+                    {{ $t('No hours this week') }} ({{ withoutHours.length }}):
+                    {{ withoutHours.join(', ') }}
+                </div>
+                <div class="valo-wp-row valo-wp-foot">
+                    <div class="flex items-center justify-between font-semibold">
+                        <span>{{ $t('Team total') }}</span>
+                        <span class="tabular-nums">{{ formatDuration(weekTotal) }}</span>
+                    </div>
+                    <div class="valo-wp-cells">
+                        <span
+                            v-for="(seconds, index) in dayTotals"
+                            :key="index"
+                            class="valo-wp-total"
+                            >{{ seconds > 0 ? compactDuration(seconds) : '–' }}</span
+                        >
+                    </div>
+                </div>
+            </template>
+            <div v-else class="px-4 py-10 text-center">
+                <p class="font-semibold text-text-primary">{{ $t('No time entries found') }}</p>
+                <p class="text-sm text-text-secondary">
+                    {{ $t('Try to track some time entries this week') }}
+                </p>
+            </div>
+        </div>
+        <div
+            class="valo-weekly-table mt-4 hidden overflow-x-auto sm:block"
+            data-testid="weekly_report">
             <div class="min-w-[900px]">
                 <div class="valo-weekly-row valo-weekly-head">
                     <span class="pl-5 text-left">{{
@@ -446,7 +537,8 @@ async function saveFix() {
                 </div>
             </div>
         </div>
-        <div class="mt-3 flex items-center gap-1.5 pl-5 text-sm text-text-secondary">
+        <div
+            class="mt-3 flex flex-wrap items-center gap-1.5 pl-2 sm:pl-5 text-sm text-text-secondary">
             {{ $t('Fewer hours') }}
             <b class="valo-heat-key valo-heat-1"></b><b class="valo-heat-key valo-heat-2"></b
             ><b class="valo-heat-key valo-heat-3"></b><b class="valo-heat-key valo-heat-4"></b>

@@ -2,7 +2,7 @@
 import TimeWeekSummary from '@/Components/TimeWeekSummary.vue';
 import AppLayout from '@/Layouts/AppLayout.vue';
 import TimeTracker from '@/Components/TimeTracker.vue';
-import { router } from '@inertiajs/vue3';
+import { Link, router } from '@inertiajs/vue3';
 import { computed, ref, watch } from 'vue';
 import MainContainer from '@/packages/ui/src/MainContainer.vue';
 import { storeToRefs } from 'pinia';
@@ -39,6 +39,7 @@ import { useTimeEntriesMutations } from '@/utils/useTimeEntriesMutations';
 import { getLocalizedDateFromTimestamp } from '@/packages/ui/src/utils/time';
 import MobileTimeView from '@/Components/MobileTimeView.vue';
 import TimeEntryEditModal from '@/packages/ui/src/TimeEntry/TimeEntryEditModal.vue';
+import { getInitialWeekRange } from '@/utils/useTimeEntriesCalendarQuery';
 
 const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isPending } =
     useTimeEntriesInfiniteQuery();
@@ -68,7 +69,22 @@ async function deleteTimeEntryOnPhone(timeEntryId: string) {
     await deleteTimeEntry(timeEntryId);
 }
 
-const timeEntries = computed(() => data.value?.pages.flatMap((page) => page.data) || []);
+// VALO's Time: the list shows only this week; older weeks live in the calendar and the reports,
+// so the page does not grow forever.
+const weekStartKey = getInitialWeekRange().start.format('YYYY-MM-DD');
+const loadedTimeEntries = computed(() => data.value?.pages.flatMap((page) => page.data) || []);
+const timeEntries = computed(() =>
+    loadedTimeEntries.value.filter(
+        (entry) => getLocalizedDateFromTimestamp(entry.start) >= weekStartKey
+    )
+);
+const weekFullyLoaded = computed(() => {
+    const last = loadedTimeEntries.value[loadedTimeEntries.value.length - 1];
+    return (
+        !hasNextPage.value ||
+        (last !== undefined && getLocalizedDateFromTimestamp(last.start) < weekStartKey)
+    );
+});
 
 // Day picked in the week strip: the list shows only that day (null = every day).
 const selectedDay = ref<string | null>(null);
@@ -102,11 +118,14 @@ async function deleteTimeEntries(timeEntries: TimeEntry[]) {
     await deleteTimeEntriesMutation(timeEntries);
 }
 
-watch(isLoadMoreVisible, async (isVisible) => {
-    if (isVisible && hasNextPage.value) {
-        await fetchNextPage();
+watch(
+    [isLoadMoreVisible, weekFullyLoaded, isFetchingNextPage],
+    async ([isVisible, isLoaded, isFetching]) => {
+        if (isVisible && !isLoaded && !isFetching) {
+            await fetchNextPage();
+        }
     }
-});
+);
 
 const { projects } = useProjectsQuery();
 const { tasks } = useTasksQuery();
@@ -146,10 +165,27 @@ function goToCalendarDay(date: string) {
 <template>
     <AppLayout :title="$t('Time')" data-testid="time_view">
         <template v-if="isPhone">
-            <MobileTimeView
-                :time-entries="timeEntries"
-                :projects="projects"
-                @edit="editOnPhone"></MobileTimeView>
+            <MobileTimeView :time-entries="timeEntries" :projects="projects" @edit="editOnPhone">
+                <template #after-list>
+                    <p
+                        class="valo-week-only px-4 py-5 text-center text-sm text-text-tertiary"
+                        data-testid="time_week_only">
+                        {{ $t('Here you only see this week.') }}
+                        {{ $t('Earlier weeks are in the') }}
+                        <Link
+                            :href="route('calendar')"
+                            class="valo-accent-text font-medium hover:underline"
+                            >{{ $t('Calendar') }}</Link
+                        >
+                        {{ $t('and in') }}
+                        <Link
+                            :href="route('reporting')"
+                            class="valo-accent-text font-medium hover:underline"
+                            >{{ $t('Reporting') }}</Link
+                        >.
+                    </p>
+                </template>
+            </MobileTimeView>
             <TimeEntryEditModal
                 v-model:show="showPhoneEdit"
                 :time-entry="phoneEditEntry"
@@ -254,11 +290,25 @@ function goToCalendarDay(date: string) {
                 <LoadingSpinner></LoadingSpinner>
                 <span> {{ $t('Loading more time entries...') }} </span>
             </div>
-            <div
-                v-else-if="!hasNextPage && timeEntries.length > 0"
-                class="flex justify-center items-center py-5 text-sm text-text-tertiary">
-                {{ $t('All time entries are loaded!') }}
-            </div>
+            <template v-else-if="!isPhone && weekFullyLoaded && !isPending">
+                <p
+                    class="valo-week-only px-4 py-5 text-center text-sm text-text-tertiary"
+                    data-testid="time_week_only">
+                    {{ $t('Here you only see this week.') }}
+                    {{ $t('Earlier weeks are in the') }}
+                    <Link
+                        :href="route('calendar')"
+                        class="valo-accent-text font-medium hover:underline"
+                        >{{ $t('Calendar') }}</Link
+                    >
+                    {{ $t('and in') }}
+                    <Link
+                        :href="route('reporting')"
+                        class="valo-accent-text font-medium hover:underline"
+                        >{{ $t('Reporting') }}</Link
+                    >.
+                </p>
+            </template>
         </div>
     </AppLayout>
 </template>

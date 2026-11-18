@@ -25,7 +25,7 @@ class HomeEndpointTest extends EndpointTestAbstract
         $response = $this->get('/');
 
         // Assert
-        $response->assertRedirect('/time');
+        $response->assertRedirect('/dashboard');
     }
 
     public function test_index_redirects_to_login_if_user_is_not_logged_in(): void
@@ -49,6 +49,6 @@ class HomeEndpointTest extends EndpointTestAbstract
         $response = $this->get('/login');
 
         // Assert
-        $response->assertRedirect('/time');
+        $response->assertRedirect('/dashboard');
     }
 }

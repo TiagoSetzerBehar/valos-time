@@ -1289,5 +1289,11 @@
     "Meetings to confirm": "Reuniões para confirmar",
     "they do not count until your OK": "não contam até o seu OK",
     "All set: no meetings waiting for your OK.": "Tudo em dia: nenhuma reunião para confirmar.",
-    "1 entry of more than 16 h in a row (:duration) is not counted here.": "1 registro de mais de 16 h seguidas (:duration) não conta aqui."
+    "1 entry of more than 16 h in a row (:duration) is not counted here.": "1 registro de mais de 16 h seguidas (:duration) não conta aqui.",
+    "Here you only see this week.": "Aqui você vê só esta semana.",
+    "Earlier weeks are in the": "As semanas anteriores estão no",
+    "and in": "e em",
+    "Remove filter": "Remover filtro",
+    ":count projects": ":count projetos",
+    ":count tags": ":count etiquetas"
 }

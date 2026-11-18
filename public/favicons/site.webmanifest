@@ -3,7 +3,7 @@
     "short_name": "VALO's Time",
     "description": "Registro de horas de VALO",
     "lang": "es",
-    "start_url": "/time",
+    "start_url": "/dashboard",
     "scope": "/",
     "display": "standalone",
     "theme_color": "#0ea5e9",
