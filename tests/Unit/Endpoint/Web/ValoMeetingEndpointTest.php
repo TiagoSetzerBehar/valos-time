@@ -108,7 +108,8 @@ class ValoMeetingEndpointTest extends EndpointTestAbstract
         $byTag = TimeEntry::factory()->forMember($data->member)->create([
             'description' => 'finanzas con Paul', 'start' => '2026-11-12 13:10:00', 'end' => '2026-11-12 14:00:00', 'tags' => [$tsa->getKey()],
         ]);
-        // Monday: same hour but no tag and another name -> still pending
+        // Monday: another name and no tag, but the whole meeting time is already worked -> counted (an hour
+        // can not count twice)
         TimeEntry::factory()->forMember($data->member)->create([
             'description' => 'OBV', 'start' => '2026-11-09 15:00:00', 'end' => '2026-11-09 16:00:00', 'tags' => [],
         ]);
@@ -124,7 +125,7 @@ class ValoMeetingEndpointTest extends EndpointTestAbstract
         $byMeeting = collect($response->json('data'))->keyBy('meeting_id');
         $this->assertSame($byName->getKey(), $byMeeting[$legal->getKey()]['time_entry_id']);
         $this->assertSame($byTag->getKey(), $byMeeting[$finanzas->getKey()]['time_entry_id']);
-        $this->assertNull($byMeeting[$tech->getKey()]['time_entry_id']);
+        $this->assertNotNull($byMeeting[$tech->getKey()]['time_entry_id']);
         $ok->assertOk()->assertJsonPath('data.time_entry_id', $byName->getKey());
         $this->assertSame(3, TimeEntry::query()->count());
     }

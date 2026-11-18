@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, inject, type ComputedRef } from 'vue';
-import { formatHumanReadableDuration, getDayJsInstance } from '../utils/time';
+import { formatHumanReadableDuration, getDayJsInstance, getLocalizedDayJs } from '../utils/time';
 import type { Organization } from '@/packages/api/src';
 import { Coffee } from '@lucide/vue';
 import { ExclamationTriangleIcon } from '@heroicons/vue/20/solid';
@@ -34,6 +34,15 @@ const organization = inject('organization') as ComputedRef<Organization | undefi
 const intervalFormat = computed(() => organization?.value?.interval_format);
 const numberFormat = computed(() => organization?.value?.number_format);
 
+const timeRange = computed(() => {
+    if (!props.start) {
+        return '';
+    }
+    const from = getLocalizedDayJs(String(props.start)).format('HH:mm');
+    const to = props.end ? getLocalizedDayJs(String(props.end)).format('HH:mm') : '…';
+    return `${from} – ${to}`;
+});
+
 const formattedDuration = computed(() =>
     formatHumanReadableDuration(
         effectiveDurationSeconds.value,
@@ -44,8 +53,8 @@ const formattedDuration = computed(() =>
 </script>
 
 <template>
-    <div class="text-2xs leading-tight px-0.5 py-1">
-        <div class="font-semibold flex items-center gap-1">
+    <div class="valo-ev-content">
+        <div class="valo-ev-title">
             <Coffee v-if="isBreak" class="w-3 h-3 shrink-0" />
             <span class="truncate">{{ title }}</span>
             <ExclamationTriangleIcon
@@ -54,17 +63,10 @@ const formattedDuration = computed(() =>
                 :title="$t('This break does not align with your work entries')"
                 class="w-3 h-3 shrink-0 text-amber-600 dark:text-amber-400" />
         </div>
-        <div v-if="projectName" class="font-medium opacity-90">
-            {{ projectName }}
+        <div class="valo-ev-meta">
+            {{ timeRange }}<template v-if="projectName"> · {{ projectName }}</template>
         </div>
-        <div v-if="taskName" class="font-medium">
-            {{ taskName }}
-        </div>
-        <div v-if="clientName" class="opacity-85">
-            {{ clientName }}
-        </div>
-        <div class="opacity-90" data-duration>
-            {{ formattedDuration }}
-        </div>
+        <div v-if="taskName" class="valo-ev-meta">{{ taskName }}</div>
+        <div class="valo-ev-duration" data-duration>{{ formattedDuration }}</div>
     </div>
 </template>

@@ -157,7 +157,7 @@ function onRefresh() {
     <AppLayout
         :title="$t('Calendar')"
         data-testid="calendar_view"
-        :main-class="isPhone ? '' : 'p-0 min-h-0 overflow-hidden'">
+        :main-class="isPhone ? '' : 'valo-cal-page min-h-0 overflow-hidden'">
         <MobileCalendar v-if="isPhone" :initial-date="initialDate"></MobileCalendar>
         <TimeEntryCalendar
             v-else

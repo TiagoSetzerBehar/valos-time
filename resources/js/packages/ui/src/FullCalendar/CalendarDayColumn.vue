@@ -95,6 +95,9 @@ const emit = defineEmits<{
             @click.stop="emit('placeholder-click', placeholder.key)">
             <span class="block truncate text-xs font-semibold">{{ placeholder.title }}</span>
             <span class="block truncate text-[11px] opacity-80">{{ placeholder.time }}</span>
+            <span v-if="placeholder.height >= 56" class="valo-ghost-hint">{{
+                $t('Click to confirm')
+            }}</span>
         </button>
         <div
             class="absolute inset-y-0 left-0.5 right-0.5"
@@ -132,7 +135,7 @@ const emit = defineEmits<{
                     @pointerdown.stop.prevent="
                         emit('resizer-pointerdown', $event, dayEvent, 'start')
                     "></div>
-                <div class="px-1 py-0.5 h-full overflow-hidden">
+                <div class="valo-ev-box h-full overflow-hidden">
                     <FullCalendarEventContent
                         :title="dayEvent.event.title"
                         :project-name="dayEvent.event.project?.name"
@@ -140,6 +143,8 @@ const emit = defineEmits<{
                         :client-name="dayEvent.event.client?.name"
                         :is-break="dayEvent.event.isBreak"
                         :is-misplaced-break="dayEvent.event.isMisplacedBreak"
+                        :start="dayEvent.event.timeEntry.start"
+                        :end="dayEvent.event.timeEntry.end"
                         :duration-seconds="getEventDurationSeconds(dayEvent, dayStr)" />
                 </div>
                 <div

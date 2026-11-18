@@ -52,7 +52,7 @@ class ValoMeetingController extends Controller
             ->where('member_id', '=', $member->getKey())
             ->where('start', '>=', $from->utc())
             ->where('start', '<', $to->addDay()->utc())
-            ->get(['id', 'description', 'start', 'end', 'tags']);
+            ->get(['id', 'description', 'start', 'end', 'tags', 'type']);
 
         $occurrences = [];
         for ($day = $from; $day->lte($to); $day = $day->addDay()) {
@@ -112,29 +112,47 @@ class ValoMeetingController extends Controller
             ->where('member_id', '=', $member->getKey())
             ->where('start', '>=', $dayStart->utc())
             ->where('start', '<', $dayStart->addDay()->utc())
-            ->get(['id', 'description', 'start', 'end', 'tags']);
+            ->get(['id', 'description', 'start', 'end', 'tags', 'type']);
         $existing = $meeting->attendedEntry($data['date'], $timezone, $entriesOfDay);
         if ($existing !== null) {
             return response()->json(['data' => ['time_entry_id' => $existing->getKey()]]);
         }
 
-        $timeEntry = new TimeEntry;
-        $timeEntry->description = $meeting->name;
-        $timeEntry->start = Carbon::instance($start->utc());
-        $timeEntry->end = Carbon::instance($end->utc());
-        $timeEntry->billable = false;
-        $timeEntry->type = TimeEntryType::Work;
-        $timeEntry->tags = array_values($meeting->tag_ids);
-        $timeEntry->user_id = $user->getKey();
-        $timeEntry->member_id = $member->getKey();
-        $timeEntry->project_id = null;
-        $timeEntry->task_id = null;
-        $timeEntry->client_id = null;
-        $timeEntry->organization()->associate($organization);
-        $timeEntry->setComputedAttributeValue('billable_rate');
-        $timeEntry->save();
+        // An hour never counts twice: only the part of the meeting that is not already in other hours is added.
+        $overlapping = TimeEntry::query()
+            ->where('member_id', '=', $member->getKey())
+            ->where('start', '<', $end->utc())
+            ->where(fn ($query) => $query->whereNull('end')->orWhere('end', '>', $start->utc()))
+            ->get(['id', 'description', 'start', 'end', 'tags', 'type']);
+        $gaps = ValoMeeting::freeGaps($start->utc(), $end->utc(), $overlapping);
+        if ($gaps === []) {
+            /** @var TimeEntry $covering */
+            $covering = $overlapping->first();
 
-        return response()->json(['data' => ['time_entry_id' => $timeEntry->getKey()]], 201);
+            return response()->json(['data' => ['time_entry_id' => $covering->getKey(), 'already_counted' => true]]);
+        }
+
+        $firstId = null;
+        foreach ($gaps as [$gapStart, $gapEnd]) {
+            $timeEntry = new TimeEntry;
+            $timeEntry->description = $meeting->name;
+            $timeEntry->start = Carbon::instance($gapStart->utc());
+            $timeEntry->end = Carbon::instance($gapEnd->utc());
+            $timeEntry->billable = false;
+            $timeEntry->type = TimeEntryType::Work;
+            $timeEntry->tags = array_values($meeting->tag_ids);
+            $timeEntry->user_id = $user->getKey();
+            $timeEntry->member_id = $member->getKey();
+            $timeEntry->project_id = null;
+            $timeEntry->task_id = null;
+            $timeEntry->client_id = null;
+            $timeEntry->organization()->associate($organization);
+            $timeEntry->setComputedAttributeValue('billable_rate');
+            $timeEntry->save();
+            $firstId ??= $timeEntry->getKey();
+        }
+
+        return response()->json(['data' => ['time_entry_id' => $firstId]], 201);
     }
 
     public function index(string $organizationId): JsonResponse

@@ -41,14 +41,11 @@ const durationSummary = computed(() => {
 </script>
 
 <template>
-    <div class="fc-day-header-custom">
-        <div class="text-sm text-foreground" :class="isToday ? 'font-semibold' : 'font-medium'">
-            {{ date.format('ddd') }} {{ date.date() }}
-        </div>
-        <span
-            class="block text-xs text-muted-foreground font-medium mt-0.5"
-            data-testid="day_duration_summary"
-            >{{ durationSummary }}</span
-        >
+    <div class="fc-day-header-custom valo-day-pill" :class="{ today: isToday }">
+        <span class="valo-day-pill-name">{{ date.format('dd') }}</span>
+        <b>{{ date.date() }}</b>
+        <span class="valo-day-pill-total" data-testid="day_duration_summary">{{
+            durationSummary
+        }}</span>
     </div>
 </template>

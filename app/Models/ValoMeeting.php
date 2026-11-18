@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Enums\TimeEntryType;
 use App\Models\Concerns\HasUuids;
 use Carbon\CarbonImmutable;
 use Illuminate\Database\Eloquent\Model;
@@ -97,7 +98,67 @@ class ValoMeeting extends Model
             $overlaps = $entry->end !== null && $entry->start->lt($meetingEnd) && $entry->end->gt($meetingStart);
 
             return $sharesTag && $overlaps;
-        });
+        }) ?? $this->coveringEntry($meetingStart, $meetingEnd, $entries);
+    }
+
+    /**
+     * When the member already has hours during the whole meeting, the meeting is inside them: an hour can
+     * not count twice, so it counts as done.
+     *
+     * @param  Collection<int, TimeEntry>  $entries
+     */
+    private function coveringEntry(CarbonImmutable $start, CarbonImmutable $end, Collection $entries): ?TimeEntry
+    {
+        if (self::freeGaps($start, $end, $entries) !== []) {
+            return null;
+        }
+
+        return $entries->first(fn (TimeEntry $entry): bool => $entry->type !== TimeEntryType::Break
+            && $entry->start->lt($end)
+            && ($entry->end === null || $entry->end->gt($start)));
+    }
+
+    /**
+     * The parts of [from, to) that are not already in a work entry of the member (a running timer counts
+     * until now). Pieces shorter than a minute are left out.
+     *
+     * @param  Collection<int, TimeEntry>  $entries
+     * @return list<array{0: CarbonImmutable, 1: CarbonImmutable}>
+     */
+    public static function freeGaps(CarbonImmutable $from, CarbonImmutable $to, Collection $entries): array
+    {
+        $now = CarbonImmutable::now();
+        $busy = $entries
+            ->filter(fn (TimeEntry $entry): bool => $entry->type !== TimeEntryType::Break)
+            ->map(fn (TimeEntry $entry): array => [
+                CarbonImmutable::instance($entry->start),
+                $entry->end === null ? $now : CarbonImmutable::instance($entry->end),
+            ])
+            ->filter(fn (array $range): bool => $range[0]->lt($to) && $range[1]->gt($from))
+            ->sortBy(fn (array $range): int => $range[0]->getTimestamp())
+            ->values();
+
+        $gaps = [];
+        $cursor = $from;
+        foreach ($busy as [$busyStart, $busyEnd]) {
+            if ($busyStart->gt($cursor)) {
+                $gaps[] = [$cursor, $busyStart->lt($to) ? $busyStart : $to];
+            }
+            if ($busyEnd->gt($cursor)) {
+                $cursor = $busyEnd;
+            }
+            if ($cursor->gte($to)) {
+                break;
+            }
+        }
+        if ($cursor->lt($to)) {
+            $gaps[] = [$cursor, $to];
+        }
+
+        return array_values(array_filter(
+            $gaps,
+            fn (array $gap): bool => $gap[0]->diffInSeconds($gap[1], true) >= 60
+        ));
     }
 
     public static function normalizeName(string $name): string

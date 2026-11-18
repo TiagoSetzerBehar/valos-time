@@ -159,11 +159,11 @@ const projectRows = computed(() =>
         .sort((a, b) => b.seconds - a.seconds)
 );
 
-// meetings and routines of this week (up to today) that still wait for "OK, asistí"
-const meetingRange = computed(() => ({ start: weekStart.format('YYYY-MM-DD'), end: todayKey }));
+// meetings and routines of today that still wait for "OK, asistí" (yesterday's do not pile up)
+const meetingRange = computed(() => ({ start: todayKey, end: todayKey }));
 const { occurrences } = useMeetingOccurrences(meetingRange);
 const pendingMeetings = computed(() =>
-    occurrences.value.filter((item) => item.time_entry_id === null && item.date <= todayKey)
+    occurrences.value.filter((item) => item.time_entry_id === null && item.date === todayKey)
 );
 const showConfirm = ref(false);
 const confirming = ref<MeetingOccurrence | null>(null);

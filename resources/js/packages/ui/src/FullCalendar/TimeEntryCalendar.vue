@@ -606,6 +606,7 @@ function getEventDurationSeconds(dayEvent: DayEvent, dayStr: string): number {
                                     :class="{
                                         'bg-secondary': isToday(day),
                                         'fc-day-today': isToday(day),
+                                        'valo-weekend-col': day.day() === 0 || day.day() === 6,
                                     }"
                                     :data-date="day.format('YYYY-MM-DD')">
                                     <FullCalendarDayHeader
@@ -665,7 +666,11 @@ function getEventDurationSeconds(dayEvent: DayEvent, dayStr: string): number {
                                             <div
                                                 v-for="day in viewDays"
                                                 :key="'bg-' + day.format('YYYY-MM-DD')"
-                                                :class="{ 'valo-today-col': isToday(day) }"
+                                                :class="{
+                                                    'valo-today-col': isToday(day),
+                                                    'valo-weekend-col':
+                                                        day.day() === 0 || day.day() === 6,
+                                                }"
                                                 :style="
                                                     isToday(day)
                                                         ? {

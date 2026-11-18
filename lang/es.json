@@ -1455,5 +1455,8 @@
     "Clear": "Quitar",
     "Invite people, roles and who is in the team": "Invitar personas, roles y quién está en el equipo",
     "The tags everyone can use in their hours": "Las etiquetas que todos pueden usar en sus horas",
-    "Routine": "Rutina"
+    "Routine": "Rutina",
+    "Your timer is running since :start. The same hour can not count twice.": "Tu cronómetro está en marcha desde las :start. Una misma hora no puede contar dos veces.",
+    "You already have hours from :start to :end in that time. The same hour can not count twice.": "Ya tienes horas de :start a :end en ese tramo. Una misma hora no puede contar dos veces.",
+    "Click to confirm": "Clic para confirmar"
 }
