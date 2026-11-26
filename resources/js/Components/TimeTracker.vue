@@ -3,7 +3,11 @@ import { PencilSquareIcon, PlusCircleIcon } from '@heroicons/vue/20/solid';
 import { usePage } from '@inertiajs/vue3';
 import { type User } from '@/types/models';
 import { computed, onMounted, watch } from 'vue';
-import { getDayJsInstance } from '@/packages/ui/src/utils/time';
+import {
+    getDayJsInstance,
+    getLocalizedDayJs,
+    getLocalizedDayJsFromMinutes,
+} from '@/packages/ui/src/utils/time';
 import { useBreaksEnabled } from '@/packages/ui/src/utils/useBreaksEnabled';
 
 import { getLastWorkTimeEntry, useCurrentTimeEntryStore } from '@/utils/useCurrentTimeEntry';
@@ -41,7 +45,11 @@ import { useTimeEntriesInfiniteQuery } from '@/utils/useTimeEntriesInfiniteQuery
 import { trans } from 'laravel-vue-i18n';
 
 // VALO's Time: `hero` draws the big two-row card of the home screen.
-withDefaults(defineProps<{ hero?: boolean }>(), { hero: false });
+// `manualDay` = the day picked in "Mi semana" (YYYY-MM-DD): "Añadir horas a mano" opens on it.
+const props = withDefaults(defineProps<{ hero?: boolean; manualDay?: string }>(), {
+    hero: false,
+    manualDay: undefined,
+});
 
 const page = usePage<{
     auth: {
@@ -67,6 +75,24 @@ const emit = defineEmits<{
 }>();
 
 const showManualTimeEntryModal = ref(false);
+const manualStart = ref<string | undefined>(undefined);
+const manualEnd = ref<string | undefined>(undefined);
+
+function openManualEntry() {
+    const today = getLocalizedDayJs().format('YYYY-MM-DD');
+    if (props.manualDay && props.manualDay !== today) {
+        manualStart.value = getLocalizedDayJsFromMinutes(props.manualDay, 9 * 60)
+            .utc()
+            .format();
+        manualEnd.value = getLocalizedDayJsFromMinutes(props.manualDay, 10 * 60)
+            .utc()
+            .format();
+    } else {
+        manualStart.value = getDayJsInstance().utc().subtract(1, 'h').second(0).format();
+        manualEnd.value = getDayJsInstance().utc().second(0).format();
+    }
+    showManualTimeEntryModal.value = true;
+}
 
 const { createTimeEntry: createTimeEntryMutation, deleteTimeEntry } = useTimeEntriesMutations();
 const { data: timeEntriesData } = useTimeEntriesInfiniteQuery();
@@ -172,6 +198,8 @@ const { tags } = useTagsQuery();
 <template>
     <TimeEntryCreateModal
         v-model:show="showManualTimeEntryModal"
+        :start="manualStart"
+        :end="manualEnd"
         :enable-estimated-time="isAllowedToPerformPremiumAction()"
         :create-project="createProject"
         :create-client="createClient"
@@ -230,7 +258,7 @@ const { tags } = useTagsQuery();
                                 class="valo-manual-btn"
                                 data-testid="manual_time_entry_button"
                                 :title="$t('Create manual time entry')"
-                                @click="showManualTimeEntryModal = true">
+                                @click="openManualEntry">
                                 <PlusCircleIcon class="w-5 h-5" />
                                 <span>{{ $t('Add hours by hand') }}</span>
                             </button>
@@ -243,7 +271,7 @@ const { tags } = useTagsQuery();
                     class="hidden sm:flex items-center gap-1.5 h-8 rounded-md px-2.5 text-sm text-text-secondary hover:text-text-primary hover:bg-card-background transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                     data-testid="manual_time_entry_button"
                     :title="$t('Create manual time entry')"
-                    @click="showManualTimeEntryModal = true">
+                    @click="openManualEntry">
                     <PencilSquareIcon class="w-4 h-4" />
                     <span>{{ $t('Manual') }}</span>
                 </button>
@@ -252,7 +280,7 @@ const { tags } = useTagsQuery();
                     :time-tracker-mode="timeTrackerMode"
                     :is-on-break="isOnBreak"
                     :breaks-enabled="breaksEnabled"
-                    @manual-entry="showManualTimeEntryModal = true"
+                    @manual-entry="openManualEntry"
                     @start-break="startBreak"
                     @toggle-time-tracker-mode="toggleTimeTrackerMode"
                     @discard="discardCurrentTimeEntry"></TimeTrackerMoreOptionsDropdown>

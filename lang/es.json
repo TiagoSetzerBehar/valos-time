@@ -1464,5 +1464,6 @@
     "Only the free hours were added": "Se añadieron solo las horas libres",
     "You already had hours tracked in part of that time. The same hour never counts twice.": "Ya tenías horas registradas en parte de ese horario. La misma hora nunca cuenta dos veces.",
     "Delete the tag \":name\"? It will be removed from the entries that use it. The hours stay.": "¿Eliminar la etiqueta \":name\"? Se quitará de los registros que la usan. Las horas no se borran.",
-    "Open menu": "Abrir menú"
+    "Open menu": "Abrir menú",
+    "No tags yet": "Todavía no hay etiquetas"
 }

@@ -16,6 +16,8 @@ import { NO_PROJECT_COLOR } from '@/packages/ui/src/FullCalendar/useCalendarEven
 
 // VALO's Time on the phone: "Añadir horas a mano" — what, project/tag, day, from–to, save.
 const show = defineModel<boolean>('show', { default: false });
+// the day picked in "Mi semana" (YYYY-MM-DD); empty = today
+const props = defineProps<{ defaultDay?: string }>();
 
 const { projects } = useProjectsQuery();
 const { tags } = useTagsQuery();
@@ -43,7 +45,14 @@ watch(show, (open) => {
     description.value = '';
     projectId.value = null;
     tagIds.value = [];
-    day.value = now.format('YYYY-MM-DD');
+    const today = now.format('YYYY-MM-DD');
+    if (props.defaultDay && props.defaultDay !== today) {
+        day.value = props.defaultDay;
+        from.value = '09:00';
+        to.value = '10:00';
+        return;
+    }
+    day.value = today;
     from.value = toClock(end - 60);
     to.value = toClock(end);
 });

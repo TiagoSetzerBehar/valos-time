@@ -48,6 +48,11 @@ const description = ref<HTMLInputElement | null>(null);
 
 watch(show, (value) => {
     if (value) {
+        // VALO: open on the times given by the page (e.g. the day picked in "Mi semana")
+        if (props.start && props.end) {
+            localStart.value = getLocalizedDayJs(props.start).format();
+            localEnd.value = getLocalizedDayJs(props.end).format();
+        }
         nextTick(() => {
             description.value?.focus();
         });

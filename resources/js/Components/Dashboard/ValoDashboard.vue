@@ -270,7 +270,7 @@ function formatDuration(seconds: number): string {
         <div
             v-else
             class="valo-timer-hero relative z-20 rounded border border-card-border bg-card-background px-5 lg:px-7 pt-4 pb-5 shadow-card">
-            <TimeTracker hero @change="refresh"></TimeTracker>
+            <TimeTracker hero :manual-day="selectedDay" @change="refresh"></TimeTracker>
         </div>
     </MainContainer>
 
@@ -485,7 +485,7 @@ function formatDuration(seconds: number): string {
             <PlusIcon class="h-5 w-5" />
             {{ $t('Add hours') }}
         </button>
-        <MobileManualEntry v-model:show="manualOpen"></MobileManualEntry>
+        <MobileManualEntry v-model:show="manualOpen" :default-day="selectedDay"></MobileManualEntry>
         <TimeEntryEditModal
             v-model:show="showPhoneEdit"
             :time-entry="phoneEdit"
