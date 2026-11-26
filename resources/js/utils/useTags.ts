@@ -4,6 +4,7 @@ import type { Tag, UpdateTagBody } from '@/packages/api/src';
 import { getCurrentOrganizationId } from '@/utils/useUser';
 import { api } from '@/packages/api/src';
 import { useNotificationsStore } from '@/utils/notification';
+import { useCurrentTimeEntryStore } from '@/utils/useCurrentTimeEntry';
 import { useMutation, useQueryClient } from '@tanstack/vue-query';
 
 export const useTagsStore = defineStore('tags', () => {
@@ -24,7 +25,9 @@ export const useTagsStore = defineStore('tags', () => {
                 trans('Tag deleted successfully'),
                 trans('Failed to delete tag')
             );
+            useCurrentTimeEntryStore().forgetTag(tagId);
             queryClient.invalidateQueries({ queryKey: ['tags'] });
+            queryClient.invalidateQueries({ queryKey: ['timeEntries'] });
         }
     }
 

@@ -58,6 +58,26 @@ export const useCurrentTimeEntryStore = defineStore('currentTimeEntry', () => {
     const currentTimeEntry = ref<TimeEntry>({ ...emptyTimeEntry });
     const { handleApiRequestNotifications } = useNotificationsStore();
     const queryClient = useQueryClient();
+
+    // VALO: drop tags that were deleted, so the timer never gets stuck on a tag that no longer exists
+    function existingTags(ids: string[] | undefined): string[] {
+        const list = ids ?? [];
+        const cached = queryClient.getQueryData<{ data: { id: string }[] }>([
+            'tags',
+            getCurrentOrganizationId(),
+        ]);
+        if (!cached) {
+            return list;
+        }
+        const known = new Set(cached.data.map((tag) => tag.id));
+        return list.filter((id) => known.has(id));
+    }
+
+    function forgetTag(tagId: string) {
+        currentTimeEntry.value.tags = (currentTimeEntry.value.tags ?? []).filter(
+            (id) => id !== tagId
+        );
+    }
     useLocalStorage('solidtime/current-time-entry', currentTimeEntry, {
         deep: true,
     });
@@ -130,7 +150,7 @@ export const useCurrentTimeEntryStore = defineStore('currentTimeEntry', () => {
                             task_id: currentTimeEntry.value?.task_id,
                             billable: currentTimeEntry.value.billable,
                             type: currentTimeEntry.value?.type ?? 'work',
-                            tags: currentTimeEntry.value?.tags,
+                            tags: existingTags(currentTimeEntry.value?.tags),
                         },
                         { params: { organization: organization } }
                     ),
@@ -245,7 +265,7 @@ export const useCurrentTimeEntryStore = defineStore('currentTimeEntry', () => {
                             start: currentTimeEntry.value.start,
                             billable: currentTimeEntry.value.billable,
                             end: currentTimeEntry.value.end,
-                            tags: currentTimeEntry.value.tags,
+                            tags: existingTags(currentTimeEntry.value.tags),
                         },
                         {
                             params: {
@@ -324,6 +344,7 @@ export const useCurrentTimeEntryStore = defineStore('currentTimeEntry', () => {
         stopLiveTimer,
         now,
         setActiveState,
+        forgetTag,
         $reset,
     };
 });

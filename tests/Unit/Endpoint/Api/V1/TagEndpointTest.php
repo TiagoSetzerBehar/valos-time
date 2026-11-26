@@ -299,15 +299,16 @@ class TagEndpointTest extends ApiEndpointTestAbstract
         ]);
     }
 
-    public function test_destroy_endpoint_fails_if_tag_is_still_in_use_by_a_time_entry(): void
+    public function test_destroy_endpoint_removes_a_tag_in_use_from_its_time_entries(): void
     {
         // Arrange
         $data = $this->createUserWithPermission([
             'tags:delete',
         ]);
         $tag = Tag::factory()->forOrganization($data->organization)->create();
-        TimeEntry::factory()->forMember($data->member)->forOrganization($data->organization)->create([
-            'tags' => [$tag->getKey()],
+        $other = Tag::factory()->forOrganization($data->organization)->create();
+        $entry = TimeEntry::factory()->forMember($data->member)->forOrganization($data->organization)->create([
+            'tags' => [$tag->getKey(), $other->getKey()],
         ]);
         Passport::actingAs($data->user);
 
@@ -315,11 +316,12 @@ class TagEndpointTest extends ApiEndpointTestAbstract
         $response = $this->deleteJson(route('api.v1.tags.destroy', [$data->organization->getKey(), $tag->getKey()]));
 
         // Assert
-        $response->assertStatus(400);
-        $response->assertJsonPath('message', 'The tag is still used by a time entry and can not be deleted.');
-        $this->assertDatabaseHas(Tag::class, [
+        $response->assertStatus(204);
+        $this->assertDatabaseMissing(Tag::class, [
             'id' => $tag->getKey(),
         ]);
+        $entry->refresh();
+        $this->assertSame([$other->getKey()], $entry->tags);
     }
 
     public function test_destroy_endpoint_deletes_tag(): void

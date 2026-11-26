@@ -2,13 +2,12 @@
 import { computed, onMounted, onUnmounted, watch } from 'vue';
 import { storeToRefs } from 'pinia';
 import { usePage } from '@inertiajs/vue3';
-import { PlayIcon, StopIcon, TagIcon, PlusCircleIcon } from '@heroicons/vue/20/solid';
+import { PlayIcon, StopIcon, PlusCircleIcon } from '@heroicons/vue/20/solid';
 import type { User } from '@/types/models';
 import { useCurrentTimeEntryStore } from '@/utils/useCurrentTimeEntry';
 import { useProjectsQuery } from '@/utils/useProjectsQuery';
 import { useTagsQuery } from '@/utils/useTagsQuery';
-import { useTagsStore } from '@/utils/useTags';
-import TagDropdown from '@/packages/ui/src/Tag/TagDropdown.vue';
+import ValoTagSelect from '@/Components/ValoTagSelect.vue';
 import { getDayJsInstance, getLocalizedDayJs } from '@/packages/ui/src/utils/time';
 import { NO_PROJECT_COLOR } from '@/packages/ui/src/FullCalendar/useCalendarEvents';
 
@@ -82,10 +81,6 @@ function onProjectChange(event: Event) {
     saveIfRunning();
 }
 
-async function createTag(name: string) {
-    return await useTagsStore().createTag(name);
-}
-
 async function toggle() {
     (document.activeElement as HTMLElement | null)?.blur();
     await store.setActiveState(!isActive.value);
@@ -135,23 +130,11 @@ async function toggle() {
                 </select>
             </label>
 
-            <TagDropdown
+            <ValoTagSelect
                 v-model="currentTimeEntry.tags"
                 :tags="tags"
-                :create-tag="createTag"
-                @changed="saveIfRunning">
-                <template #trigger>
-                    <button
-                        type="button"
-                        class="inline-flex items-center gap-1.5 rounded-full border border-card-border px-3 py-1.5 text-sm text-text-secondary">
-                        <TagIcon class="h-4 w-4" />
-                        <span v-if="currentTimeEntry.tags.length === 0">{{ $t('Tag') }}</span>
-                        <span v-else>{{
-                            $t(':count tags', { count: String(currentTimeEntry.tags.length) })
-                        }}</span>
-                    </button>
-                </template>
-            </TagDropdown>
+                testid="mobile_timer_tags"
+                @changed="saveIfRunning" />
         </div>
 
         <div class="mt-4 flex items-center justify-between">

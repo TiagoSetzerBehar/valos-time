@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Api\V1;
 
-use App\Exceptions\Api\EntityStillInUseApiException;
 use App\Http\Requests\V1\Tag\TagIndexRequest;
 use App\Http\Requests\V1\Tag\TagStoreRequest;
 use App\Http\Requests\V1\Tag\TagUpdateRequest;
@@ -12,9 +11,9 @@ use App\Http\Resources\V1\Tag\TagCollection;
 use App\Http\Resources\V1\Tag\TagResource;
 use App\Models\Organization;
 use App\Models\Tag;
-use App\Models\TimeEntry;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\DB;
 
 class TagController extends Controller
 {
@@ -85,7 +84,7 @@ class TagController extends Controller
     /**
      * Delete tag
      *
-     * @throws AuthorizationException|EntityStillInUseApiException
+     * @throws AuthorizationException
      *
      * @operationId deleteTag
      */
@@ -93,11 +92,15 @@ class TagController extends Controller
     {
         $this->checkPermission($organization, 'tags:delete', $tag);
 
-        if (TimeEntry::query()->hasTag($tag)->whereBelongsTo($organization, 'organization')->exists()) {
-            throw new EntityStillInUseApiException('tag', 'time_entry');
-        }
-
-        $tag->delete();
+        // VALO: a tag in use can be deleted too; it is taken off the entries and routines, the hours stay.
+        DB::transaction(function () use ($organization, $tag): void {
+            $id = (string) $tag->getKey();
+            $orgId = (string) $organization->getKey();
+            $json = (string) json_encode([$id]);
+            DB::update('update time_entries set tags = tags - ? where organization_id = ? and tags @> ?::jsonb', [$id, $orgId, $json]);
+            DB::update('update valo_meetings set tag_ids = tag_ids - ? where organization_id = ? and tag_ids @> ?::jsonb', [$id, $orgId, $json]);
+            $tag->delete();
+        });
 
         return response()->json(null, 204);
     }

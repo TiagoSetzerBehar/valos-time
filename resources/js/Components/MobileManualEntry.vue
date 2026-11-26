@@ -1,12 +1,11 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue';
-import { PlusCircleIcon, TagIcon, XMarkIcon } from '@heroicons/vue/20/solid';
+import { PlusCircleIcon, XMarkIcon } from '@heroicons/vue/20/solid';
 import { trans } from 'laravel-vue-i18n';
 import { useProjectsQuery } from '@/utils/useProjectsQuery';
 import { useTagsQuery } from '@/utils/useTagsQuery';
-import { useTagsStore } from '@/utils/useTags';
 import { useTimeEntriesMutations } from '@/utils/useTimeEntriesMutations';
-import ValoPicker from '@/Components/ValoPicker.vue';
+import ValoTagSelect from '@/Components/ValoTagSelect.vue';
 import {
     formatWeekday,
     getDayJsInstance,
@@ -89,18 +88,6 @@ const dayLabel = computed(() => {
 });
 
 const canSave = computed(() => !saving.value && !!day.value && (durationMinutes.value ?? 0) > 0);
-
-const tagItems = computed(() =>
-    [...tags.value]
-        .sort((a, b) => a.name.localeCompare(b.name))
-        .map((tag) => ({ id: tag.id, name: tag.name }))
-);
-async function createTag(name: string) {
-    const tag = await useTagsStore().createTag(name);
-    if (tag) {
-        tagIds.value = [...tagIds.value, tag.id];
-    }
-}
 
 async function save() {
     const start = minutesOf(from.value);
@@ -186,25 +173,11 @@ async function save() {
                             </option>
                         </select>
                     </label>
-                    <ValoPicker
+                    <ValoTagSelect
                         v-model="tagIds"
-                        :items="tagItems"
-                        :title="$t('Tags')"
-                        :search-placeholder="$t('Search tag')"
-                        :create-label="$t('Create tag')"
-                        @create="createTag">
-                        <template #trigger>
-                            <button
-                                type="button"
-                                class="inline-flex items-center gap-1.5 rounded-full border border-card-border bg-card-background px-3 py-1.5 text-sm text-text-secondary">
-                                <TagIcon class="h-4 w-4" />
-                                <span v-if="tagIds.length === 0">{{ $t('Tag') }}</span>
-                                <span v-else>{{
-                                    $t(':count tags', { count: String(tagIds.length) })
-                                }}</span>
-                            </button>
-                        </template>
-                    </ValoPicker>
+                        :tags="tags"
+                        class="bg-card-background"
+                        testid="mobile_manual_tags" />
                 </div>
 
                 <div class="valo-mobile-label">{{ $t('Day') }}</div>

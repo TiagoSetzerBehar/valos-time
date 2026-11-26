@@ -1329,5 +1329,7 @@
     "Those hours are already tracked": "Essas horas já estão registradas",
     "The same hour can not count twice. Check your entries for that day.": "A mesma hora não pode contar duas vezes. Confira seus registros desse dia.",
     "Only the free hours were added": "Só as horas livres foram adicionadas",
-    "You already had hours tracked in part of that time. The same hour never counts twice.": "Você já tinha horas registradas em parte desse horário. A mesma hora nunca conta duas vezes."
+    "You already had hours tracked in part of that time. The same hour never counts twice.": "Você já tinha horas registradas em parte desse horário. A mesma hora nunca conta duas vezes.",
+    "Delete the tag \":name\"? It will be removed from the entries that use it. The hours stay.": "Apagar a etiqueta \":name\"? Ela sai dos registros que a usam. As horas continuam.",
+    "Open menu": "Abrir menu"
 }

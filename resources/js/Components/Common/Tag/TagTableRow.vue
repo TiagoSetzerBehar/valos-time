@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { trans } from 'laravel-vue-i18n';
 import type { Tag } from '@/packages/api/src';
 import { useTagsStore } from '@/utils/useTags';
 import TagMoreOptionsDropdown from '@/Components/Common/Tag/TagMoreOptionsDropdown.vue';
@@ -22,7 +23,17 @@ const props = defineProps<{
 const showTagEditModal = ref(false);
 
 function deleteTag() {
-    useTagsStore().deleteTag(props.tag.id);
+    const ok = window.confirm(
+        trans(
+            'Delete the tag ":name"? It will be removed from the entries that use it. The hours stay.',
+            {
+                name: props.tag.name,
+            }
+        )
+    );
+    if (ok) {
+        useTagsStore().deleteTag(props.tag.id);
+    }
 }
 </script>
 
